@@ -9,8 +9,8 @@ const path = 'Categoria';
 //rutas del proyecto
 router.get(`/${path}`,GetCategorias);
 router.post(`/${path}`,AddCategoria);
-router.put(`/${path}`,UpdateCategoria);
-router.delete(`/${path}`,DeleteCategoria);
-router.get(`/${path}`,GetCategoriaById);
+router.put(`/${path}/:id`,UpdateCategoria);
+router.delete(`/${path}/:id`,DeleteCategoria);
+router.get(`/${path}/:id`,GetCategoriaById);
 
 module.exports = router;

@@ -1,9 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { Transaccion }  = require('./transaccion')
 
 
-const Columna = sequelize.define('columna', {
+const Categoria = sequelize.define('categoria', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -21,9 +20,9 @@ const Columna = sequelize.define('columna', {
 },{timestamps: false});
 
 
-(async () => {
-    await sequelize.sync({ force: false });
-    // Code here
-  })();
+// (async () => {
+//     await sequelize.sync({ force: true });
+//     // Code here
+//   })();
 
-module.exports = {Columna}
+module.exports = {Categoria}

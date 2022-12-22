@@ -8,11 +8,12 @@ const GetCategorias = async (req, res) => {
             where: {
                 estado: 1
             }
-        })
+        });
         res.json(trx)
     } catch (error) {
+        console.error(error)
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Categoria.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
     }
 
 }

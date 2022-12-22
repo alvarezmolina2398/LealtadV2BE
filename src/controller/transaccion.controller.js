@@ -22,12 +22,13 @@ const GetTransaccions = async (req, res) => {
 const AddTransaccion = async (req, res) => {
 
     try {
-        const { nombre, descripcion, botton, columna } = req.body;
+        const { nombre, descripcion, botton, columna,puntos } = req.body;
         await Transaccion.create({
             nombre,
             descripcion,
             idBotton: botton,
-            idColumna: columna
+            idColumna: columna,
+            puntos
         })
         res.json({ code: 'ok', message: 'Transaccion creada con exito' });
 
@@ -43,13 +44,14 @@ const AddTransaccion = async (req, res) => {
 const UpdateTransaccion = async (req, res) => {
 
     try {
-        const { nombre, descripcion, botton, columna } = req.body;
+        const { nombre, descripcion, botton, columna, puntos} = req.body;
         const {id} = req.params
         await Transaccion.update({
             nombre,
             descripcion,
             idBotton: botton,
-            idColumna: columna
+            idColumna: columna,
+            puntos
         }, {
             where: {
                 id: id
@@ -94,9 +96,10 @@ const DeleteTransaccion = async (req, res) => {
 const GetTransaccionById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Columna.findByPk(id);
+        const project = await Transaccion.findByPk(id);
         res.json(project)
     } catch (error) {
+        console.log(error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Transaccion.' });
     }

@@ -26,14 +26,19 @@ const Transaccion = sequelize.define('transaccion', {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull:false
+    },
+    puntos: {
+        type: DataTypes.INTEGER,
+        defaultValue:0,
+        allowNull:false
     }
 
 },{timestamps: false});
 
 
-(async () => {
-    await sequelize.sync({ force: false });
-    // Code here
-  })();
+// (async () => {
+//     await sequelize.sync({ force: true });
+//     // Code here
+//   })();
 
 module.exports = {Transaccion}

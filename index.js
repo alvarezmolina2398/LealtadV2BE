@@ -19,9 +19,11 @@ app.set('port', process.env.PORT || 3000);
 //declacion de los MiddelWare
 app.use(express.json());
 
+
+
 app.use(require('./src/routes/transaccion.routes'))
 app.use(require('./src/routes/columna.routes'))
-
+app.use(require('./src/routes/categoria.routes'))
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
