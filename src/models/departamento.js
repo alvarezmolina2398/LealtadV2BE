@@ -1,6 +1,5 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../database/database');
-
 const Departamento = sequelize.define('departamento', {
     id: {
         type: DataTypes.INTEGER,
@@ -16,10 +15,10 @@ const Departamento = sequelize.define('departamento', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     }
-}, {timestamps: false});
+}, {timestamps: false}); 
 
 (async () => {
-    await sequelize.sync({forse:false});
+    await sequelize.sync({forse:true});
 })();
 
 module.exports = {Departamento}
