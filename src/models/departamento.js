@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../database/database');
+const {Municipio} = require('./municipio')
 const Departamento = sequelize.define('departamento', {
     id: {
         type: DataTypes.INTEGER,
@@ -17,8 +18,24 @@ const Departamento = sequelize.define('departamento', {
     }
 }, {timestamps: false}); 
 
-(async () => {
-    await sequelize.sync({forse:true});
-})();
+
+Departamento.hasMany(Municipio,{
+    foreignKey: 'idDepartamento',
+    sourceKey: 'id'
+});
+
+Municipio.belongsTo(Departamento, {
+    foreignKey: 'idDepartamento',
+    targetId: 'id',
+    
+});
+
+
+
+
+
+//(async () => {
+//    await sequelize.sync({forse:false});
+//})();
 
 module.exports = {Departamento}
