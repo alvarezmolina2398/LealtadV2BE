@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(require('./src/routes/transaccion.routes'))
 app.use(require('./src/routes/columna.routes'))
 app.use(require('./src/routes/categoria.routes'))
+app.use(require('./src/routes/promocion.routes'))
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
