@@ -23,6 +23,6 @@ const Categoria = sequelize.define('categoria', {
 // (async () => {
 //     await sequelize.sync({ force: true });
 //     // Code here
-//   })();
+//  })();
 
 module.exports = {Categoria}
