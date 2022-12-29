@@ -35,7 +35,7 @@ Municipio.belongsTo(Departamento, {
 
 
 //(async () => {
-//    await sequelize.sync({forse:false});
+//   await sequelize.sync({forse:true});
 //})();
 
 module.exports = {Departamento}

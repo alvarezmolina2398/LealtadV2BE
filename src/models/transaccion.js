@@ -36,9 +36,9 @@ const Transaccion = sequelize.define('transaccion', {
 },{timestamps: false});
 
 
-// (async () => {
-//     await sequelize.sync({ force: true });
+//(async () => {
+    //await sequelize.sync({ force: true });
 //     // Code here
-//   })();
+//})();
 
 module.exports = {Transaccion}

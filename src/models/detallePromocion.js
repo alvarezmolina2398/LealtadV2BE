@@ -26,9 +26,9 @@ const DetallePromocion = sequelize.define('detallePromocion', {
 
 
 
-(async () => {
-    await sequelize.sync({ force: false });
+//(async () => {
+//    await sequelize.sync({ force: true });
     // Code here
-  })(); 
+//  })(); 
 
 module.exports = {DetallePromocion}

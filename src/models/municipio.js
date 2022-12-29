@@ -25,10 +25,10 @@ const Municipio = sequelize.define('municipio', {
 
 },{timestamps: false});
 
-// (async () => {
-//     await sequelize.sync({ force: true });
+//(async () => {
+//    await sequelize.sync({ force: true });
 //     // Code here
-//   })();
+//  })();
 
 
 module.exports = {Municipio}
