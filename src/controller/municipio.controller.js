@@ -1,10 +1,12 @@
 const { Municipio } = require('../models/municipio')
+const { Departamento } = require('../models/departamento')
 
 
 //controllador paa obtener la lista de municipios
 const GetMunicipios = async (req, res) => {
     try {
         const trx = await Municipio.findAll({
+            include: { model: Departamento },
             where: {
                 estado: 1
             }
@@ -12,6 +14,7 @@ const GetMunicipios = async (req, res) => {
         res.json(trx)
     } catch (error) {
         res.status(403)
+        console.log(error)
         res.send({ errors: 'Ha sucedido un  error al intentar agregar el municipio.' });
     }
 
