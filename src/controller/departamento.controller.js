@@ -84,7 +84,7 @@ const DeleteDepartamento = async (req, res) => {
 //obtener departamentos por el id
 const GetDepartamentobyId = async (req, res) => {
     try{
-
+        console.log(req.params)
         const {id} = req.params;
         const depa = await Departamento.findByPk(id);
         res.json(depa);

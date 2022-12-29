@@ -8,8 +8,8 @@ const path = 'Departamento';
 //rutas para metodos de departamento
 router.get(`/${path}`, GetDepartamentos);
 router.post(`/${path}`, AddDepartamentos);
-router.put(`/${path}:id`, UpdateDepartamento);
-router.delete(`/${path}:id`,DeleteDepartamento);
-router.get(`/${path}:id`, GetDepartamentobyId);
+router.put(`/${path}/:id`, UpdateDepartamento);
+router.delete(`/${path}/:id`,DeleteDepartamento);
+router.get(`/${path}/:id`, GetDepartamentobyId);
 
 module.exports = router;
