@@ -12,7 +12,7 @@ const GetMunicipios = async (req, res) => {
         res.json(trx)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar el municipio.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar agregar el municipio.' });
     }
 
 }
@@ -22,6 +22,7 @@ const GetMunicipios = async (req, res) => {
 const AddMunicipio = async (req, res) => {
 
     try {
+        console.log(req.body);
         const { nombre, departamento } = req.body;
         await Municipio.create({
             nombre,
@@ -31,7 +32,7 @@ const AddMunicipio = async (req, res) => {
 
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar el municipio.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar agregar el municipio.' });
     }
 
 }
