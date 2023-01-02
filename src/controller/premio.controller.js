@@ -1,10 +1,10 @@
-const { Premio } = require('../models/transaccion')
+const { Premio } = require('../models/premio')
 
 
 //controllador paa obtener la lista de transacciones
 const GetPremios = async (req, res) => {
     try {
-        const trx = await Transaccion.findAll({
+        const trx = await Premio.findAll({
             where: {
                 estado: 1
             }

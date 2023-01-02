@@ -23,11 +23,11 @@ const Premio = sequelize.define('premio', {
     },
     link: {
         type: DataTypes.STRING(500),
-        allowNull:false
+        allowNull:true
     },
     claveSecreta: {
         type: DataTypes.STRING(500),
-        allowNull:false
+        allowNull:true
     },
     estado : {
         type: DataTypes.INTEGER,
@@ -42,9 +42,9 @@ const Premio = sequelize.define('premio', {
 },{timestamps: false});
 
 
-//(async () => {
-    //await sequelize.sync({ force: true });
+// (async () => {
+//     await sequelize.sync({ force: true });
 //     // Code here
-//})();
+// })();
 
 module.exports = {Premio}

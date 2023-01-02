@@ -29,6 +29,7 @@ app.use(require('./src/routes/departamento.routes'))
 app.use(require('./src/routes/municipio.routes'))
 app.use(require('./src/routes/rol.routes'))
 app.use(require('./src/routes/terceros.routes'))
+app.use(require('./src/routes/premio.routes'))
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
