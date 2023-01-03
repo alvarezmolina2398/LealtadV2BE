@@ -98,7 +98,7 @@ const DeletePremio = async (req, res) => {
 const GetPremioById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Transaccion.findByPk(id);
+        const project = await Premio.findByPk(id);
         res.json(project)
     } catch (error) {
         console.log(error)

@@ -1,18 +1,17 @@
 const {Router} = require('express');
 const router = Router();
-const {GetPremios,AddPremio} = require('../controller/premio.controller')
+const {GetPremios, AddPremio, UpdatePremio, DeletePremio, GetPremioById} = require('../controller/premio.controller')
 
 
 //declarampos nuestra constante para almacenar el path`
-const path = 'Premios';
-
+const path = 'Premio';
 
 //rutas del proyecto
 router.get(`/${path}`, GetPremios);
-//router.get(`/${path}/:id`,GetMunicipioById);
+router.get(`/${path}/:id`,GetPremioById);
 router.post(`/${path}`,AddPremio);
-// router.put(`/${path}/:id`,UpdateMunicipio);
-// router.delete(`/${path}/:id`,DeleteMunicipio);
+router.put(`/${path}/:id`,UpdatePremio);
+router.delete(`/${path}/:id`,DeletePremio);
 
 
 module.exports = router
