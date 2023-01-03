@@ -6,7 +6,6 @@ const {GetPremios, AddPremio, UpdatePremio, DeletePremio, GetPremioById} = requi
 //declarampos nuestra constante para almacenar el path`
 const path = 'Premio';
 
-
 //rutas del proyecto
 router.get(`/${path}`, GetPremios);
 router.get(`/${path}/:id`,GetPremioById);
