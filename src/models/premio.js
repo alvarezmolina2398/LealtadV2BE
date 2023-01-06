@@ -42,9 +42,9 @@ const Premio = sequelize.define('premio', {
 },{timestamps: false});
 
 
-// (async () => {
-//     await sequelize.sync({ force: true });
+ //(async () => {
+ //    await sequelize.sync({ force: true });
 //     // Code here
-// })();
+ //})();
 
 module.exports = {Premio}
