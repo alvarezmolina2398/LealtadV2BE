@@ -74,13 +74,12 @@ const AddPromocion = async (req, res) => {
 
 
 //controllador para actualizar Columnaes
-const UpdateColumna = async (req, res) => {
+const PausarPromocion = async (req, res) => {
 
     try {
-        const { nombre } = req.body;
-        const { id } = req.params
-        await Columna.update({
-            nombre
+        const { id } = req.params;
+        await Promocion.update({
+            estado : 2
         }, {
             where: {
                 id: id
@@ -88,14 +87,39 @@ const UpdateColumna = async (req, res) => {
         });
 
 
-        res.json({ code: 'ok', message: 'Columna actualizada con exito' });
+        res.json({ code: 'ok', message: 'Promocion pausada con exito' });
 
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar pausar la Promocion.' });
     }
 
 }
+
+
+//controllador para actualizar Columnaes
+const ActivarPromocion = async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        await Promocion.update({
+            estado : 1
+        }, {
+            where: {
+                id: id
+            }
+        });
+
+
+        res.json({ code: 'ok', message: 'Promocion activada con exito' });
+
+    } catch (error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar activar la Promocion.' });
+    }
+
+}
+
 
 
 //controllador para actualizar Columnaes
@@ -139,4 +163,4 @@ const GetColumnaById = async (req, res) => {
 
 
 
-module.exports = { GetPromocion, AddPromocion }
+module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion }

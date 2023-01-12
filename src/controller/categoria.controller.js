@@ -98,9 +98,4 @@ const GetCategoriaById = async (req, res) => {
 
 }
 
-
-
-
-
-
 module.exports = { GetCategorias, AddCategoria, UpdateCategoria, DeleteCategoria, GetCategoriaById }
