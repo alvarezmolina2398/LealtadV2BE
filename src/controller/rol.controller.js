@@ -24,9 +24,8 @@ const AddRol = async (req, res) => {
 
     try {
         console.log(req.body);
-        const { nombre, descripcion } = req.body;
+        const { descripcion } = req.body;
         await Rol.create({
-            nombre,
             descripcion,
         })
         res.json({ code: 'ok', message: 'Rol creado con exito' });
@@ -43,10 +42,9 @@ const AddRol = async (req, res) => {
 const UpdateRol = async (req, res) => {
 
     try {
-        const { nombre, descripcion, } = req.body;
+        const { descripcion, } = req.body;
         const {id} = req.params
         await Rol.update({
-            nombre,
             descripcion,
             
         }, {

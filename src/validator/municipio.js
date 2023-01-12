@@ -7,7 +7,7 @@ const validateCreate = [
         .exists()
         .not()
         .isEmpty(),
-    chek('departamento')
+    check('departamento')
         .exists()
         .not()
         .isEmpty(),

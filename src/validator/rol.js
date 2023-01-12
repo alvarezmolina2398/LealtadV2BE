@@ -3,10 +3,6 @@ const { validateResult } = require('../helpers/validationHelpers');
 
 
 const validateCreate = [
-    check('nombre')
-        .exists()
-        .not()
-        .isEmpty(),
     check('descripcion')
         .exists()
         .not()
