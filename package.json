@@ -4,12 +4,14 @@
   "description": "Sistema de Lealtad",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jorge Alvarez",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "express-validator": "^6.14.2",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
     "sequelize": "^6.27.0"
