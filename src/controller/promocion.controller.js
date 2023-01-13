@@ -77,9 +77,17 @@ const AddPromocion = async (req, res) => {
 const PausarPromocion = async (req, res) => {
 
     try {
-        const { id } = req.params;
+        const { nombre, nemonico, descripcion, mesajeExito, mesajeFail, fechaInicio, fechaFin } = req.body;
+        console.log(req.body)
+        const { id } = req.params
         await Promocion.update({
-            estado : 2
+            nemonico,
+            nombre, 
+            descripcion, 
+            mesajeExito, 
+            mesajeFail, 
+            fechaInicio, 
+            fechaFin
         }, {
             where: {
                 id: id
@@ -148,8 +156,9 @@ const DeleteColumna = async (req, res) => {
 
 const GetColumnaById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const project = await Columna.findByPk(id);
+        const {id} = req.params;
+        console.log(id)
+        const project = await Promocion.findByPk(id);
         res.json(project)
     } catch (error) {
         res.status(403)
@@ -163,4 +172,8 @@ const GetColumnaById = async (req, res) => {
 
 
 
+<<<<<<< HEAD
 module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion }
+=======
+module.exports = { GetPromocion, AddPromocion, GetColumnaById, UpdateColumna }
+>>>>>>> 3790cbc3123d5272f9b48cefc3ad9c411b11f171
