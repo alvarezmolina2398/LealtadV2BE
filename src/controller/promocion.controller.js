@@ -100,24 +100,14 @@ const AddPromocion = async (req, res) => {
 const PausarPromocion = async (req, res) => {
 
     try {
-        const { nombre, nemonico, descripcion, mesajeExito, mesajeFail, fechaInicio, fechaFin } = req.body;
-        console.log(req.body)
-        const { id } = req.params
+        const { id } = req.params;
         await Promocion.update({
-            nemonico,
-            nombre,
-            descripcion,
-            mesajeExito,
-            mesajeFail,
-            fechaInicio,
-            fechaFin
+            estado: 2
         }, {
             where: {
                 id: id
             }
         });
-
-
         res.json({ code: 'ok', message: 'Promocion pausada con exito' });
 
     } catch (error) {
