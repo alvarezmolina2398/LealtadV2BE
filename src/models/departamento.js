@@ -31,9 +31,6 @@ Municipio.belongsTo(Departamento, {
 });
 
 
-
-
-
 //(async () => {
 //   await sequelize.sync({forse:true});
 //})();

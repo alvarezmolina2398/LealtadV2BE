@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { Usuario } = require('./usuario');
 
 
 
@@ -25,10 +26,19 @@ const Rol = sequelize.define('rol', {
 
 },{timestamps: false});
 
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     // Code here
-//   })();
+Rol.hasMany(Usuario,{
+    foreignKey: {
+        name: 'idRol',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
+});
 
+Usuario.belongsTo(Rol,{
+    foreignKey: 'idRol',
+    targetId: 'id',
+    allowNull: false
+});
 
 module.exports = {Rol}
