@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { Etapa } = require('../models/etapas')
+const { Etapa } = require('./etapa')
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -64,7 +64,11 @@ const Campania = sequelize.define('campania', {
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
-    }
+    },
+    maximoParticipaciones: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
+    },
 },{timestamps: false});
 
 

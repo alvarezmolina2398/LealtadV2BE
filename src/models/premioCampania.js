@@ -9,7 +9,7 @@ const PremioCampania = sequelize.define('premioCampania', {
         autoIncrement: true,
 
     },
-    ValorMaximo: {
+    valor: {
         type: DataTypes.DECIMAL(18,2),
         allowNull: false
     }, 

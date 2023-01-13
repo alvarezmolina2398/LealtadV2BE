@@ -1,5 +1,5 @@
 const { Campania } = require('../models/campanias');
-const { Etapa } = require('../models/etapas');
+const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
@@ -22,8 +22,8 @@ const AddCampania = async (req, res) => {
         descripcionNotificacion,
         imgPush,
         imgAkisi,
-        estado,
-        etapas
+        etapas,
+        maximoParticipaciones
     } = req.body;
 
 
@@ -42,39 +42,40 @@ const AddCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
-            estado
+            estado: 1,
+            maximoParticipaciones
         });
         const { id } = newCampains.dataValues;
+        
 
+
+   //     console.log(id)
 
         etapas.forEach(element => {
             element.idCampana = id;
             AddEtapas(element);
         });
 
+        res.json({ code: 'ok', message: 'Campania creada  con exito' });
 
     } catch (error) {
-        console.error(error)
+        console.error("e"+error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
     }
-
-
-
-
-
 
 }
 
 
 const AddEtapas = async (etapa) => {
-    const { nombre, descripcion, orden, idCampana, parametros, premios, presupuestos } = etapa;
+    const { nombre, descripcion, orden, idCampana, tipoParticipacion,parametros, premios, presupuestos } = etapa;
 
     const newEtatpa = await Etapa.create({
         nombre,
         descripcion,
         orden,
         idCampana,
+        tipoParticipacion,
         estado: 1
     });
 
@@ -105,5 +106,8 @@ const AddPresupuesto = async (presupuestos, idEtapa) => {
     presupuestos.map((element, index) => {
         presupuestos[index].idEtapa = idEtapa
     });
-    await Presupuesto.bulkCreate(premios);
+    await Presupuesto.bulkCreate(presupuestos);
 }
+
+
+module.exports = {AddCampania}

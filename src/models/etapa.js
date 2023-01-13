@@ -24,6 +24,10 @@ const Etapa = sequelize.define('etapa', {
         type: DataTypes.INTEGER,
         allowNull:false
     },
+    tipoParticipacion: {
+        type: DataTypes.INTEGER,
+        allowNull:false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
