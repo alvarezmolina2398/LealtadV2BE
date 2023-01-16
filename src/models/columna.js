@@ -36,7 +36,7 @@ Transaccion.belongsTo(Columna, {
 
 // (async () => {
 //    await sequelize.sync({ force: true });
-    // Code here
+//   //  Code here
 //   })();
 
 module.exports = {Columna}

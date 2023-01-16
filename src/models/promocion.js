@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { DetallePromocion } = require("../models/detallePromocion")
+const { DetallePromocion } = require("../models/detallePromocion");
+const { PremioPromocion } = require('./premioPromocion');
+
 const Promocion = sequelize.define('promocion', {
     id: {
         type: DataTypes.INTEGER,
@@ -61,7 +63,19 @@ Promocion.hasMany(DetallePromocion, {
     sourceKey: 'id'
 });
 
-DetallePromocion.belongsTo(DetallePromocion, {
+DetallePromocion.belongsTo(Promocion, {
+    foreignKey: 'idPromocion',
+    targetId: 'id',
+
+});
+
+
+Promocion.hasMany(PremioPromocion, {
+    foreignKey: 'idPromocion',
+    sourceKey: 'id'
+});
+
+PremioPromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
 
