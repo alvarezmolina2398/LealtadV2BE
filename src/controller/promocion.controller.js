@@ -133,7 +133,9 @@ const GetColumnaById = async (req, res) => {
     try {
         const {id} = req.params;
         console.log(id)
-        const project = await Promocion.findByPk(id);
+        const project = await Promocion.findByPk(id, {
+            include: { model: DetallePromocion }
+        });
         res.json(project)
     } catch (error) {
         res.status(403)
