@@ -217,92 +217,92 @@ const TestearCodigo = async (req, res) => {
                 messagge: 'Lo sentimos, el cupon no existe o no esta disponible.'
             })
 
-    }
-
-    const cuponDentroActivo = await Promocion.count({
-        include: {
-            model: DetallePromocion,
-            where: {
-                cupon: cupon
-            }
-        },
-        where: {
-            estado: 1,
-            fechaInicio: {
-                 [Op.lte]: new Date(),
-            },
-             fechaFin: {
-                 [Op.gte]: new Date(),
-            }
-        }
-    });
-
-    console.log('cuponDentroActivo', cuponDentroActivo)
-
-    if (cuponDentroActivo === 0) {
-        res.json(
-            {
-                code: '04',
-                messagge: 'Lo sentimos, La Promocion ha caducado.'
-            })
-
-    } else {
-        const promoxionx = await Promocion.findOne({
+    }else{
+        const cuponDentroActivo = await Promocion.count({
             include: {
                 model: DetallePromocion,
                 where: {
                     cupon: cupon
                 }
+            },
+            where: {
+                estado: 1,
+                fechaInicio: {
+                     [Op.lte]: new Date(),
+                },
+                 fechaFin: {
+                     [Op.gte]: new Date(),
+                }
             }
         });
-
-
-        const datax = promoxionx.dataValues;
-
-        const detallePromocions = datax.detallePromocions;
-        const cuponValido = detallePromocions[0].dataValues;
-        if (datax.estado === 2) {
+    
+        console.log('cuponDentroActivo', cuponDentroActivo)
+    
+        if (cuponDentroActivo === 0) {
             res.json(
                 {
-                    code: '05',
-                    messagge: 'Lo sentimos este cupon ya ha sido cangeado.',
-                    data: {}
+                    code: '04',
+                    messagge: 'Lo sentimos, La Promocion ha caducado.'
                 })
+    
         } else {
-             if (cuponValido.esPremio === 0) {
-
-                res.json(
-                    {
-                        code: '02',
-                        messagge: datax.mesajeFail,
-                        data: {
-                            imgFail: datax.imgFail,
-                            promocion: datax.nombre,
-                            nemonico: datax.nemonico,
-                            descripcion: datax.descripcion,
-                        }
+            const promoxionx = await Promocion.findOne({
+                include: {
+                    model: DetallePromocion,
+                    where: {
+                        cupon: cupon
                     }
-                )
-
-            } else {
-
+                }
+            });
+    
+    
+            const datax = promoxionx.dataValues;
+    
+            const detallePromocions = datax.detallePromocions;
+            const cuponValido = detallePromocions[0].dataValues;
+            if (datax.estado === 2) {
                 res.json(
                     {
-                        code: '01',
-                        messagge: datax.mesajeExito,
-                        data: {
-                            imgFail: datax.imgSuccess,
-                            promocion: datax.nombre,
-                            nemonico: datax.nemonico,
-                            descripcion: datax.descripcion,
-                        }
+                        code: '05',
+                        messagge: 'Lo sentimos este cupon ya ha sido cangeado.',
+                        data: {}
                     })
+            } else {
+                 if (cuponValido.esPremio === 0) {
+    
+                    res.json(
+                        {
+                            code: '02',
+                            messagge: datax.mesajeFail,
+                            data: {
+                                imgFail: datax.imgFail,
+                                promocion: datax.nombre,
+                                nemonico: datax.nemonico,
+                                descripcion: datax.descripcion,
+                            }
+                        }
+                    )
+    
+                } else {
+    
+                    res.json(
+                        {
+                            code: '01',
+                            messagge: datax.mesajeExito,
+                            data: {
+                                imgFail: datax.imgSuccess,
+                                promocion: datax.nombre,
+                                nemonico: datax.nemonico,
+                                descripcion: datax.descripcion,
+                            }
+                        })
+                }
             }
+    
+    
         }
-
-
+    
     }
-
 
 
 
