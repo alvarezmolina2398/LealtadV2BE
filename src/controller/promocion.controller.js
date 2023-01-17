@@ -1,7 +1,7 @@
 const { Promocion } = require('../models/promocion');
 const { DetallePromocion } = require('../models/detallePromocion');
 const { PremioPromocion } = require('../models/premioPromocion');
-
+const { Op } = require("sequelize");
 
 
 //controllador paa obtener la lista de Columnaes
@@ -150,11 +150,11 @@ const UpdatePromocion = async (req, res) => {
         const { id } = req.params
         await Promocion.update({
             nemonico,
-            nombre, 
-            descripcion, 
-            mesajeExito, 
-            mesajeFail, 
-            fechaInicio, 
+            nombre,
+            descripcion,
+            mesajeExito,
+            mesajeFail,
+            fechaInicio,
             fechaFin
         }, {
             where: {
@@ -174,7 +174,7 @@ const UpdatePromocion = async (req, res) => {
 
 const GetPromocionById = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         console.log(id)
         const project = await Promocion.findByPk(id, {
 
@@ -191,4 +191,119 @@ const GetPromocionById = async (req, res) => {
 
 }
 
-module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion,GetPromocionById }
+const TestearCodigo = async (req, res) => {
+    const { cupon } = req.body;
+    const cantidadCupones = await DetallePromocion.count({
+        where: {
+            cupon: cupon
+        }
+    });
+
+    //code 03  cupon no existe
+    //code 04  promocion vencida o eliminada
+    //code 05  Cupon ya Cangeado
+    //code 01 cupon valido
+    //code 02 cupon no valido
+
+    if (cantidadCupones === 0) {
+        res.json(
+            {
+                code: '03',
+                messagge: 'Lo sentimos, el cupon no existe o no esta disponible.'
+            })
+
+    }
+
+    const cuponDentroActivo = await Promocion.count({
+        include: {
+            model: DetallePromocion,
+            where: {
+                cupon: cupon
+            }
+        },
+        where: {
+            estado: 1,
+            fechaInicio: {
+                 [Op.lte]: new Date(),
+            },
+             fechaFin: {
+                 [Op.gte]: new Date(),
+            }
+        }
+    });
+
+    console.log('cuponDentroActivo', cuponDentroActivo)
+
+    if (cuponDentroActivo === 0) {
+        res.json(
+            {
+                code: '04',
+                messagge: 'Lo sentimos, La Promocion ha caducado.'
+            })
+
+    } else {
+        const promoxionx = await Promocion.findOne({
+            include: {
+                model: DetallePromocion,
+                where: {
+                    cupon: cupon
+                }
+            }
+        });
+
+
+        const datax = promoxionx.dataValues;
+
+        const detallePromocions = datax.detallePromocions;
+        const cuponValido = detallePromocions[0].dataValues;
+        if (datax.estado === 2) {
+            res.json(
+                {
+                    code: '05',
+                    messagge: 'Lo sentimos este cupon ya ha sido cangeado.',
+                    data: {}
+                })
+        } else {
+             if (cuponValido.esPremio === 0) {
+
+                res.json(
+                    {
+                        code: '02',
+                        messagge: datax.mesajeFail,
+                        data: {
+                            imgFail: datax.imgFail,
+                            promocion: datax.nombre,
+                            nemonico: datax.nemonico,
+                            descripcion: datax.descripcion,
+                        }
+                    }
+                )
+
+            } else {
+
+                res.json(
+                    {
+                        code: '01',
+                        messagge: datax.mesajeExito,
+                        data: {
+                            imgFail: datax.imgSuccess,
+                            promocion: datax.nombre,
+                            nemonico: datax.nemonico,
+                            descripcion: datax.descripcion,
+                        }
+                    })
+            }
+        }
+
+
+    }
+
+
+
+
+
+
+
+}
+
+module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, GetPromocionById, TestearCodigo }

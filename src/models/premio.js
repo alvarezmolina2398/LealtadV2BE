@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { PremioCampania } = require('./premioCampania');
+const { PremioPromocion } = require('./premioPromocion');
 
 
 
@@ -49,6 +50,18 @@ Premio.hasMany(PremioCampania,{
 });
 
 PremioCampania.belongsTo(Premio, {
+    foreignKey: 'idPremio',
+    targetId: 'id',
+    
+});
+
+
+Premio.hasMany(PremioPromocion,{
+    foreignKey: 'idPremio',
+    sourceKey: 'id'
+});
+
+PremioPromocion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
     
