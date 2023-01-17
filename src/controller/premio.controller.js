@@ -23,32 +23,18 @@ const AddPremio = async (req, res) => {
 
     try {
 
-        const{tipoTransaccion} = req.body;
-
-        if(tipoTransaccion === "1"){
-            const { descripcion, nombre, tipoTransaccion, idTransaccion } = req.body;
-            await Premio.create({
-                descripcion,
-                nombre,
-                tipo: tipoTransaccion,
-                idTransaccion
-            })
-
-            res.json({ code: 'ok', message: 'Premio creado con exito' });
-
-        } else if(tipoTransaccion === "2"){
-
-            const { descripcion, nombre, link, claveSecreta, tipoTransaccion } = req.body;
+        
+            const { descripcion, nombre,link, claveSecreta, tipoTransaccion, idTransaccion } = req.body;
             await Premio.create({
                 descripcion,
                 nombre,
                 link,
                 claveSecreta,
-                tipo: tipoTransaccion
+                tipo: tipoTransaccion,
+                idTransaccion
             })
 
             res.json({ code: 'ok', message: 'Premio creado con exito' });
-        }
         
         
 
