@@ -1,6 +1,7 @@
 const { Promocion } = require('../models/promocion');
 const { DetallePromocion } = require('../models/detallePromocion');
 const { PremioPromocion } = require('../models/premioPromocion');
+const { Premio } = require('../models/premio');
 const { Op } = require("sequelize");
 
 
@@ -77,7 +78,7 @@ const AddPromocion = async (req, res) => {
                 }
             });
 
-            const nuevoArrarPremios = premios.map((item) => ({ ...item, idPromocion: id }))
+            const nuevoArrarPremios = premios.map((item) => ({ ...item, idPromocion: id }));
             PremioPromocion.bulkCreate(nuevoArrarPremios);
 
         }
@@ -85,7 +86,7 @@ const AddPromocion = async (req, res) => {
         const nuevoArray = codigos.map((item) => ({ ...item, idPromocion: id }))
         DetallePromocion.bulkCreate(nuevoArray);
 
-        res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' });
+        res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' }); 
 
     } catch (error) {
         console.error(error)
@@ -175,14 +176,18 @@ const UpdatePromocion = async (req, res) => {
 const GetPromocionById = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id)
         const project = await Promocion.findByPk(id, {
 
             include: [
                 { model: DetallePromocion },
-                { model: PremioPromocion }
+                { 
+                    model: PremioPromocion,
+                    include: [Premio]
+                }
+            
             ]
         });
+        console.log(project)
         res.json(project)
     } catch (error) {
         res.status(403)
