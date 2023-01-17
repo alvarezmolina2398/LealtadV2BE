@@ -177,7 +177,11 @@ const GetPromocionById = async (req, res) => {
         const {id} = req.params;
         console.log(id)
         const project = await Promocion.findByPk(id, {
-            include: { model: DetallePromocion }
+
+            include: [
+                { model: DetallePromocion },
+                { model: PremioPromocion }
+            ]
         });
         res.json(project)
     } catch (error) {
