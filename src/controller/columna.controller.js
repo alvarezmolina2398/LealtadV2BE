@@ -1,6 +1,5 @@
 const { Columna } = require('../models/columna');
 
-
 //controllador paa obtener la lista de Columnaes
 const GetColumnas = async (req, res) => {
     try {
@@ -14,7 +13,6 @@ const GetColumnas = async (req, res) => {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
-
 }
 
 
