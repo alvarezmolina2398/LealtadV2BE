@@ -174,10 +174,6 @@ const TestearTransaccion = async (req, res) => {
         }
 
 
-        
-        
-
-
         const dataCompleta = { edadValidacion, RegistroValidacion, result }
 
 
