@@ -9,7 +9,7 @@ const { Presupuesto } = require('../models/presupuesto');
 const AddCampania = async (req, res) => {
 
     const {
-        fechaCreacion,
+        fechaRegistro,
         fechaInicio,
         fechaFin,
         nombre,
@@ -29,7 +29,8 @@ const AddCampania = async (req, res) => {
 
     try {
         const newCampains = await Campania.create({
-            fechaCreacion,
+            fechaRegistro,
+            fechaCreacion : new Date(),
             fechaInicio,
             fechaFin,
             nombre,
@@ -52,10 +53,10 @@ const AddCampania = async (req, res) => {
    //     console.log(id)
 
         etapas.forEach(element => {
-            element.idCampana = id;
+            element.idCampania = id;
             AddEtapas(element);
         });
-
+        
         res.json({ code: 'ok', message: 'Campania creada  con exito' });
 
     } catch (error) {
@@ -68,13 +69,13 @@ const AddCampania = async (req, res) => {
 
 
 const AddEtapas = async (etapa) => {
-    const { nombre, descripcion, orden, idCampana, tipoParticipacion,parametros, premios, presupuestos } = etapa;
+    const { nombre, descripcion, orden, idCampania, tipoParticipacion,parametros, premios, presupuestos } = etapa;
 
     const newEtatpa = await Etapa.create({
         nombre,
         descripcion,
         orden,
-        idCampana,
+        idCampania,
         tipoParticipacion,
         estado: 1
     });
@@ -88,6 +89,8 @@ const AddEtapas = async (etapa) => {
 
 
 const AddParametros = async (parametros, idEtapa) => {
+
+    console.log(parametros)
     parametros.map((element, index) => {
         parametros[index].idEtapa = idEtapa
     });
@@ -103,6 +106,8 @@ const AddPremios = async (premios, idEtapa) => {
 
 
 const AddPresupuesto = async (presupuestos, idEtapa) => {
+
+    console.log(presupuestos)
     presupuestos.map((element, index) => {
         presupuestos[index].idEtapa = idEtapa
     });
