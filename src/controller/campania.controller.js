@@ -47,10 +47,10 @@ const AddCampania = async (req, res) => {
             maximoParticipaciones
         });
         const { id } = newCampains.dataValues;
-        
 
 
-   //     console.log(id)
+
+        //     console.log(id)
 
         etapas.forEach(element => {
             element.idCampania = id;
@@ -60,7 +60,7 @@ const AddCampania = async (req, res) => {
         res.json({ code: 'ok', message: 'Campania creada  con exito' });
 
     } catch (error) {
-        console.error("e"+error)
+        console.error("e" + error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
     }
@@ -69,7 +69,11 @@ const AddCampania = async (req, res) => {
 
 
 const AddEtapas = async (etapa) => {
+<<<<<<< HEAD
     const { nombre, descripcion, orden, idCampania, tipoParticipacion,parametros, premios, presupuestos } = etapa;
+=======
+    const { nombre, descripcion, orden, idCampana, tipoParticipacion, parametros, premios, presupuestos } = etapa;
+>>>>>>> a37dd53cd588722c831a2975a54c86921a500432
 
     const newEtatpa = await Etapa.create({
         nombre,
@@ -115,4 +119,93 @@ const AddPresupuesto = async (presupuestos, idEtapa) => {
 }
 
 
-module.exports = {AddCampania}
+const GetcampanasActivas = async (req, res) => {
+    try {
+        const trx = await Campania.findAll({
+            where: {
+                estado: 1
+            }
+        });
+        res.json(trx)
+    } catch (error) {
+        console.error(error)
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
+    }
+
+}
+
+const TestearTransaccion = async (req, res) => {
+    try {
+        const campania = await Campania.findOne({
+            where: {
+                id: 1
+            }
+        });
+
+
+        const datosPersonales = {
+            nombre: 'Jorge Manuel Alvarez Molina',
+            sexo: '1',
+            tipoUsuario: 1,
+            profesion: 1,
+            fechaNacimineto: '1998-07-23',
+            fechaRegistro: new Date(2022,06,23),
+        }
+
+
+
+        let result = true;
+
+
+        //validacion de la edad
+        const fechaNacimineto = datosPersonales.fechaNacimineto.split('-');
+        const edad = 2023 - parseInt(fechaNacimineto[0]);
+        let edadValidacion = { edad, validacion: 0, 'inicial': campania.edadInicial, 'final': campania.edadFinal };
+
+        if (edad >= campania.edadInicial || edad <= campania.edadFinal) {
+            edadValidacion.validacion = 1;
+        } else {
+            edadValidacion.validacion = 0;
+            result = false;
+        }
+
+        //validacion fecha registro
+        campania.fechaRegistro = new Date();
+        let RegistroValidacion = { 'fechaRegistroU': datosPersonales.fechaRegistro, validacion: 0, 'fechaRegistroC': campania.fechaRegistro };
+        
+
+        if (campania.fechaRegistro >= datosPersonales.fechaRegistro) {
+            RegistroValidacion.validacion = 1;
+        } else {
+            RegistroValidacion.validacion = 0;
+            result = false;
+        }
+
+
+        
+        
+
+
+        const dataCompleta = { edadValidacion, RegistroValidacion, result }
+
+
+
+
+
+
+
+        res.json(dataCompleta)
+    } catch (error) {
+        console.error(error)
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Campania.' });
+    }
+}
+
+
+
+
+
+
+module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion }
