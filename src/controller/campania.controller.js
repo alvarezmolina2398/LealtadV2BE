@@ -1,8 +1,10 @@
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
+const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
+
 
 
 //accion para insertar una nueva trnasaccion
@@ -69,11 +71,7 @@ const AddCampania = async (req, res) => {
 
 
 const AddEtapas = async (etapa) => {
-<<<<<<< HEAD
     const { nombre, descripcion, orden, idCampania, tipoParticipacion,parametros, premios, presupuestos } = etapa;
-=======
-    const { nombre, descripcion, orden, idCampana, tipoParticipacion, parametros, premios, presupuestos } = etapa;
->>>>>>> a37dd53cd588722c831a2975a54c86921a500432
 
     const newEtatpa = await Etapa.create({
         nombre,
@@ -133,6 +131,31 @@ const GetcampanasActivas = async (req, res) => {
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
     }
 
+}
+
+const GetcampanasActivasById = async(req, res) => {
+    try{
+
+        const {id} = req.params;
+        console.log(id)
+        const proyect = await Campania.findByPk(id, {
+            include: [
+                {model: Etapa,
+                    include: [
+                        {model: Parametro},
+                        {model: PremioCampania},
+                        {model: Presupuesto}
+                    ]
+                },
+                
+            ]
+        })
+        res.json(proyect);
+
+    } catch (error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar consultar la Campaña.' });
+    }
 }
 
 const TestearTransaccion = async (req, res) => {
@@ -208,4 +231,4 @@ const TestearTransaccion = async (req, res) => {
 
 
 
-module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion }
+module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion, GetcampanasActivasById }
