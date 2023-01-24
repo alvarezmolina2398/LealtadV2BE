@@ -32,12 +32,9 @@ app.use(require('./src/routes/terceros.routes'));
 app.use(require('./src/routes/premio.routes'));
 app.use(require('./src/routes/usuario.routes'));
 app.use(require('./src/routes/campania.routes'));
-<<<<<<< HEAD
 app.use(require('./src/routes/detalleCampania.routes'))
-=======
 app.use(require('./src/routes/menu.routes'))
 
->>>>>>> d3e4be2b8c23fa085a093e7a0fb1ce589099c32b
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));

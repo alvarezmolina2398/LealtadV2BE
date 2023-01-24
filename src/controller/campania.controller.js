@@ -176,7 +176,6 @@ const UpdateCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
-            etapas,
             maximoParticipaciones
         } = req.body;
 
@@ -196,7 +195,6 @@ const UpdateCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
-            etapas,
             maximoParticipaciones
         }, {
 
@@ -208,7 +206,7 @@ const UpdateCampania = async (req, res) => {
         res.json({code: 'ok', message: 'Campaña Actualizada con exito.'});
 
     } catch (error) {
-
+        console.log(error)
         res.status(403);
         res.send({errors: 'Ha ocurrido un error al intentar actualizar la etapa.'});
     }
