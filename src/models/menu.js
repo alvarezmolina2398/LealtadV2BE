@@ -31,8 +31,8 @@ Pagina.belongsTo(Menu, {
 });
 
 
-(async () => {
+/*(async () => {
     await sequelize.sync({ force: false });
- })();
+ })();*/
 
 module.exports = {Menu}
