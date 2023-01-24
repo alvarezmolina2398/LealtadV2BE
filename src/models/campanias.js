@@ -89,9 +89,9 @@ Etapa.belongsTo(Campania, {
 
 
 
-// (async () => {
-//     await sequelize.sync({ force: true });
+//(async () => {
+    //await sequelize.sync({ force: true });
 //     // Code here
-//  })();
+//})();
 
 module.exports = {Campania}

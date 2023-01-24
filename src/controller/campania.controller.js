@@ -158,6 +158,62 @@ const GetcampanasActivasById = async(req, res) => {
     }
 }
 
+const UpdateCampania = async (req, res) => {
+
+    try{
+
+        const {
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            nombre,
+            descripcion,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            etapas,
+            maximoParticipaciones
+        } = req.body;
+
+        const {id} = req.params;
+
+        await Campania.update({
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            nombre,
+            descripcion,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            etapas,
+            maximoParticipaciones
+        }, {
+
+            where : {
+                id:id
+            }
+        });
+
+        res.json({code: 'ok', message: 'Campaña Actualizada con exito.'});
+
+    } catch (error) {
+
+        res.status(403);
+        res.send({errors: 'Ha ocurrido un error al intentar actualizar la etapa.'});
+    }
+}
+
 const TestearTransaccion = async (req, res) => {
     try {
         const campania = await Campania.findOne({
@@ -227,4 +283,4 @@ const TestearTransaccion = async (req, res) => {
 
 
 
-module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion, GetcampanasActivasById }
+module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion, GetcampanasActivasById, UpdateCampania }
