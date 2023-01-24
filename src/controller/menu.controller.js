@@ -1,9 +1,11 @@
 const { Menu } = require('../models/menu');
+const { Pagina } = require('../models/pagina');
 
 //controllador paa obtener la lista de Columnaes
 const GetMenus = async (req, res) => {
     try {
         const trx = await Menu.findAll({
+            include: { model: Pagina },
             where: {
                 estado: 1
             }
@@ -18,9 +20,11 @@ const GetMenus = async (req, res) => {
 //controllador para agregar nuevos menus
 const AddMenu = async (req, res) => {
     try {
-        const { descripcion } = req.body;
+        const { descripcion, pagina } = req.body;
+
         await Menu.create({
-            descripcion
+            descripcion,
+            idPagina: pagina,
         })
         res.json({ code: 'ok', message: 'Menu creado con exito' });
 
@@ -81,4 +85,4 @@ const GetMenuById = async (req, res) => {
     }
 }
 
-module.exports = { GetMenus, AddMenu, UpdateMenu, DeleteMenu, GetMenuById}
+module.exports = {GetMenus, AddMenu, UpdateMenu, DeleteMenu, GetMenuById}

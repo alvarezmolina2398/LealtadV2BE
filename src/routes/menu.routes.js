@@ -13,4 +13,5 @@ router.put(`/${path}/:id`,UpdateMenu);
 router.delete(`/${path}/:id`,DeleteMenu);
 router.get(`/${path}/:id`,GetMenuById);
 
+//exportacion de rutas
 module.exports = router;
