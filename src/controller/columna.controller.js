@@ -18,7 +18,6 @@ const GetColumnas = async (req, res) => {
 
 //controllador para agregar nuevas Columnaes
 const AddColumna = async (req, res) => {
-
     try {
         const { nombre } = req.body;
         await Columna.create({
@@ -30,13 +29,11 @@ const AddColumna = async (req, res) => {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
-
 }
 
 
 //controllador para actualizar Columnaes
 const UpdateColumna = async (req, res) => {
-
     try {
         const { nombre } = req.body;
         const { id } = req.params
@@ -48,20 +45,17 @@ const UpdateColumna = async (req, res) => {
             }
         });
 
-
         res.json({ code: 'ok', message: 'Columna actualizada con exito' });
 
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
-
 }
 
 
-//controllador para actualizar Columnaes
+//controllador para eliminar Columnaes
 const DeleteColumna = async (req, res) => {
-
     try {
         const { id } = req.params
         await Columna.update({
@@ -72,14 +66,11 @@ const DeleteColumna = async (req, res) => {
             }
         });
 
-
         res.json({ code: 'ok', message: 'Columna inhabilitada con exito' });
-
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
-
 }
 
 
@@ -92,7 +83,6 @@ const GetColumnaById = async (req, res) => {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
-
 }
 
 

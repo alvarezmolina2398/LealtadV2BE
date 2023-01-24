@@ -22,4 +22,8 @@ const Pagina = sequelize.define('pagina', {
     }
 },{timestamps: false});
 
+//(async () => {
+    //await sequelize.sync({ force: true });
+ //})();
+
 module.exports = {Pagina}
