@@ -121,7 +121,7 @@ const GetcampanasActivas = async (req, res) => {
     try {
         const trx = await Campania.findAll({
             where: {
-                estado: 1
+                estado: [1, 2, 3]
             }
         });
         res.json(trx)
@@ -276,9 +276,96 @@ const TestearTransaccion = async (req, res) => {
     }
 }
 
+const PausarCampaña  = async (req, res) => {
+
+    try {
+
+        const {id} = req.params;
+
+        await Campania.update({
+            estado: 2
+        }, {
+
+            where: {
+                id:id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Promocion pausada con exito' })
+
+    } catch(error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar pausar la Campaña.' });
+
+    }    
+}
+
+const ActivarCampaña  = async (req, res) => {
+
+    try {
+
+        const {id} = req.params;
+
+        await Campania.update({
+            estado: 1
+        }, {
+
+            where: {
+                id:id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Promocion activada con exito' })
+
+    } catch(error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar activar la Campaña.' });
+
+    }    
+}
+
+const DeleteCampania = async (req, res) => {
+
+    try {
+
+        const {id} = req.params;
+
+        await Campania.update({
+            estado: 3
+        }, {
+
+            where: {
+                id: id
+            }
+
+        })
+
+        res.json({ code: 'ok', message: 'Promocion deshabilitada con exito' });
+
+    } catch(error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la campaña.' });
+
+    }
+    
+}
 
 
 
 
 
-module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion, GetcampanasActivasById, UpdateCampania }
+
+
+module.exports = { 
+                    AddCampania, 
+                    GetcampanasActivas, 
+                    TestearTransaccion, 
+                    GetcampanasActivasById, 
+                    UpdateCampania,
+                    PausarCampaña,
+                    ActivarCampaña,
+                    DeleteCampania
+                }
