@@ -21,6 +21,10 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
+    fechaRegistro:{
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
     fechaInicio: {
         type: DataTypes.DATEONLY,
         allowNull: false
@@ -85,9 +89,9 @@ Etapa.belongsTo(Campania, {
 
 
 
-// (async () => {
-//     await sequelize.sync({ force: true });
+//(async () => {
+    //await sequelize.sync({ force: true });
 //     // Code here
-//  })();
+//})();
 
 module.exports = {Campania}

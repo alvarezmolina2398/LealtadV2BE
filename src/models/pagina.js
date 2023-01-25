@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
+//Creacion de tabla y declaracion de sus atributos correspondientes
 const Pagina = sequelize.define('pagina', {
     id: {
         type: DataTypes.INTEGER,
@@ -21,5 +22,9 @@ const Pagina = sequelize.define('pagina', {
         allowNull: false
     }
 },{timestamps: false});
+
+//(async () => {
+    //await sequelize.sync({ force: true });
+ //})();
 
 module.exports = {Pagina}

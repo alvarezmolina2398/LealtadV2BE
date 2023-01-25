@@ -1,15 +1,17 @@
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
+const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
+
 
 
 //accion para insertar una nueva trnasaccion
 const AddCampania = async (req, res) => {
 
     const {
-        fechaCreacion,
+        fechaRegistro,
         fechaInicio,
         fechaFin,
         nombre,
@@ -29,7 +31,8 @@ const AddCampania = async (req, res) => {
 
     try {
         const newCampains = await Campania.create({
-            fechaCreacion,
+            fechaRegistro,
+            fechaCreacion: new Date(),
             fechaInicio,
             fechaFin,
             nombre,
@@ -52,7 +55,7 @@ const AddCampania = async (req, res) => {
         //     console.log(id)
 
         etapas.forEach(element => {
-            element.idCampana = id;
+            element.idCampania = id;
             AddEtapas(element);
         });
 
@@ -68,13 +71,13 @@ const AddCampania = async (req, res) => {
 
 
 const AddEtapas = async (etapa) => {
-    const { nombre, descripcion, orden, idCampana, tipoParticipacion, parametros, premios, presupuestos } = etapa;
+    const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos } = etapa;
 
     const newEtatpa = await Etapa.create({
         nombre,
         descripcion,
         orden,
-        idCampana,
+        idCampania,
         tipoParticipacion,
         estado: 1
     });
@@ -88,6 +91,8 @@ const AddEtapas = async (etapa) => {
 
 
 const AddParametros = async (parametros, idEtapa) => {
+
+    console.log(parametros)
     parametros.map((element, index) => {
         parametros[index].idEtapa = idEtapa
     });
@@ -103,6 +108,8 @@ const AddPremios = async (premios, idEtapa) => {
 
 
 const AddPresupuesto = async (presupuestos, idEtapa) => {
+
+    console.log(presupuestos)
     presupuestos.map((element, index) => {
         presupuestos[index].idEtapa = idEtapa
     });
@@ -114,7 +121,7 @@ const GetcampanasActivas = async (req, res) => {
     try {
         const trx = await Campania.findAll({
             where: {
-                estado: 1
+                estado: [1, 2, 3]
             }
         });
         res.json(trx)
@@ -124,6 +131,86 @@ const GetcampanasActivas = async (req, res) => {
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
     }
 
+}
+
+const GetcampanasActivasById = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        console.log(id)
+        const proyect = await Campania.findByPk(id, {
+            include: [
+                {
+                    model: Etapa,
+                    include: [
+                        { model: Parametro },
+                        { model: PremioCampania },
+                        { model: Presupuesto }
+                    ]
+                },
+
+            ]
+        })
+        res.json(proyect);
+
+    } catch (error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar consultar la Campaña.' });
+    }
+}
+
+const UpdateCampania = async (req, res) => {
+
+    try {
+
+        const {
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            nombre,
+            descripcion,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            maximoParticipaciones
+        } = req.body;
+
+        const { id } = req.params;
+
+        await Campania.update({
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            nombre,
+            descripcion,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            maximoParticipaciones
+        }, {
+
+            where: {
+                id: id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Campaña Actualizada con exito.' });
+
+    } catch (error) {
+        console.log(error)
+        res.status(403);
+        res.send({ errors: 'Ha ocurrido un error al intentar actualizar la etapa.' });
+    }
 }
 
 const TestearTransaccion = async (req, res) => {
@@ -216,7 +303,7 @@ const TestearTransaccion = async (req, res) => {
 
         const { parametros, presupuestos } = dataEtapaActual;
 
-        const validacionPresupuesto = { validacion: 1, presupuesto: presupuestos[0].valor, limiteGanadores :  presupuestos[0].limiteGanadores }
+        const validacionPresupuesto = { validacion: 1, presupuesto: presupuestos[0].valor, limiteGanadores: presupuestos[0].limiteGanadores }
 
         const validacionParametros = { validacion: 1, parametros, cantParticipaciones: 0 };
         const dataCompleta = { edadValidacion, RegistroValidacion, sexoValidacion, etapasValidacion, tipoUsuarioValidacion, validacionParametros, validacionPresupuesto, result };
@@ -247,9 +334,96 @@ const format = (inputDate) => {
     return `${date}/${month}/${year}`;
 }
 
+const PausarCampaña = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 2
+        }, {
+
+            where: {
+                id: id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Promocion pausada con exito' })
+
+    } catch (error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar pausar la Campaña.' });
+
+    }
+}
+
+const ActivarCampaña = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 1
+        }, {
+
+            where: {
+                id: id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Promocion activada con exito' })
+
+    } catch (error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar activar la Campaña.' });
+
+    }
+}
+
+const DeleteCampania = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 3
+        }, {
+
+            where: {
+                id: id
+            }
+
+        })
+
+        res.json({ code: 'ok', message: 'Promocion deshabilitada con exito' });
+
+    } catch (error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la campaña.' });
+
+    }
+
+}
 
 
 
 
 
-module.exports = { AddCampania, GetcampanasActivas, TestearTransaccion }
+
+
+module.exports = {
+    AddCampania,
+    GetcampanasActivas,
+    TestearTransaccion,
+    GetcampanasActivasById,
+    UpdateCampania,
+    PausarCampaña,
+    ActivarCampaña,
+    DeleteCampania
+}
