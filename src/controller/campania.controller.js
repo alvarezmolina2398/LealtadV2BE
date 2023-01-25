@@ -129,6 +129,19 @@ const GetcampanasActivas = async (req, res) => {
 const TestearTransaccion = async (req, res) => {
     try {
         const campania = await Campania.findOne({
+            include: [
+                {
+                    model: Etapa,
+                    include: [
+                        {
+                            model: Parametro
+                        },
+                        {
+                            model: Presupuesto
+                        }
+                    ]
+                }
+            ],
             where: {
                 id: 1
             }
@@ -137,11 +150,11 @@ const TestearTransaccion = async (req, res) => {
 
         const datosPersonales = {
             nombre: 'Jorge Manuel Alvarez Molina',
-            sexo: '1',
+            sexo: 1,
             tipoUsuario: 1,
             profesion: 1,
             fechaNacimineto: '1998-07-23',
-            fechaRegistro: new Date(2022,06,23),
+            fechaRegistro: new Date(2023, 01, 05),
         }
 
 
@@ -162,32 +175,76 @@ const TestearTransaccion = async (req, res) => {
         }
 
         //validacion fecha registro
-        campania.fechaRegistro = new Date();
-        let RegistroValidacion = { 'fechaRegistroU': datosPersonales.fechaRegistro, validacion: 0, 'fechaRegistroC': campania.fechaRegistro };
-        
+        campania.fechaRegistro = new Date(2023, 01, 01);
+        let RegistroValidacion = { 'fechaRegistroU': format(datosPersonales.fechaRegistro), validacion: 0, 'fechaRegistroC': format(campania.fechaRegistro) };
 
-        if (campania.fechaRegistro >= datosPersonales.fechaRegistro) {
+        if (campania.fechaRegistro <= datosPersonales.fechaRegistro) {
             RegistroValidacion.validacion = 1;
         } else {
             RegistroValidacion.validacion = 0;
             result = false;
         }
 
+        let sexoValidacion = { sexo: datosPersonales.sexo, validacion: 0, sexoCampania: campania.sexo };
+        //validacion del sexo del usuario
+        if (campania.sexo === 0 || datosPersonales.sexo === campania.sexo) {
+            sexoValidacion.validacion = 1;
+        } else {
+            sexoValidacion.validacion = 0;
+            result = false;
+        }
 
-        const dataCompleta = { edadValidacion, RegistroValidacion, result }
+
+        let tipoUsuarioValidacion = { tipoU: datosPersonales.tipoUsuario, validacion: 0, tipoUC: campania.tipoUsuario };
+
+        if (campania.tipoUsuario === 0 || datosPersonales.tipoUsuario === campania.tipoUsuario) {
+            tipoUsuarioValidacion.validacion = 1;
+        } else {
+            tipoUsuarioValidacion.validacion = 0;
+            result = false;
+        }
+
+        const { etapas } = campania;
+
+        //validacion de las etapas
+        const etapaActual = 1;
+        const dataEtapaActual = etapas.find(element => element.orden === etapaActual);
+        const etapasValidacion = { etapaActual: etapaActual, etapasTotales: etapas.length }
 
 
 
 
+        const { parametros, presupuestos } = dataEtapaActual;
 
+        const validacionPresupuesto = { validacion: 1, presupuesto: presupuestos[0].valor, limiteGanadores :  presupuestos[0].limiteGanadores }
 
+        const validacionParametros = { validacion: 1, parametros, cantParticipaciones: 0 };
+        const dataCompleta = { edadValidacion, RegistroValidacion, sexoValidacion, etapasValidacion, tipoUsuarioValidacion, validacionParametros, validacionPresupuesto, result };
 
-        res.json(dataCompleta)
+        res.json(dataCompleta);
     } catch (error) {
         console.error(error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Campania.' });
     }
+}
+
+const format = (inputDate) => {
+    let date, month, year;
+
+    date = inputDate.getDate();
+    month = inputDate.getMonth() + 1;
+    year = inputDate.getFullYear();
+
+    date = date
+        .toString()
+        .padStart(2, '0');
+
+    month = month
+        .toString()
+        .padStart(2, '0');
+
+    return `${date}/${month}/${year}`;
 }
 
 
