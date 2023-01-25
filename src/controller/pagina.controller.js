@@ -1,9 +1,11 @@
+const { Menu } = require('../models/menu');
 const { Pagina } = require('../models/pagina');
 
 //controllador paa obtener la lista de páginas
 const GetPaginas = async (req, res) => {
     try {
         const trx = await Pagina.findAll({
+            include: { model: Menu },
             where: {
                 estado: 1
             }
@@ -21,7 +23,7 @@ const AddPagina = async (req, res) => {
         const { descripcion, idMenu, path } = req.body;
         await Pagina.create({
             descripcion,
-            idMenu,
+            idMenu: Menu,
             path
         })
         res.json({ code: 'ok', message: 'Página creada con éxito.' });
