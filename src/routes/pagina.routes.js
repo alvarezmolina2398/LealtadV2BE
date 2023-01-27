@@ -7,11 +7,11 @@ const {AddPagina,GetPaginas,GetPaginaById,DeletePagina,UpdatePagina} = require('
 const path = 'Pagina';
 
 //rutas del proyecto
-// router.get(`/${path}`,GetPaginas);
-// router.post(`/${path}`,AddPagina);
-// router.put(`/${path}/:id`,UpdatePagina);
-// router.delete(`/${path}/:id`,DeletePagina);
-// router.get(`/${path}/:id`,GetMenuById);
+router.get(`/${path}`,GetPaginas);
+router.post(`/${path}`,AddPagina);
+router.put(`/${path}/:id`,UpdatePagina);
+router.delete(`/${path}/:id`,DeletePagina);
+router.get(`/${path}/:id`,GetPaginaById);
 
 //exportacion de rutas
 module.exports = router;
