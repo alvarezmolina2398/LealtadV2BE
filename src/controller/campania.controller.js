@@ -260,10 +260,10 @@ const TestearTransaccion = async (req, res) => {
             edadValidacion.validacion = 0;
             result = false;
         }
-
+        console.log(campania.fechaRegistro)
         //validacion fecha registro
-        campania.fechaRegistro = new Date(2023, 01, 01);
-        let RegistroValidacion = { 'fechaRegistroU': format(datosPersonales.fechaRegistro), validacion: 0, 'fechaRegistroC': format(campania.fechaRegistro) };
+        //campania.fechaRegistro = new Date(2023, 01, 01);
+        let RegistroValidacion = { 'fechaRegistroU': format(datosPersonales.fechaRegistro), validacion: 0, 'fechaRegistroC': format(new Date(campania.fechaRegistro)) };
 
         if (campania.fechaRegistro <= datosPersonales.fechaRegistro) {
             RegistroValidacion.validacion = 1;
@@ -318,7 +318,7 @@ const TestearTransaccion = async (req, res) => {
 
 const format = (inputDate) => {
     let date, month, year;
-
+    console.log(inputDate)
     date = inputDate.getDate();
     month = inputDate.getMonth() + 1;
     year = inputDate.getFullYear();
