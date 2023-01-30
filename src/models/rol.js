@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { permisoUsuario } = require('./permisoUsuario');
 const { Usuario } = require('./usuario');
 
 
@@ -39,6 +40,16 @@ Usuario.belongsTo(Rol,{
     foreignKey: 'idRol',
     targetId: 'id',
     allowNull: false
+});
+
+Rol.hasMany(permisoUsuario, {
+    foreignKey: 'idRol',
+    sourceKey: 'id',
+});
+
+permisoUsuario.belongsTo(Rol, {
+    foreignKey: 'idRol',
+    targetId: 'id',
 });
 
 module.exports = {Rol}
