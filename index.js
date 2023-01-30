@@ -20,7 +20,6 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.json());
 
 
-
 app.use(require('./src/routes/transaccion.routes'));
 app.use(require('./src/routes/columna.routes'));
 app.use(require('./src/routes/categoria.routes'));

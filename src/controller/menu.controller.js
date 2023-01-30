@@ -77,7 +77,13 @@ const DeleteMenu = async (req, res) => {
 const GetMenuById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Menu.findByPk(id);
+        const project = await Menu.findByPk(id,{
+            include: { model: Pagina },
+            where: {
+                estado: 1
+            }
+        });
+
         res.json(project)
     } catch (error) {
         res.status(403)
