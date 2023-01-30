@@ -3,13 +3,11 @@ const { Pagina } = require('../models/pagina');
 
 //controllador paa obtener la lista de páginas
 const GetPaginas = async (req, res) => {
-    const {idMenu}=req.params
     try {
         const trx = await Pagina.findAll({
             include: { model: Menu },
             where: {
-                estado: 1,
-                idMenu
+                estado: 1
             }
         })
         res.json(trx)
