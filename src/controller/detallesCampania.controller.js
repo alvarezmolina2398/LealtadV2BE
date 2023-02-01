@@ -1,5 +1,7 @@
+const { Bloqueados } = require("../models/bloqueados");
 const { Etapa } = require("../models/etapa");
 const { Parametro } = require("../models/parametro");
+const { Participantes } = require("../models/participantes");
 const { PremioCampania } = require("../models/premioCampania");
 const { Presupuesto } = require("../models/presupuesto");
 
@@ -63,6 +65,48 @@ const getPresupuestoCampania = async (req, res) => {
     } catch(error) {
         res.status(403);
         res.send({errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.'})
+    }
+}
+
+const getParticipantes = async (req,res) => {
+
+    try{
+
+        const {idCampania} = req.params;
+
+        const participantes = await Participantes.findAll({
+            where: {
+                estado: 1,
+                idCampania: idCampania
+            }
+        })
+
+        res.json(participantes)
+
+    } catch(error) {
+        res.status(403);
+        res.send({errors: 'Ha sucedido un  error al intentar realizar la consulta de los participantes.'})
+    }
+}
+
+const getBloqueados = async (req,res) => {
+
+    try{
+
+        const {idCampania} = req.params;
+
+        const bloqueados = await Bloqueados.findAll({
+            where: {
+                estado: 1,
+                idCampania: idCampania
+            }
+        })
+
+        res.json(bloqueados)
+
+    } catch(error) {
+        res.status(403);
+        res.send({errors: 'Ha sucedido un  error al intentar realizar la consulta de los participantes bloqueados.'})
     }
 }
 
@@ -250,6 +294,89 @@ const UpdateEtapa = async (req, res) => {
     }
 }
 
+const addParametro = async (req, res) => {
+    try {
+
+        const {
+            idTransaccion, 
+            tipoTransaccion,
+            ValorMinimo,
+            ValorMaximo,
+            valorAnterior,
+            limiteParticipacion,
+            idEtapa
+        } = req.body;
+
+        await Parametro.create({
+
+            idTransaccion, 
+            tipoTransaccion,
+            ValorMinimo,
+            ValorMaximo,
+            valorAnterior,
+            limiteParticipacion,
+            idEtapa
+
+        });
+
+        res.json({ code: 'ok', message: 'Parametro creado con exito' });
+
+    } catch(error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar agregar el parametro.' });
+    }
+}
+
+const addPremio = async (req, res) => {
+    try {
+
+        const {
+            valor,
+            idPremio,
+            idEtapa
+        } = req.body
+
+        await PremioCampania.create({
+            valor,
+            idPremio,
+            idEtapa
+        })
+
+        res.json({ code: 'ok', message: 'Premio creado con exito' });
+
+    } catch(error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar agregar el parametro.' });
+    }
+}
+
+const addPresupuesto = async (req,res) => {
+    try{
+
+        const{
+            idDepartamento,
+            idMunicipio,
+            limiteGanadores,
+            valor,
+            idEtapa
+        } =req.body
+
+        await Presupuesto.create({
+            idDepartamento,
+            idMunicipio,
+            limiteGanadores,
+            valor,
+            idEtapa
+        })
+
+        res.json({ code: 'ok', message: 'Presupuesto creado con exito' });
+
+    } catch(error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar agregar el parametro.' });
+    }
+}
+
 
 
 module.exports = {
@@ -262,5 +389,10 @@ module.exports = {
     UpdateParametro,
     UpdatePremio,
     UpdatePresupuesto,
-    UpdateEtapa
+    UpdateEtapa,
+    getParticipantes,
+    getBloqueados,
+    addParametro,
+    addPremio,
+    addPresupuesto
 }
