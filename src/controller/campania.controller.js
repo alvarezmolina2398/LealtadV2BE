@@ -1,6 +1,8 @@
+const { participantesBloqueados, Bloqueados } = require('../models/bloqueados');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
+const { Participantes } = require('../models/participantes');
 const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
@@ -26,6 +28,8 @@ const AddCampania = async (req, res) => {
         imgPush,
         imgAkisi,
         etapas,
+        Participacion,
+        Bloqueados,
         maximoParticipaciones
     } = req.body;
 
@@ -60,6 +64,16 @@ const AddCampania = async (req, res) => {
             AddEtapas(element);
         });
 
+        Participacion.forEach(element => {
+            element.idCampania = id;
+            addParticipantes(element);
+        });
+
+        Bloqueados.forEach(element => {
+            element.idCampania = id;
+            addParticipantesBloqueados(element);
+        });
+
         res.json({ code: 'ok', message: 'Campania creada  con exito' });
 
     } catch (error) {
@@ -88,6 +102,31 @@ const AddEtapas = async (etapa) => {
     await AddPremios(premios, id)
     await AddParametros(parametros, id)
     await AddPresupuesto(presupuestos, id)
+}
+
+const addParticipantes = async(Participacion) => {
+
+    console.log(Participacion)
+    const { numero, idCampania, estado} = Participacion;
+
+    await Participantes.create({
+        numero,
+        idCampania,
+        estado
+    })
+}
+
+const addParticipantesBloqueados = async(participacionBloqueados) => {
+
+    console.log(participacionBloqueados)
+    const { numero, idCampania, estado} = participacionBloqueados;
+
+    await Bloqueados.create({
+        numero,
+        idCampania,
+        estado
+    });
+    
 }
 
 

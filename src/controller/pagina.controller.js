@@ -20,11 +20,12 @@ const GetPaginas = async (req, res) => {
 //controllador para agregar nuevas paginas
 const AddPagina = async (req, res) => {
     try {
-        const { descripcion, idMenu, path } = req.body;
+        const { descripcion, idMenu, path, icono } = req.body;
         await Pagina.create({
             descripcion,
-            idMenu: Menu,
-            path
+            idMenu,
+            path,
+            icono
         })
         res.json({ code: 'ok', message: 'Página creada con éxito.' });
 
@@ -42,7 +43,8 @@ const UpdatePagina = async (req, res) => {
         await Pagina.update({
             descripcion,
             idMenu,
-            path
+            path,
+            icono
         }, {
             where: {
                 id: id

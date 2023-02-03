@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { permisoUsuario } = require('./permisoUsuario');
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
 const Pagina = sequelize.define('pagina', {
@@ -16,6 +17,10 @@ const Pagina = sequelize.define('pagina', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
+    icono: {
+        type: DataTypes.STRING(150),
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1,
@@ -23,8 +28,18 @@ const Pagina = sequelize.define('pagina', {
     }
 },{timestamps: false});
 
-//(async () => {
-    //await sequelize.sync({ force: true });
- //})();
+Pagina.hasMany(permisoUsuario, {
+    foreignKey: 'idPagina',
+    sourceKey: 'id',
+});
+
+permisoUsuario.belongsTo(Pagina, {
+    foreignKey: 'idPagina',
+    targetId: 'id',
+});
+
+/*(async () => {
+    await sequelize.sync({ force: true });
+ })();*/
 
 module.exports = {Pagina}

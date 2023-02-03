@@ -7,8 +7,8 @@ const app = express();
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE,PATCH');
     next();
 });
 
@@ -18,7 +18,6 @@ app.set('port', process.env.PORT || 3000);
 
 //declacion de los MiddelWare
 app.use(express.json());
-
 
 
 app.use(require('./src/routes/transaccion.routes'));
@@ -32,9 +31,12 @@ app.use(require('./src/routes/terceros.routes'));
 app.use(require('./src/routes/premio.routes'));
 app.use(require('./src/routes/usuario.routes'));
 app.use(require('./src/routes/campania.routes'));
-app.use(require('./src/routes/detalleCampania.routes'))
-app.use(require('./src/routes/menu.routes'))
-app.use(require('./src/routes/pagina.routes'))
+app.use(require('./src/routes/detalleCampania.routes'));
+app.use(require('./src/routes/menu.routes'));
+app.use(require('./src/routes/pagina.routes'));
+app.use(require('./src/routes/permisoUsuario.routes'));
+app.use(require('./src/routes/asignarCategoria.routes'));
+app.use(require('./src/routes/codigoReferidos.routes'));
 
 //corremos el servidor
 app.listen(app.get('port'), () => {

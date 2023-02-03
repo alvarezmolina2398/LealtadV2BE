@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { codigoReferidos } = require('./codigoReferidos');
+const { permisoUsuario } = require('./permisoUsuario');
 
 
 
@@ -32,9 +34,29 @@ const Usuario = sequelize.define('usuario', {
 
 },{timestamps: false});
 
+Usuario.hasMany(permisoUsuario, {
+    foreignKey: 'username',
+    sourceKey: 'username',
+});
 
-//(async () => {
-  //  await sequelize.sync({ force: true });
-//})();
+permisoUsuario.belongsTo(Usuario, {
+    foreignKey: 'username',
+    targetId: 'username',
+});
+
+Usuario.hasMany(codigoReferidos, {
+    foreignKey: 'username',
+    sourceKey: 'username',
+});
+
+codigoReferidos.belongsTo(Usuario, {
+    foreignKey: 'username',
+    targetId: 'username',
+});
+
+
+// (async () => {
+//    await sequelize.sync({ force: false });
+// })();
 
 module.exports = {Usuario}
