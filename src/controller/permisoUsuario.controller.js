@@ -2,153 +2,167 @@ const { Op } = require("sequelize");
 const { Menu } = require("../models/menu");
 const { Pagina } = require("../models/pagina");
 const { permisoUsuario } = require("../models/permisoUsuario");
-
+const { Rol } = require("../models/rol");
+const { Usuario } = require("../models/usuario");
 
 const addPermiso = async (req, res) => {
+  let { data } = req.body;
+  console.log(data);
 
-    let {data}  = req.body;
-    console.log(data)
+  try {
+    data.forEach((element, index) => {
+      data[index].fechaAsignacion = new Date();
+    });
 
-    try {
-        data.forEach((element,index) => {
-            data[index].fechaAsignacion = new Date()
-        });
-        
-        await permisoUsuario.bulkCreate(data)
+    await permisoUsuario.bulkCreate(data);
 
-        res.json({code: 'ok', message: 'Permiso creado con exito.'});
+    res.json({ code: "ok", message: "Permiso creado con exito." });
+  } catch (error) {
+    console.log(error);
+    res.status(403);
+    res.send({
+      errors:
+        "Ha sucedido un  error al intentar realizar la consulta de Categoria.",
+    });
+  }
+};
 
+const getPermisos = async (req, res) => {
+  const { username } = req.params;
 
-    } catch(error) {
+  try {
 
-        console.log(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
+    const usuario = await Usuario.findByPk(username);
 
-    }
+    const menus = await Menu.findAll({
+      attributes: ["id", "descripcion"],
+      where: {
+        estado: 1,
+      },
+      include: {
+        model: Pagina,
+        attributes: ["id", "descripcion", "path", "icono"],
+        include: {
+          model: permisoUsuario,
+          attributes: [],
+          where: {
+            idRol: usuario.idRol,
+          },
+        },
+      },
+    });
 
-}
+    let newPaginas = menus.filter((x) => x.paginas.length > 0);
 
-const getPermisos = async(req,res) => {
+    res.json(newPaginas);
+  } catch (error) {
+    console.error(error);
+    res.status(403);
+    res.send({
+      errors: "Ha sucedido un error al intentar realizar la consulta.",
+    });
+  }
+};
 
-    try{
+const getNoAsignados = async (req, res) => {
+  try {
+    const { idMenu, idRol } = req.body;
 
-        const permisos = await permisoUsuario.findAll();
+    const paginasact = await permisoUsuario.findAll({
+      include: {
+        model: Pagina,
+        where: {
+          idMenu: idMenu,
+        },
+      },
+      where: {
+        idRol: idRol,
+      },
+    });
 
-        res.json(permisos);
+    let paginasAsigandas = [];
+    paginasact.forEach((element) => {
+      paginasAsigandas.push(element.idPagina);
+    });
 
-    }catch(error){
+    const trx = await Pagina.findAll({
+      include: {
+        model: Menu,
+        where: {
+          id: idMenu,
+        },
+      },
+      where: {
+        estado: 1,
+        id: {
+          [Op.notIn]: paginasAsigandas,
+        },
+      },
+    });
 
-        res.status(403);
-        res.send({errors: 'Ha sucedido un error al intentar realizar la consulta.'})
+    res.json(trx);
+  } catch (error) {
+    console.error(error);
+    res.status(403);
+    res.send({
+      errors: "Ha sucedido un  error al intentar obtener la lista de páginas.",
+    });
+  }
+};
 
-    }
-}
+const getAsignados = async (req, res) => {
+  try {
+    const { idMenu, idRol } = req.body;
 
+    const paginasact = await permisoUsuario.findAll({
+      include: {
+        model: Pagina,
 
+        where: {
+          idMenu: idMenu,
+        },
+      },
+      where: {
+        idRol: idRol,
+      },
+    });
 
-const getNoAsignados = async (req,res) =>{
-    try {
+    console.log(idMenu, idRol);
+    res.json(paginasact);
+  } catch (error) {
+    console.error(error);
+    res.status(403);
+    res.send({
+      errors: "Ha sucedido un  error al intentar obtener la lista de páginas.",
+    });
+  }
+};
 
+const deletePermisos = async (req, res) => {
+  try {
+    const { id } = req.body;
+    console.log(id);
+    await permisoUsuario.destroy({
+      where: {
+        id: {
+          [Op.in]: id,
+        },
+      },
+    });
 
-        const  {idMenu,idRol} = req.body;
-
-        const paginasact = await permisoUsuario.findAll({
-            include: {
-                model : Pagina,
-                where: {
-                    idMenu : idMenu
-                }
-            },
-            where : {
-                idRol : idRol
-            }
-        });
-
-
-        let paginasAsigandas = [];
-        paginasact.forEach(element => {
-            paginasAsigandas.push(element.idPagina);
-        });
-
-        const trx = await Pagina.findAll({
-            include: { 
-                model: Menu,
-                where : {
-                    id : idMenu
-                } 
-            },
-            where: {
-                estado: 1,
-                id : {
-                    [Op.notIn]:paginasAsigandas
-                }
-            }
-        })
-
-        
-        res.json(trx)
-    } catch (error) {
-        console.error(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de páginas.' });
-    }
-}
-
-const getAsignados = async (req,res) =>{
-    try {
-
-
-        const  {idMenu,idRol} = req.body;
-
-        const paginasact = await permisoUsuario.findAll({
-            include: {
-                model : Pagina,
-                
-                where: {
-                    idMenu: idMenu
-                }
-            },
-            where : {
-                idRol : idRol
-            }
-        });
-
-
-        console.log(idMenu, idRol)
-        res.json(paginasact)
-    } catch (error) {
-        console.error(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de páginas.' });
-    }
-}
-
-const deletePermisos = async(req,res) => {
-    try {
-        const {id} = req.body
-        console.log(id)
-       await permisoUsuario.destroy({
-            where: {
-                id:  {
-                    [Op.in]: id
-                },   
-            }
-        }); 
-
-
-        res.json({ code: 'ok', message: 'Permiso elimninado con exito' });
-
-    } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar eliminar el permiso.' });
-    }
-}
+    res.json({ code: "ok", message: "Permiso elimninado con exito" });
+  } catch (error) {
+    res.status(403);
+    res.send({
+      errors: "Ha sucedido un  error al intentar eliminar el permiso.",
+    });
+  }
+};
 
 module.exports = {
-    addPermiso,
-    getPermisos,
-    getNoAsignados,
-    getAsignados,
-    deletePermisos
-}
+  addPermiso,
+  getPermisos,
+  getNoAsignados,
+  getAsignados,
+  deletePermisos,
+};

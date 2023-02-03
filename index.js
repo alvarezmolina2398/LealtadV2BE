@@ -34,7 +34,8 @@ app.use(require('./src/routes/campania.routes'));
 app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
-app.use(require('./src/routes/permisoUsuario.routes'))
+app.use(require('./src/routes/permisoUsuario.routes'));
+app.use(require('./src/routes/asignarCategoria.routes'));
 
 //corremos el servidor
 app.listen(app.get('port'), () => {
