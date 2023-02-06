@@ -44,14 +44,14 @@ const canjearCodigo = async (req, res) => {
             //validar que el codigo del referido no sea el que intenta canjear
             if(codigo == codigos.codigo){
                 res.status(400)
-                res.send({ errors: 'Debes ingresar un codigo valido.' });
+                res.send({ code: '01', errors: 'Debes ingresar un codigo valido.' });
 
 
             //Validar que el usuario tenga un maximo de 3 dias creados
             }else if((datosPersonales.fechaRegistro.getDay() - fechaActual.getDay()) <= 3){
     
                 res.status(406)
-                res.send({ errors: 'El usuario debe tener 3 dias de haberse registrado.' });
+                res.send({ code: '02', errors: 'El usuario debe tener 3 dias de haberse registrado.' });
             } else {//canjeamos el codigo
                 
                 await participacionReferidos.create({
