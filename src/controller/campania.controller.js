@@ -6,7 +6,8 @@ const { Participantes } = require('../models/participantes');
 const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
-
+const { Transaccion } = require('../models/transaccion');
+const { param } = require('../routes/pagina.routes');
 
 
 //accion para insertar una nueva trnasaccion
@@ -254,7 +255,7 @@ const UpdateCampania = async (req, res) => {
 
 const TestearTransaccion = async (req, res) => {
     try {
-        const campania = await Campania.findOne({
+        const campanias = await Campania.findAll({
             include: [
                 {
                     model: Etapa,
@@ -264,14 +265,19 @@ const TestearTransaccion = async (req, res) => {
                         },
                         {
                             model: Presupuesto
+                        },
+                        {
+                            model: PremioCampania
                         }
                     ]
                 }
             ],
             where: {
-                id: 1
+                estado: 1,
             }
         });
+
+
 
 
         const datosPersonales = {
@@ -280,74 +286,134 @@ const TestearTransaccion = async (req, res) => {
             tipoUsuario: 1,
             profesion: 1,
             fechaNacimineto: '1998-07-23',
-            fechaRegistro: new Date(2023, 01, 05),
+            fechaRegistro: new Date(2023, 01, 31),
         }
 
 
 
-        let result = true;
+        let result = [];
 
 
-        //validacion de la edad
-        const fechaNacimineto = datosPersonales.fechaNacimineto.split('-');
-        const edad = 2023 - parseInt(fechaNacimineto[0]);
-        let edadValidacion = { edad, validacion: 0, 'inicial': campania.edadInicial, 'final': campania.edadFinal };
+        // campanias.forEach(async element => {
 
-        if (edad >= campania.edadInicial || edad <= campania.edadFinal) {
-            edadValidacion.validacion = 1;
-        } else {
-            edadValidacion.validacion = 0;
-            result = false;
+
+
+        // });
+
+
+        for (const element of campanias) {
+            let enviaPremio = true;
+
+            const datosCampania = {
+                nombre: element.nombre,
+                descripcion: element.descripcion
+            }
+
+
+
+
+            const { etapas } = element;
+            const etapaActual = 1;
+            const dataEtapaActual = etapas.find(item => item.orden === etapaActual);
+            const { parametros, presupuestos, premioCampania: premios } = dataEtapaActual;
+
+
+
+
+            const validacionPresupuesto = {
+                validacion: 1,
+                presupuesto: parseFloat(presupuestos[0].valor),
+                limiteGanadores: presupuestos[0].limiteGanadores,
+                presupuestoUtilizado: 150,
+                cantParticipaciones: 50,
+                presupuestoNew: 150 + parseFloat(premios[0].valor)
+            }
+
+
+            const validacionEtapa = {
+                etapaActual,
+                totalEtapas: etapas.length
+            }
+
+
+            let otrasValidaciones = [];
+
+
+            //validacion de la edad
+            const fechaNacimineto = datosPersonales.fechaNacimineto.split('-');
+            const edad = 2023 - parseInt(fechaNacimineto[0]);
+            let edadValidacion = { icono: 'gift', nombre: 'edad', 'inicial': element.edadInicial, 'final': element.edadFinal, valorActual: edad }
+
+            if (edad >= element.edadInicial || edad <= element.edadFinal) {
+                edadValidacion.valido = 1;
+            } else {
+                edadValidacion.valido = 0;
+                enviaPremio = false;
+            }
+
+
+
+
+            //validacion fecha registro
+            let registroValidacion = { icono: 'calendar', nombre: 'Fecha Registro', 'inicial': format(datosPersonales.fechaRegistro), 'valorActual': format(new Date(element.fechaRegistro)) };
+
+            if (new Date(2023, 0, 1) <= datosPersonales.fechaRegistro) {
+                registroValidacion.valido = 1;
+            } else {
+                registroValidacion.valido = 0;
+                enviaPremio = false;
+            }
+
+
+            //validacion del sexo del usuario
+            let generos = ['Todos', 'Masculino', 'Femenino']
+            let sexoValidacion = { icono: 'user-check', nombre: 'Genero', 'inicial': generos[element.sexo], 'final': "", valorActual: generos[datosPersonales.sexo] };
+
+            if (element.sexo === 0 || datosPersonales.sexo === element.sexo) {
+                sexoValidacion.valido = 1;
+            } else {
+                sexoValidacion.valido = 0;
+                enviaPremio = false;
+            }
+
+
+            //validacion Tipo Usuarop
+            let tiposUsuarios = ["TODOS", "Adquiriente", "Final"]
+
+            let tipoUsuarioValidacion = { icono: 'user', nombre: 'Tipo Usuario', 'inicial': tiposUsuarios[element.tipoUsuario], 'final': "", valorActual: tiposUsuarios[datosPersonales.tipoUsuario] };
+
+            if (element.tipoUsuario === 0 || datosPersonales.tipoUsuario === element.tipoUsuario) {
+                tipoUsuarioValidacion.valido = 1;
+            } else {
+                tipoUsuarioValidacion.valido = 0;
+                result = false;
+            }
+
+
+            let tranasccionesX = parametros.filter(x => x.tipoTransaccion === 't');
+
+
+            //muestra las tranacciones
+            let TransaccionesValidas = [];
+            for (const param of tranasccionesX) {
+                const transaccion = await transaccionesValidas(param.idTransaccion);
+                const dataTrx = param.dataValues;
+                let dataNew = { ...dataTrx, transaccion: transaccion.dataValues }
+                TransaccionesValidas.push(dataNew)
+            }
+
+            otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
+
+
+            // 
+            const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas }
+
+            result = [...result, validacion]
         }
-        console.log(campania.fechaRegistro)
-        //validacion fecha registro
-        //campania.fechaRegistro = new Date(2023, 01, 01);
-        let RegistroValidacion = { 'fechaRegistroU': format(datosPersonales.fechaRegistro), validacion: 0, 'fechaRegistroC': format(new Date(campania.fechaRegistro)) };
-
-        if (campania.fechaRegistro <= datosPersonales.fechaRegistro) {
-            RegistroValidacion.validacion = 1;
-        } else {
-            RegistroValidacion.validacion = 0;
-            result = false;
-        }
-
-        let sexoValidacion = { sexo: datosPersonales.sexo, validacion: 0, sexoCampania: campania.sexo };
-        //validacion del sexo del usuario
-        if (campania.sexo === 0 || datosPersonales.sexo === campania.sexo) {
-            sexoValidacion.validacion = 1;
-        } else {
-            sexoValidacion.validacion = 0;
-            result = false;
-        }
-
-
-        let tipoUsuarioValidacion = { tipoU: datosPersonales.tipoUsuario, validacion: 0, tipoUC: campania.tipoUsuario };
-
-        if (campania.tipoUsuario === 0 || datosPersonales.tipoUsuario === campania.tipoUsuario) {
-            tipoUsuarioValidacion.validacion = 1;
-        } else {
-            tipoUsuarioValidacion.validacion = 0;
-            result = false;
-        }
-
-        const { etapas } = campania;
-
-        //validacion de las etapas
-        const etapaActual = 1;
-        const dataEtapaActual = etapas.find(element => element.orden === etapaActual);
-        const etapasValidacion = { etapaActual: etapaActual, etapasTotales: etapas.length }
 
 
 
-
-        const { parametros, presupuestos } = dataEtapaActual;
-
-        const validacionPresupuesto = { validacion: 1, presupuesto: presupuestos[0].valor, limiteGanadores: presupuestos[0].limiteGanadores }
-
-        const validacionParametros = { validacion: 1, parametros, cantParticipaciones: 0 };
-        const dataCompleta = { edadValidacion, RegistroValidacion, sexoValidacion, etapasValidacion, tipoUsuarioValidacion, validacionParametros, validacionPresupuesto, result };
-
-        res.json(dataCompleta);
+        res.json(result);
     } catch (error) {
         console.error(error)
         res.status(403)
@@ -355,9 +421,25 @@ const TestearTransaccion = async (req, res) => {
     }
 }
 
+
+
+
+//devuelve la lista de transacciones validas
+const transaccionesValidas = async (id) => {
+    try {
+        const transaccion = await Transaccion.findOne({ where: { id: id } });
+        // console.log(transaccion.dataValues);
+        return transaccion;
+    } catch (error) {
+        console.log(error)
+        return [];
+    }
+}
+
+//formatea la fecha
 const format = (inputDate) => {
     let date, month, year;
-    console.log(inputDate)
+
     date = inputDate.getDate();
     month = inputDate.getMonth() + 1;
     year = inputDate.getFullYear();
@@ -373,6 +455,7 @@ const format = (inputDate) => {
     return `${date}/${month}/${year}`;
 }
 
+//metodo para pausar campanias
 const PausarCampaña = async (req, res) => {
 
     try {
@@ -398,6 +481,8 @@ const PausarCampaña = async (req, res) => {
     }
 }
 
+
+//metodo para activas campanias
 const ActivarCampaña = async (req, res) => {
 
     try {
