@@ -17,14 +17,14 @@ const generarCodigoReferido = () => {
 
 const getCodigoReferido = async (req,res) => {
 
-    const {username} = req.body;
+    const {customerId} = req.body;
     try {
 
 
 
         const codigo = await codigoReferidos.findOne(
             {where: {
-                username: username,
+                customerId: customerId,
                 estado: 1
             }, attributes:['codigo']}
         )
@@ -41,7 +41,7 @@ const getCodigoReferido = async (req,res) => {
             await codigoReferidos.create({
                 codigo,
                 fecha,
-                username
+                customerId
             });
 
             res.json(codigo);
