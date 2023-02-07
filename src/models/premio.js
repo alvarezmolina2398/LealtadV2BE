@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { Premiacion } = require('./premiacion');
 const { PremioCampania } = require('./premioCampania');
 const { PremioPromocion } = require('./premioPromocion');
 
@@ -66,6 +67,19 @@ PremioPromocion.belongsTo(Premio, {
     targetId: 'id',
     
 });
+
+Premio.hasMany(Premiacion,{
+    foreignKey: 'idPremio',
+    sourceKey: 'id'
+});
+
+Premiacion.belongsTo(Premio, {
+    foreignKey: 'idPremio',
+    targetId: 'id',
+    
+});
+
+
 
 //  (async () => {
 //     await sequelize.sync({ force: true });

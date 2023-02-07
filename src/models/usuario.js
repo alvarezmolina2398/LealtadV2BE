@@ -44,8 +44,8 @@ permisoUsuario.belongsTo(Usuario, {
 });
 
 
-//(async () => {
-  //  await sequelize.sync({ force: true });
-//})();
+// (async () => {
+//    await sequelize.sync({ force: false });
+// })();
 
 module.exports = {Usuario}

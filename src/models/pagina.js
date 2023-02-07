@@ -17,6 +17,10 @@ const Pagina = sequelize.define('pagina', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
+    icono: {
+        type: DataTypes.STRING(150),
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1,
@@ -34,8 +38,8 @@ permisoUsuario.belongsTo(Pagina, {
     targetId: 'id',
 });
 
-//(async () => {
-    //await sequelize.sync({ force: true });
- //})();
+/*(async () => {
+    await sequelize.sync({ force: true });
+ })();*/
 
 module.exports = {Pagina}
