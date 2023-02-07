@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { asignarCategoria } = require('./asignarCategoria');
+const { Participacion } = require('./Participacion');
 
 
 
@@ -46,6 +47,21 @@ Transaccion.hasMany(asignarCategoria,{
 });
 
 asignarCategoria.belongsTo(Transaccion,{
+    foreignKey: 'idTransaccion',
+    targetId: 'id',
+    allowNull: false
+});
+
+Transaccion.hasMany(Participacion,{
+    foreignKey: {
+        name: 'idTransaccion',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
+});
+
+Participacion.belongsTo(Transaccion,{
     foreignKey: 'idTransaccion',
     targetId: 'id',
     allowNull: false

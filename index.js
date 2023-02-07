@@ -38,6 +38,7 @@ app.use(require('./src/routes/permisoUsuario.routes'));
 app.use(require('./src/routes/asignarCategoria.routes'));
 app.use(require('./src/routes/codigoReferidos.routes'));
 app.use(require('./src/routes/participacionReferidos.routes'));
+app.use(require('./src/routes/participacion.routes'));
 
 //corremos el servidor
 app.listen(app.get('port'), () => {
