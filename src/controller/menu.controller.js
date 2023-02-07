@@ -73,7 +73,7 @@ const DeleteMenu = async (req, res) => {
     }
 }
 
-
+//obtener el menu por su id 
 const GetMenuById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -87,7 +87,7 @@ const GetMenuById = async (req, res) => {
         res.json(project)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un error al intentar realizar el menu.' });
+        res.send({ errors: 'Ha sucedido un error al intentar buscar el menu.' });
     }
 }
 
