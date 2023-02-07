@@ -7,7 +7,11 @@ const GetPaginas = async (req, res) => {
         const trx = await Pagina.findAll({
             include: { model: Menu },
             where: {
+<<<<<<< HEAD
                 estado: 1,
+=======
+                estado: 1
+>>>>>>> f95060f029b728db95b2becfd323f1b1fa06cab8
             }
         })
         res.json(trx)
@@ -20,11 +24,12 @@ const GetPaginas = async (req, res) => {
 //controllador para agregar nuevas paginas
 const AddPagina = async (req, res) => {
     try {
-        const { descripcion, idMenu, path } = req.body;
+        const { descripcion, idMenu, path, icono } = req.body;
         await Pagina.create({
             descripcion,
             idMenu,
-            path
+            path,
+            icono
         })
         res.json({ code: 'ok', message: 'Página creada con éxito.' });
 
@@ -37,12 +42,13 @@ const AddPagina = async (req, res) => {
 //controllador para actualizar Paginás
 const UpdatePagina = async (req, res) => {
     try {
-        const { descripcion, idMenu, path } = req.body;
+        const { descripcion, idMenu, path, icono } = req.body;
         const { id } = req.params
         await Pagina.update({
             descripcion,
             idMenu,
-            path
+            path,
+            icono
         }, {
             where: {
                 id: id
@@ -78,7 +84,9 @@ const DeletePagina = async (req, res) => {
 const GetPaginaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Pagina.findByPk(id);
+        const project = await Pagina.findByPk(id, {
+            include: {model: Menu}
+        });
         res.json(project)
     } catch (error) {
         res.status(403)

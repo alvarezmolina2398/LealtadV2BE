@@ -34,8 +34,17 @@ app.use(require('./src/routes/campania.routes'));
 app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
+<<<<<<< HEAD
 app.use(require('./src/routes/permisoUsuario.routes'))
 app.use(require('./src/routes/configReferidos.routes'))
+=======
+app.use(require('./src/routes/permisoUsuario.routes'));
+app.use(require('./src/routes/asignarCategoria.routes'));
+app.use(require('./src/routes/codigoReferidos.routes'));
+app.use(require('./src/routes/participacionReferidos.routes'));
+app.use(require('./src/routes/participacion.routes'));
+app.use(require('./src/routes/premiacion.routes'));
+>>>>>>> f95060f029b728db95b2becfd323f1b1fa06cab8
 
 //corremos el servidor
 app.listen(app.get('port'), () => {

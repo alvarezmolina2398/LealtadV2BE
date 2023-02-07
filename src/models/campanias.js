@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { Etapa } = require('./etapa')
+const {  Bloqueados } = require('./bloqueados');
+const { Etapa } = require('./etapa');
+const { Participacion } = require('./Participacion');
+const { Participantes } = require('./participantes');
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -87,7 +90,41 @@ Etapa.belongsTo(Campania, {
     targetId: 'id',
 });
 
+Campania.hasMany(Participantes,{
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
 
+Participantes.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
+Campania.hasMany(Bloqueados,{
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
+
+Bloqueados.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
+
+Campania.hasMany(Participacion,{
+    foreignKey: {
+        name: 'idCampania',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
+});
+
+Participacion.belongsTo(Campania,{
+    foreignKey: 'idCampania',
+    targetId: 'id',
+    allowNull: false
+});
 
 //(async () => {
     //await sequelize.sync({ force: true });

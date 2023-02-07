@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { asignarCategoria } = require('./asignarCategoria');
 
 
 const Categoria = sequelize.define('categoria', {
@@ -18,6 +19,21 @@ const Categoria = sequelize.define('categoria', {
         defaultValue: 1
     }
 },{timestamps: false});
+
+Categoria.hasMany(asignarCategoria,{
+    foreignKey: {
+        name: 'idCategoria',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
+});
+
+asignarCategoria.belongsTo(Categoria,{
+    foreignKey: 'idCategoria',
+    targetId: 'id',
+    allowNull: false
+});
 
 
 // (async () => {
