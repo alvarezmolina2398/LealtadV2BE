@@ -7,11 +7,7 @@ const GetPaginas = async (req, res) => {
         const trx = await Pagina.findAll({
             include: { model: Menu },
             where: {
-<<<<<<< HEAD
-                estado: 1,
-=======
                 estado: 1
->>>>>>> f95060f029b728db95b2becfd323f1b1fa06cab8
             }
         })
         res.json(trx)

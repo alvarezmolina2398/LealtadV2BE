@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { codigoReferidos } = require('./codigoReferidos');
+const { ConfigReferido } = require('./configReferidos');
 
 const participacionReferidos = sequelize.define('participacionReferidos', {
 
@@ -10,10 +12,6 @@ const participacionReferidos = sequelize.define('participacionReferidos', {
     },
     fecha: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    codigo: {
-        type: DataTypes.STRING(15),
         allowNull: false
     },
     refiriente: {
@@ -33,8 +31,9 @@ const participacionReferidos = sequelize.define('participacionReferidos', {
 }, {timestamps: false});
 
 // (async () => {
-//     await sequelize.sync({ force: true});
+//     await sequelize.sync({ force: false});
 // })()
+
 
 
 module.exports={participacionReferidos}

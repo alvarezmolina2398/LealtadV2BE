@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { ConfigReferido } = require('./configReferidos');
 const { participacionReferidos } = require('./participacionReferidos');
 
 //Codigos alfanumericos de 10 caracteres
@@ -30,7 +31,20 @@ const codigoReferidos = sequelize.define('codigosReferidos', {
     }
 }, {timestamps:  false});
 
-// (async () => {
+
+codigoReferidos.hasMany(participacionReferidos,{
+    foreignKey: 'idParticipacion',
+    sourceKey: 'id'
+});
+
+participacionReferidos.belongsTo(codigoReferidos, {
+    foreignKey: 'idParticipacion',
+    targetId: 'id',
+    
+});
+
+
+//  (async () => {
 //     await sequelize.sync({ force: false});
 //  })()
 
