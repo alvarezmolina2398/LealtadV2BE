@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const { CangePromocion } = require("../models/cangePromocion");
 const { DetallePromocion } = require("../models/detallePromocion");
+const { PremioPromocion } = require("../models/premioPromocion");
 const { Promocion } = require("../models/promocion");
 
 //metodo para validar
@@ -14,7 +15,12 @@ const Participar = async (req, res) => {
     if (result) {
       let descripcion = "CANJE DE CODIGO " + data.nemonico;
 
-      const participado = addParticipacion(descripcion, numero, data.id);
+      const participado = addParticipacion(
+        descripcion,
+        numero,
+        data.id,
+        data.promocion
+      );
 
       if (!participado) {
         let newData = { ...data };
@@ -39,7 +45,7 @@ const Testear = async (req, res) => {
   try {
     const { cupon } = req.body;
     let validacion = await validarParticipacion(cupon);
-    
+
     res.json(validacion);
   } catch (error) {
     console.error(error);
@@ -50,8 +56,18 @@ const Testear = async (req, res) => {
   }
 };
 
-const addParticipacion = async (descripcion, numero, id) => {
+const addParticipacion = async (descripcion, numero, id, promocion) => {
   try {
+    const premios = await PremioPromocion.findAll({
+      where: {
+        idPromocion: promocion,
+      },
+    });
+
+
+
+
+
     await CangePromocion.create({
       descripcion,
       fecha: new Date(),
@@ -104,6 +120,7 @@ const validarParticipacion = async (cupon) => {
 
   const datosCupon = await getDatosCupon(cupon);
   const { promocion } = datosCupon;
+
   console.log(promocion.estado);
   if (datosCupon.estado === 2) {
     result = false;
@@ -124,6 +141,7 @@ const validarParticipacion = async (cupon) => {
   data.PremioXcampania = promocion.PremioXcampania;
   data.nemonico = promocion.nemonico;
   data.descripcion = promocion.descripcion;
+  data.promocion = promocion.id;
 
   if (datosCupon.esPremio === 0) {
     result = false;
@@ -195,5 +213,5 @@ const getDatosCupon = async (cupon) => {
   return datosCupon;
 };
 
-module.exports = { Participar, Testear };
 
+module.exports = { Participar, Testear };
