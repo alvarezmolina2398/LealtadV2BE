@@ -7,6 +7,8 @@ const { participacionReferidos } = require('../models/participacionReferidos');
 const GetParticipacionReferidos = async (req, res) => {
     try {
         const trx = await participacionReferidos.findAll({
+            
+
            // include: { model: ConfigReferido },
 
             include: { model: codigoReferidos },
