@@ -1,4 +1,5 @@
 const { codigoReferidos } = require('../models/codigoReferidos');
+const { ConfigReferido } = require('../models/configReferidos');
 const { participacionReferidos } = require('../models/participacionReferidos');
 
 
@@ -6,12 +7,14 @@ const { participacionReferidos } = require('../models/participacionReferidos');
 const GetParticipacionReferidos = async (req, res) => {
     try {
         const trx = await participacionReferidos.findAll({
-            include: { model: ConfigReferido },
+           // include: { model: ConfigReferido },
+
             include: { model: codigoReferidos },
             where: {
                 estado: 1
             }
         })
+        console.log(trx);
         res.json(trx)
     } catch (error) {
         res.status(403)

@@ -25,7 +25,6 @@ const getDatosCupon = async (req, res) => {
         },
         where: {
             idPromocion: promocion,
-            
         },
       },
       where: {

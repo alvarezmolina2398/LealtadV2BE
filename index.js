@@ -41,12 +41,9 @@ app.use(require('./src/routes/codigoReferidos.routes'));
 app.use(require('./src/routes/participacionReferidos.routes'));
 app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
-<<<<<<< HEAD
 app.use(require('./src/routes/reportePromocion.routes'));
-=======
 app.use(require('./src/routes/reporteReferidos.routes'));
 
->>>>>>> 4bf75b7431924e2faa641ea951e2f6389b2a41a7
 
 //corremos el servidor
 app.listen(app.get('port'), () => {
