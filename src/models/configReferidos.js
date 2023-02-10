@@ -37,8 +37,8 @@ participacionReferidos.belongsTo(ConfigReferido, {
 });*/
 
 
-// (async () => {
-//     await sequelize.sync({ force: false });
-//  })();
+/*  (async () => {
+    await sequelize.sync({ force: false });
+  })(); */
 
 module.exports = {ConfigReferido}
