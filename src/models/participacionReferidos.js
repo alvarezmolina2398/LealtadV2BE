@@ -12,10 +12,6 @@ const participacionReferidos = sequelize.define('participacionReferidos', {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
-    codigo: {
-        type: DataTypes.STRING(15),
-        allowNull: false
-    },
     refiriente: {
         type: DataTypes.STRING(150),
         allowNull: false

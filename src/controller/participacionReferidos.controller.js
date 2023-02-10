@@ -7,18 +7,20 @@ const datosPersonales = {
 
 const canjearCodigo = async (req, res) => {
 
-    const {codigo, referido} = req.body;
+    const {idcodigo, referido, idParticipacion} = req.body;
     const fechaActual = new Date();
     try {
 
         //Buscar que el codigo exista
         const customer = await codigoReferidos.findOne({
             where: {
-                codigo: codigo,
+                id: idcodigo,
                 estado: 1
             },
-            attributes:['customerId']
+            attributes:['customerId', 'codigo']
         })
+
+        
 
         //Buscar que no he canjeado un codigo antes
         const canjeable = await participacionReferidos.findOne({
@@ -40,24 +42,24 @@ const canjearCodigo = async (req, res) => {
                 },
                 attributes:['codigo']
             })
-
             //validar que el codigo del referido no sea el que intenta canjear
-            if(codigo == codigos.codigo){
+            if(customer.codigo == codigos.codigo){
                 res.status(400)
                 res.send({ code: '01', errors: 'Debes ingresar un codigo valido.' });
 
 
             //Validar que el usuario tenga un maximo de 3 dias creados
-            }else if((datosPersonales.fechaRegistro.getDay() - fechaActual.getDay()) <= 3){
-    
+            }else if((fechaActual.getDate() - datosPersonales.fechaRegistro.getDate() ) <= 3){
+                console.log(datosPersonales.fechaRegistro.getDate() - fechaActual.getDate())
                 res.status(406)
                 res.send({ code: '02', errors: 'El usuario debe tener 3 dias de haberse registrado.' });
             } else {//canjeamos el codigo
                 
                 await participacionReferidos.create({
                     fecha: new Date(),
-                    codigo,
+                    idCodigo : idcodigo,
                     referido,
+                    idParticipacion,
                     refiriente: customer.customerId
     
                 })
