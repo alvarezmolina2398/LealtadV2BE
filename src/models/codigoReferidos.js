@@ -32,12 +32,12 @@ const codigoReferidos = sequelize.define('codigosReferidos', {
 }, {timestamps:  false});
 
 codigoReferidos.hasMany(participacionReferidos,{
-    foreignKey: 'idParticipacion',
+    foreignKey: 'idCodigo',
     sourceKey: 'id'
 });
 
 participacionReferidos.belongsTo(codigoReferidos, {
-    foreignKey: 'idParticipacion',
+    foreignKey: 'idCodigo',
     targetId: 'id',
     
 });
