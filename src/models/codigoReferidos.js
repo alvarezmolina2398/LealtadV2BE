@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { ConfigReferido } = require('./configReferidos');
 const { participacionReferidos } = require('./participacionReferidos');
 
 //Codigos alfanumericos de 10 caracteres
@@ -41,7 +42,8 @@ participacionReferidos.belongsTo(codigoReferidos, {
     
 });
 
-// (async () => {
+
+//  (async () => {
 //     await sequelize.sync({ force: false});
 //  })()
 
