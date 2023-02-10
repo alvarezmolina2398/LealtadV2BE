@@ -4,7 +4,7 @@ const router = Router();
 const {GetParticipacionReferidos} = require('../controller/reporteReferidos.controller');
 
 //declarampos nuestra constante para almacenar el path`
-const path = 'participacionReferidos';
+const path = 'reporteReferidos';
 //rutas del proyecto
 router.post(`/${path}`,GetParticipacionReferidos);
 
