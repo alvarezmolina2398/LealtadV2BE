@@ -104,10 +104,10 @@ const AddEtapas = async (etapa) => {
     await AddPresupuesto(presupuestos, id)
 }
 
-const addParticipantes = async(Participacion) => {
+const addParticipantes = async (Participacion) => {
 
     console.log(Participacion)
-    const { numero, idCampania, estado} = Participacion;
+    const { numero, idCampania, estado } = Participacion;
 
     await Participantes.create({
         numero,
@@ -116,23 +116,23 @@ const addParticipantes = async(Participacion) => {
     })
 }
 
-const addParticipantesBloqueados = async(participacionBloqueados) => {
+const addParticipantesBloqueados = async (participacionBloqueados) => {
 
-    console.log(participacionBloqueados)
-    const { numero, idCampania, estado} = participacionBloqueados;
+    //console.log(participacionBloqueados)
+    const { numero, idCampania, estado } = participacionBloqueados;
 
     await Bloqueados.create({
         numero,
         idCampania,
         estado
     });
-    
+
 }
 
 
 const AddParametros = async (parametros, idEtapa) => {
 
-    console.log(parametros)
+    // console.log(parametros)
     parametros.map((element, index) => {
         parametros[index].idEtapa = idEtapa
     });
@@ -149,7 +149,7 @@ const AddPremios = async (premios, idEtapa) => {
 
 const AddPresupuesto = async (presupuestos, idEtapa) => {
 
-    console.log(presupuestos)
+    // console.log(presupuestos)
     presupuestos.map((element, index) => {
         presupuestos[index].idEtapa = idEtapa
     });
@@ -177,7 +177,7 @@ const GetcampanasActivasById = async (req, res) => {
     try {
 
         const { id } = req.params;
-        console.log(id)
+        // console.log(id)
         const proyect = await Campania.findByPk(id, {
             include: [
                 {
@@ -392,7 +392,7 @@ const TestearTransaccion = async (req, res) => {
 
             let tranasccionesX = parametros.filter(x => x.tipoTransaccion === 't');
 
-
+            let transaccionAct = {descripcion: "RECARGA DE SALDO"};
             //muestra las tranacciones
             let TransaccionesValidas = [];
             for (const param of tranasccionesX) {
@@ -402,11 +402,13 @@ const TestearTransaccion = async (req, res) => {
                 TransaccionesValidas.push(dataNew)
             }
 
-            otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
 
+
+            otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
+            let test = await validacionTransaccion(TransaccionesValidas, transaccionAct, dataEtapaActual.tipoParticipacion);
 
             // 
-            const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas }
+            const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas, dataEtapaActual }
 
             result = [...result, validacion]
         }
@@ -534,6 +536,49 @@ const DeleteCampania = async (req, res) => {
     }
 
 }
+
+const validacionTransaccion = async (transaccionesCampanias, transaccionActual, tipoParticipacion) => {
+    let result = null;
+    switch (tipoParticipacion) {
+        case 1:
+            result = await ParticipacionPorParametro(transaccionesCampanias,transaccionActual);
+            break;
+
+        default:
+            break;
+    }
+
+
+    return result;
+}
+
+
+const ParticipacionPorParametro = async (transaccionesCampanias, transaccion) => {
+   // console.log(transaccionesCampanias)
+    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
+
+
+    if(filterTransaccion.length === 0){
+        return {result: false, message: 'No aplica Transaccion'}
+    } 
+
+
+
+    const {limiteParticipacion,idTransaccion,tipoTransaccion, nombre, ValorMinimo, ValorMaximo} = filterTransaccion[0];
+
+
+
+    console.log(limiteParticipacion,ValorMinimo,ValorMaximo)
+
+
+
+    
+
+    
+    return null;
+
+}
+
 
 
 
