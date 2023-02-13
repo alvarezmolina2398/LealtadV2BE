@@ -14,7 +14,7 @@ router.post(`/${path}`,AddPromocion);
 router.put(`/${path}/:id`,UpdatePromocion);
 router.put(`/${path}/Pau/:id`,PausarPromocion);
 router.put(`/${path}/Act/:id`,ActivarPromocion);
-router.post(`/${path}/Testear`,TestearCodigo);
+//router.post(`/${path}/Testear`,TestearCodigo);
 // router.delete(`/${path}/:id`,DeleteTransaccion);
 
 

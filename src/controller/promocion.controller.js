@@ -3,6 +3,7 @@ const { DetallePromocion } = require('../models/detallePromocion');
 const { PremioPromocion } = require('../models/premioPromocion');
 const { Premio } = require('../models/premio');
 const { Op } = require("sequelize");
+const { GetColumnaById } = require('./columna.controller');
 
 
 //controllador paa obtener la lista de Columnaes
@@ -60,7 +61,7 @@ const AddPromocion = async (req, res) => {
         const { id } = newPromo.dataValues;
 
 
-        if (PremioXcampania != 1) {
+        //if (PremioXcampania != 1) {
             premios.forEach(element => {
                 const { cantidad } = element;
                 const cantCodigos = codigos.length;
@@ -70,21 +71,53 @@ const AddPromocion = async (req, res) => {
 
                     if (codigos[random].esPremio === 0) {
 
-                        codigos[random] = { ...codigos[random], esPremio: 1 }
+                        codigos[random] = { ...codigos[random], esPremio: 1}
 
                         index++;
                     };
 
                 }
+
             });
 
             const nuevoArrarPremios = premios.map((item) => ({ ...item, idPromocion: id }));
-            PremioPromocion.bulkCreate(nuevoArrarPremios);
+           const premiosInsertados = await PremioPromocion.bulkCreate(nuevoArrarPremios);
 
-        }
+      //  }
 
-        const nuevoArray = codigos.map((item) => ({ ...item, idPromocion: id }))
-        DetallePromocion.bulkCreate(nuevoArray);
+
+        
+
+       // cost nuevoArray = codigos.map((item) => ({ ...item, idPromocion: id }));
+        let nuevoArray = [];
+
+        let premiosCreados = premiosInsertados.map((item) => ({idPremio: item.id, cantidad: item.cantidad, entregados: 0}));
+        let indexact = 0;
+        
+        for(const item of codigos) {
+            var newData = {...item, idPromocion: id}
+
+            if(item.esPremio === 1){
+                
+                newData.idPremioPromocion = premiosCreados[indexact].idPremio;
+                premiosCreados[indexact].entregados = premiosCreados[indexact].entregados+1;
+
+                if(premiosCreados[indexact].cantidad ==premiosCreados[indexact].entregados){
+                    indexact++;
+                }
+                
+            }
+
+
+            nuevoArray.push(newData)
+            
+        } 
+
+        console.log(nuevoArrarPremios)
+
+
+
+        await DetallePromocion.bulkCreate(nuevoArray);
 
         res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' }); 
 

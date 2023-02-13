@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { CangePromocion } = require('./cangePromocion');
 
 const DetallePromocion = sequelize.define('detallePromocion', {
     id: {
@@ -24,11 +25,20 @@ const DetallePromocion = sequelize.define('detallePromocion', {
 },{timestamps: false});
 
 
+DetallePromocion.hasMany(CangePromocion,{
+    foreignKey: 'idDetallePromocion',
+    sourceKey: 'id'
+})
 
+CangePromocion.belongsTo(DetallePromocion, {
+    foreignKey: 'idDetallePromocion',
+    targetId: 'id',
+});
 
-//(async () => {
-//    await sequelize.sync({ force: true });
+/*
+(async () => {
+ await sequelize.sync({ force: false });
     // Code here
-//  })(); 
+ })(); */
 
-module.exports = {DetallePromocion}
+module.exports = {DetallePromocion} 

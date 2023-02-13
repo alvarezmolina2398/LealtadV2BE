@@ -38,7 +38,7 @@ const AddPagina = async (req, res) => {
 //controllador para actualizar Paginás
 const UpdatePagina = async (req, res) => {
     try {
-        const { descripcion, idMenu, path } = req.body;
+        const { descripcion, idMenu, path, icono } = req.body;
         const { id } = req.params
         await Pagina.update({
             descripcion,
@@ -80,7 +80,9 @@ const DeletePagina = async (req, res) => {
 const GetPaginaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Pagina.findByPk(id);
+        const project = await Pagina.findByPk(id, {
+            include: {model: Menu}
+        });
         res.json(project)
     } catch (error) {
         res.status(403)
