@@ -2,6 +2,7 @@ const { participantesBloqueados, Bloqueados } = require('../models/bloqueados');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
+const { Participacion } = require('../models/Participacion');
 const { Participantes } = require('../models/participantes');
 const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
@@ -392,7 +393,7 @@ const TestearTransaccion = async (req, res) => {
 
             let tranasccionesX = parametros.filter(x => x.tipoTransaccion === 't');
 
-            let transaccionAct = {descripcion: "RECARGA DE SALDO"};
+            let transaccionAct = { descripcion: "RECARGA DE SALDO", valor: 9.00 };
             //muestra las tranacciones
             let TransaccionesValidas = [];
             for (const param of tranasccionesX) {
@@ -405,10 +406,10 @@ const TestearTransaccion = async (req, res) => {
 
 
             otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
-            let test = await validacionTransaccion(TransaccionesValidas, transaccionAct, dataEtapaActual.tipoParticipacion);
+            let test = await validacionTransaccion(TransaccionesValidas, transaccionAct, dataEtapaActual.tipoParticipacion, etapaActual, element.id);
 
             // 
-            const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas, dataEtapaActual }
+            const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas, test }
 
             result = [...result, validacion]
         }
@@ -537,48 +538,142 @@ const DeleteCampania = async (req, res) => {
 
 }
 
-const validacionTransaccion = async (transaccionesCampanias, transaccionActual, tipoParticipacion) => {
+const validacionTransaccion = async (transaccionesCampanias, transaccionActual, tipoParticipacion, etapaActual, idCampania) => {
     let result = null;
     switch (tipoParticipacion) {
         case 1:
-            result = await ParticipacionPorParametro(transaccionesCampanias,transaccionActual);
+            result = await ParticipacionPorParametro(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
+            break;
+
+
+        case 2:
+            result = await ParticipacionPorAcumular(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
+            break;
+
+        case 3:
+           // result = await ParticipacionRecurente(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
+            break;
+        case 4:
+            //acumulativa recurente
+            break;
+        case 5: 
+            //acumular valor;
+            break;
+        case 6:
+            //conbinar Transaccion
             break;
 
         default:
             break;
     }
-
-
     return result;
 }
 
 
-const ParticipacionPorParametro = async (transaccionesCampanias, transaccion) => {
-   // console.log(transaccionesCampanias)
+const ParticipacionPorParametro = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+    // console.log(transaccionesCampanias)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
 
-    if(filterTransaccion.length === 0){
-        return {result: false, message: 'No aplica Transaccion'}
-    } 
+    if (filterTransaccion.length === 0) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
+    }
 
 
 
-    const {limiteParticipacion,idTransaccion,tipoTransaccion, nombre, ValorMinimo, ValorMaximo} = filterTransaccion[0];
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo } = filterTransaccion[0];
 
 
 
-    console.log(limiteParticipacion,ValorMinimo,ValorMaximo)
+    const participacionesActuales = cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania)
+
+    if (participacionesActuales >= limiteParticipacion) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
+    }
 
 
 
-    
+    if (transaccion.valor > ValorMaximo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
+    }
 
-    
-    return null;
+    if (transaccion.valor < ValorMinimo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    }
+
+
+
+    return { premiado: true, guardaParticipacion: true, result: true }
 
 }
 
+
+const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+    // console.log(transaccionesCampanias)
+    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
+
+
+    if (filterTransaccion.length === 0) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
+    }
+
+
+
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo } = filterTransaccion[0];
+
+
+
+
+    if (transaccion.valor > ValorMaximo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
+    }
+
+    if (transaccion.valor < ValorMinimo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    }
+
+
+
+    const participacionesActuales = cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania)
+
+    if (participacionesActuales >= limiteParticipacion) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
+    }
+
+
+    if ((participacionesActuales + 1) < limiteParticipacion) {
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'Faltan participaciones para otorgar premio' }
+    }
+
+
+    return { premiado: true, guardaParticipacion: true, result: true }
+
+}
+
+
+
+
+
+const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania) => {
+    try {
+
+        let cantidad = await Participacion.count({
+            where: {
+                etapa: etapa,
+                idtxt: idTrx,
+                tipo: tipo,
+                idCampania: idCampania
+
+            }
+        })
+
+        return cantidad;
+
+    } catch (error) {
+        console.error(error)
+        return 0;
+    }
+}
 
 
 
