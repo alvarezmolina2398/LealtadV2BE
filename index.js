@@ -43,6 +43,7 @@ app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
 app.use(require('./src/routes/reportePromocion.routes'));
 app.use(require('./src/routes/reporteReferidos.routes'));
+app.use(require('./src/routes/loggin.routes'));
 
 
 //corremos el servidor
