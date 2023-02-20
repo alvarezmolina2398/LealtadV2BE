@@ -33,6 +33,14 @@ const Parametro = sequelize.define('parametro', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
+    intervalo : {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    periodo : {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -40,9 +48,9 @@ const Parametro = sequelize.define('parametro', {
 },{timestamps: false});
 
 
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     // Code here
-//  })();
+(async () => {
+    await sequelize.sync({ force: false });
+    // Code here
+ })();
 
 module.exports = {Parametro}
