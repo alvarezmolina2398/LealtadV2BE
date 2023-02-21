@@ -30,6 +30,10 @@ const Participacion = sequelize.define('participacion', {
         type: DataTypes.STRING(1),
         allowNull: false
     },
+    valor: {
+        type: DataTypes.DECIMAL(),
+        allowNull: false
+    },
     etapa: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -48,8 +52,8 @@ TransaccionPremio.belongsTo(Participacion, {
 });
 
 (async () => {
-    //await sequelize.sync({ force: false });
-    // Code here
+    await sequelize.sync({ force: false });
+    //Code here
 })();
 
 module.exports = {Participacion}
