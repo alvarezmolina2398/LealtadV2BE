@@ -20,12 +20,12 @@ const ConfigReferido = sequelize.define('configReferido', {
 },{timestamps: false});
 
 ConfigReferido.hasMany(participacionReferidos,{
-    foreignKey: 'idParticipacion',
+    foreignKey: 'idConfigutacion',
     sourceKey: 'id'
 });
 
 participacionReferidos.belongsTo(ConfigReferido, {
-    foreignKey: 'idParticipacion',
+    foreignKey: 'idConfigutacion',
     targetId: 'id',
     
 });

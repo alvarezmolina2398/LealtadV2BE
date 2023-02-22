@@ -51,9 +51,9 @@ TransaccionPremio.belongsTo(Participacion, {
     targetId: 'id',
 });
 
-(async () => {
-    await sequelize.sync({ force: false });
-    //Code here
-})();
+// (async () => {
+//     await sequelize.sync({ force: false });
+//     //Code here
+// })();
 
 module.exports = {Participacion}

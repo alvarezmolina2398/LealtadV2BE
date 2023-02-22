@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { codigoReferidos } = require('./codigoReferidos');
-const { ConfigReferido } = require('./configReferidos');
 
 const participacionReferidos = sequelize.define('participacionReferidos', {
 
@@ -31,7 +29,7 @@ const participacionReferidos = sequelize.define('participacionReferidos', {
 }, {timestamps: false});
 
 // (async () => {
-//     await sequelize.sync({ force: false});
+//     await sequelize.sync({ force: true});
 // })()
 
 
