@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+
 const participacionReferidos = sequelize.define('participacionReferidos', {
 
     id:{
@@ -28,7 +29,7 @@ const participacionReferidos = sequelize.define('participacionReferidos', {
 }, {timestamps: false});
 
 // (async () => {
-//     await sequelize.sync({ force: false});
+//     await sequelize.sync({ force: true});
 // })()
 
 

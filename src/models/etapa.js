@@ -28,6 +28,9 @@ const Etapa = sequelize.define('etapa', {
         type: DataTypes.INTEGER,
         allowNull:false
     },
+    valorAcumulado: {
+        type: DataTypes.DECIMAL(18,2)
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1

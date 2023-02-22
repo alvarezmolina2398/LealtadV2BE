@@ -59,7 +59,7 @@ const canjearCodigo = async (req, res) => {
                     fecha: new Date(),
                     idCodigo : idcodigo,
                     referido,
-                    idParticipacion,
+                    idConfigutacion: idParticipacion,
                     refiriente: customer.customerId
     
                 })
