@@ -1,8 +1,5 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { codigoReferidos } = require('./codigoReferidos');
-const { ConfigReferido } = require('./configReferidos');
-
 const participacionReferidos = sequelize.define('participacionReferidos', {
 
     id:{

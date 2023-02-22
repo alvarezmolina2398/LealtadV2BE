@@ -559,7 +559,7 @@ const validacionTransaccion = async (transaccionesCampanias, transaccionActual, 
             break;
         case 5:
 
-            //acumular valor;
+            result = await GetParticipacionValorAcumulado(transaccionesCampanias, transaccionActual, idCampania, etapaActual, '123456');
             break;
         case 6:
             //conbinar Transaccion
@@ -673,7 +673,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
 
     switch (periodo) {
         case 1:
-            await GetParticipacionsXdias(limiteParticipacion,'2023-01-01','2023-03-30')
+            await GetParticipacionsXdias(limiteParticipacion, '2023-01-01', '2023-03-30')
 
 
             break;
@@ -736,12 +736,51 @@ const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania
 
 
 
-const GetalorValorAcumulado = async()
+const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) => {
+    try {
 
 
 
 
-const GetParticipacionsXdias = async (dias,startDate,endDate) => {
+        if (ValorAnterior == 1) {
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+
+                    }
+                });
+
+            return cantidad;
+
+        }else{
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+                        idEtapa: etapa
+                    }
+                });
+
+            return cantidad;
+        }
+
+
+
+
+    } catch (error) {
+        console.error(error);
+
+        return -1;
+    }
+}
+
+
+
+
+const GetParticipacionsXdias = async (dias, startDate, endDate) => {
     try {
 
 
@@ -749,24 +788,24 @@ const GetParticipacionsXdias = async (dias,startDate,endDate) => {
             attributes: [
                 [Sequelize.literal(`DATE_FORMAT(fecha, '%Y-%m-%d')`), 'fecha'],
                 [Sequelize.fn('COUNT', Sequelize.col('id')), 'cantidad']
-              ],
-              where: {
+            ],
+            where: {
                 fecha: {
-                  [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
+                    [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
                 }
-              },
-              group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
-            
+            },
+            group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
+
         });
 
 
 
         let index = 0;
         let actuales = [];
-        for(const item of participaciones){
-            const {fecha, cantidad} = item.dataValues;
+        for (const item of participaciones) {
+            const { fecha, cantidad } = item.dataValues;
 
-            console.log(fecha,cantidad)
+            console.log(fecha, cantidad)
             index++;
         }
 
@@ -780,7 +819,7 @@ const GetParticipacionsXdias = async (dias,startDate,endDate) => {
 }
 
 
-const GetValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+const GetParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
 
@@ -788,8 +827,28 @@ const GetValorAcumulado = async (transaccionesCampanias, transaccion, idCampania
         return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
     }
 
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, valorAnterior } = filterTransaccion[0];
 
-    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo } = filterTransaccion[0];
+
+    if (transaccion.valor > ValorMaximo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
+    }
+
+    if (transaccion.valor < ValorMinimo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    }
+
+    const valorActual = await GetValorAcumulado(idCampania, etapaActual, valorAnterior, customerId)
+
+    if(valorActual == -1){
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'Ha sucedido un error al consultar los datos' }
+    }
+
+    if ((valorActual + transaccion.valor) >= limiteParticipacion) {
+        return { premiado: true, guardaParticipacion: true, result: true, message: ""}
+    } else {
+        return { premiado: false, guardaParticipacion: true, result: false , message: 'No a alcanzado la cantidad maxima Aun: ' +  valorActual  + ' Actual: ' + transaccion.valor.toFixed(2)}
+    }
 
 }
 
