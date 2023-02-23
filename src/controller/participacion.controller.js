@@ -11,7 +11,8 @@ const addParticipacion = async (req, res) => {
         tipo,
         idTransaccion,
         idCampania,
-        etapa
+        etapa,
+        valor
 
     } = req.body
 
@@ -26,7 +27,8 @@ const addParticipacion = async (req, res) => {
             tipo,
             idTransaccion,
             idCampania,
-            etapa
+            etapa,
+            valor
         })
 
         res.json({ code: 'ok', message: 'Participacion agregada con exito'});
