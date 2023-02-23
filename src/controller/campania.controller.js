@@ -1,3 +1,4 @@
+const { Op, Sequelize } = require('sequelize');
 const { participantesBloqueados, Bloqueados } = require('../models/bloqueados');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
@@ -554,13 +555,14 @@ const validacionTransaccion = async (transaccionesCampanias, transaccionActual, 
             break;
 
         case 3:
-           // result = await ParticipacionRecurente(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
+            result = await ParticipacionRecurente(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
             break;
         case 4:
             //acumulativa recurente
             break;
-        case 5: 
-            //acumular valor;
+        case 5:
+
+            result = await GetParticipacionValorAcumulado(transaccionesCampanias, transaccionActual, idCampania, etapaActual, '123456');
             break;
         case 6:
             //conbinar Transaccion
@@ -614,7 +616,7 @@ const ParticipacionPorParametro = async (transaccionesCampanias, transaccion, id
 const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
-
+    console.log('ax')
 
     if (filterTransaccion.length === 0) {
         return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
@@ -637,7 +639,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 
 
-    const participacionesActuales = cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania)
+    const participacionesActuales = await cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania);
 
     if (participacionesActuales >= limiteParticipacion) {
         return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
@@ -645,7 +647,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 
     if ((participacionesActuales + 1) < limiteParticipacion) {
-        return { premiado: false, guardaParticipacion: true, result: false, message: 'Faltan participaciones para otorgar premio' }
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'Faltan participaciones para otorgar premio (' + parseInt(participacionesActuales + 1) + '/' + limiteParticipacion + ')' }
     }
 
 
@@ -653,6 +655,62 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 }
 
+
+const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+    // console.log(transaccionesCampanias)
+    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
+
+    if (filterTransaccion.length === 0) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
+    }
+
+
+
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, periodo, intervalo } = filterTransaccion[0];
+
+
+    //console.log(periodo, intervalo)
+
+
+
+
+    switch (periodo) {
+        case 1:
+            await GetParticipacionsXdias(limiteParticipacion, '2023-01-01', '2023-03-30')
+
+
+            break;
+
+        default:
+            break;
+    }
+
+
+    // if (transaccion.valor > ValorMaximo) {
+    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
+    // }
+
+    // if (transaccion.valor < ValorMinimo) {
+    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    // }
+
+
+
+    // const participacionesActuales = await cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania);
+
+    // if (participacionesActuales >= limiteParticipacion) {
+    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
+    // }
+
+
+    // if ((participacionesActuales + 1) < limiteParticipacion) {
+    //     return { premiado: false, guardaParticipacion: true, result: false, message: 'Faltan participaciones para otorgar premio ('+ parseInt(participacionesActuales + 1) +'/'+limiteParticipacion+')' }
+    // }
+
+
+    return { premiado: true, guardaParticipacion: true, result: true }
+
+}
 
 
 
@@ -677,6 +735,126 @@ const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania
         return 0;
     }
 }
+
+
+
+
+const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) => {
+    try {
+
+
+
+
+        if (ValorAnterior == 1) {
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+
+                    }
+                });
+
+            return cantidad;
+
+        }else{
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+                        idEtapa: etapa
+                    }
+                });
+
+            return cantidad;
+        }
+
+
+
+
+    } catch (error) {
+        console.error(error);
+
+        return -1;
+    }
+}
+
+
+
+
+const GetParticipacionsXdias = async (dias, startDate, endDate) => {
+    try {
+
+
+        const participaciones = await Participacion.findAll({
+            attributes: [
+                [Sequelize.literal(`DATE_FORMAT(fecha, '%Y-%m-%d')`), 'fecha'],
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'cantidad']
+            ],
+            where: {
+                fecha: {
+                    [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
+                }
+            },
+            group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
+
+        });
+
+
+
+        let index = 0;
+        let actuales = [];
+        for (const item of participaciones) {
+            const { fecha, cantidad } = item.dataValues;
+
+            console.log(fecha, cantidad)
+            index++;
+        }
+
+
+        return 0;
+
+    } catch (error) {
+        console.error(error)
+        return 0;
+    }
+}
+
+
+const GetParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
+    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
+
+
+    if (filterTransaccion.length === 0) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
+    }
+
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, valorAnterior } = filterTransaccion[0];
+
+
+    if (transaccion.valor > ValorMaximo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
+    }
+
+    if (transaccion.valor < ValorMinimo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    }
+
+    const valorActual = await GetValorAcumulado(idCampania, etapaActual, valorAnterior, customerId)
+
+    if(valorActual == -1){
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'Ha sucedido un error al consultar los datos' }
+    }
+
+    if ((valorActual + transaccion.valor) >= limiteParticipacion) {
+        return { premiado: true, guardaParticipacion: true, result: true, message: ""}
+    } else {
+        return { premiado: false, guardaParticipacion: true, result: false , message: 'No a alcanzado la cantidad maxima Aun: ' +  valorActual  + ' Actual: ' + transaccion.valor.toFixed(2)}
+    }
+
+}
+
 
 
 

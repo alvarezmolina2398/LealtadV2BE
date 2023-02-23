@@ -1,51 +1,34 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { ConfigReferido } = require('./configReferidos');
 const { participacionReferidos } = require('./participacionReferidos');
 
-//Codigos alfanumericos de 10 caracteres
-const codigoReferidos = sequelize.define('codigosReferidos', {
-
+//Creacion de tabla y declaracion de sus atributos correspondientes
+const ConfigReferido = sequelize.define('configReferido', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
-
-    codigo: {
-        type: DataTypes.STRING(15),
+    descripcion: {
+        type: DataTypes.STRING(500),
         allowNull: false
     },
-    fecha: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    customerId: {
+    estado : {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    estado: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-        allowNull: false
+        defaultValue: 1
     }
-}, {timestamps:  false});
+},{timestamps: false});
 
-codigoReferidos.hasMany(participacionReferidos,{
-    foreignKey: 'idCodigo',
+ConfigReferido.hasMany(participacionReferidos,{
+    foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
 
-participacionReferidos.belongsTo(codigoReferidos, {
-    foreignKey: 'idCodigo',
+participacionReferidos.belongsTo(ConfigReferido, {
+    foreignKey: 'idParticipacion',
     targetId: 'id',
     
 });
 
 
-//  (async () => {
-//     await sequelize.sync({ force: false});
-//  })()
-
-
-module.exports={codigoReferidos}
+module.exports = {ConfigReferido}
