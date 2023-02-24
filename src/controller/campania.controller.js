@@ -394,7 +394,12 @@ const TestearTransaccion = async (req, res) => {
 
             let tranasccionesX = parametros.filter(x => x.tipoTransaccion === 't');
 
-            let transaccionAct = { descripcion: "RECARGA DE SALDO", valor: 9.00 };
+
+            let transaccionesCampanias = parametros.filter(x => x.tipoTransaccion === 'c');
+
+
+
+            let transaccionAct = { descripcion: "Recarga de Saldo", valor: 9.00 };
             //muestra las tranacciones
             let TransaccionesValidas = [];
             for (const param of tranasccionesX) {
@@ -406,8 +411,12 @@ const TestearTransaccion = async (req, res) => {
 
 
 
+            console.log(transaccionesCampanias)
+
+
+
             otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
-            let test = await validacionTransaccion(TransaccionesValidas, transaccionAct, dataEtapaActual.tipoParticipacion, etapaActual, element.id);
+            let test = await validacionTransaccion(TransaccionesValidas, transaccionAct, dataEtapaActual, element.id, '123456', dataEtapaActual.valorAcumulado);
 
             // 
             const validacion = { datosCampania, validacionPresupuesto, premios, validacionEtapa, otrasValidaciones, enviaPremio, TransaccionesValidas, test }
@@ -539,9 +548,9 @@ const DeleteCampania = async (req, res) => {
 
 }
 
-const validacionTransaccion = async (transaccionesCampanias, transaccionActual, tipoParticipacion, etapaActual, idCampania) => {
+const validacionTransaccion = async (transaccionesCampanias, transaccionActual, etapaActual, idCampania, customerId) => {
     let result = null;
-    switch (tipoParticipacion) {
+    switch (etapaActual.tipoParticipacion) {
         case 1:
             result = await ParticipacionPorParametro(transaccionesCampanias, transaccionActual, idCampania, etapaActual);
             break;
@@ -559,7 +568,7 @@ const validacionTransaccion = async (transaccionesCampanias, transaccionActual, 
             break;
         case 5:
 
-            result = await GetParticipacionValorAcumulado(transaccionesCampanias, transaccionActual, idCampania, etapaActual, '123456');
+            result = await ParticipacionValorAcumulado(transaccionesCampanias, transaccionActual, idCampania, etapaActual, customerId);
             break;
         case 6:
             //conbinar Transaccion
@@ -621,7 +630,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 
 
-    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo } = filterTransaccion[0];
+    const { limiteParticipacion, idTransaccion, tipoTransaccion, ValorMinimo, ValorMaximo } = filterTransaccion[0];
 
 
 
@@ -636,7 +645,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 
 
-    const participacionesActuales = await cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania);
+    const participacionesActuales = await cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual.id, idCampania);
 
     if (participacionesActuales >= limiteParticipacion) {
         return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
@@ -663,7 +672,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
 
 
 
-    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, periodo, intervalo } = filterTransaccion[0];
+    //const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, periodo, intervalo } = filterTransaccion[0];
 
 
     //console.log(periodo, intervalo)
@@ -710,75 +719,39 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
 }
 
 
+const ParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
+    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
 
-const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania) => {
-    try {
-
-        let cantidad = await Participacion.count({
-            where: {
-                etapa: etapa,
-                idtxt: idTrx,
-                tipo: tipo,
-                idCampania: idCampania
-
-            }
-        })
-
-        return cantidad;
-
-    } catch (error) {
-        console.error(error)
-        return 0;
+    if (filterTransaccion.length === 0) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
     }
-}
+
+    const { ValorMinimo, ValorMaximo, valorAnterior } = filterTransaccion[0];
 
 
-
-
-const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) => {
-    try {
-
-
-
-
-        if (ValorAnterior == 1) {
-            const cantidad = await Participacion.sum('valor',
-                {
-                    where: {
-                        customerId: customerId,
-                        idCampania: idCampania,
-
-                    }
-                });
-
-            return cantidad;
-
-        }else{
-            const cantidad = await Participacion.sum('valor',
-                {
-                    where: {
-                        customerId: customerId,
-                        idCampania: idCampania,
-                        idEtapa: etapa
-                    }
-                });
-
-            return cantidad;
-        }
-
-
-
-
-    } catch (error) {
-        console.error(error);
-
-        return -1;
+    if (transaccion.valor > ValorMaximo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
     }
+
+    if (transaccion.valor < ValorMinimo) {
+        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
+    }
+
+    const valorActual = await GetValorAcumulado(idCampania, etapaActual.id, valorAnterior, customerId);
+
+
+    if(valorActual == -1){
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'Ha sucedido un error al consultar los datos' }
+    }
+
+    if ((valorActual + transaccion.valor) >= etapaActual.valorAcumulado) {
+        return { premiado: true, guardaParticipacion: true, result: true, message: ""}
+    } else {
+        return { premiado: false, guardaParticipacion: true, result: false , message: 'No a alcanzado la cantidad maxima : (' + (valorActual.toFixed(2) +' + '+ transaccion.valor.toFixed(2)) + '/ '+ valorAcumulado +')'}
+    }
+
 }
-
-
-
 
 const GetParticipacionsXdias = async (dias, startDate, endDate) => {
     try {
@@ -818,39 +791,71 @@ const GetParticipacionsXdias = async (dias, startDate, endDate) => {
     }
 }
 
+const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) => {
+    try {
 
-const GetParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
-    let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
 
-    if (filterTransaccion.length === 0) {
-        return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
+
+        if (ValorAnterior == 1) {
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+
+                    }
+                });
+
+            return cantidad;
+
+        }else{
+            const cantidad = await Participacion.sum('valor',
+                {
+                    where: {
+                        customerId: customerId,
+                        idCampania: idCampania,
+                        etapa: etapa
+                    }
+                });
+
+
+                console.log(cantidad)
+
+            return cantidad != null ? cantidad: 0;
+        }
+
+
+
+
+    } catch (error) {
+        console.error(error);
+
+        return -1;
     }
-
-    const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, valorAnterior } = filterTransaccion[0];
-
-
-    if (transaccion.valor > ValorMaximo) {
-        return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
-    }
-
-    if (transaccion.valor < ValorMinimo) {
-        return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
-    }
-
-    const valorActual = await GetValorAcumulado(idCampania, etapaActual, valorAnterior, customerId)
-
-    if(valorActual == -1){
-        return { premiado: false, guardaParticipacion: true, result: false, message: 'Ha sucedido un error al consultar los datos' }
-    }
-
-    if ((valorActual + transaccion.valor) >= limiteParticipacion) {
-        return { premiado: true, guardaParticipacion: true, result: true, message: ""}
-    } else {
-        return { premiado: false, guardaParticipacion: true, result: false , message: 'No a alcanzado la cantidad maxima Aun: ' +  valorActual  + ' Actual: ' + transaccion.valor.toFixed(2)}
-    }
-
 }
+
+const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania) => {
+    try {
+
+        let cantidad = await Participacion.count({
+            where: {
+                etapa: etapa,
+                idtxt: idTrx,
+                tipo: tipo,
+                idCampania: idCampania
+
+            }
+        })
+
+        return cantidad;
+
+    } catch (error) {
+        console.error(error)
+        return 0;
+    }
+}
+
 
 
 
