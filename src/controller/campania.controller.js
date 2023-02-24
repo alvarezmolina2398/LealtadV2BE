@@ -88,7 +88,7 @@ const AddCampania = async (req, res) => {
 
 
 const AddEtapas = async (etapa) => {
-    const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos } = etapa;
+    const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos, intervalo, periodo, valorAcumulado } = etapa;
 
     const newEtatpa = await Etapa.create({
         nombre,
@@ -96,6 +96,9 @@ const AddEtapas = async (etapa) => {
         orden,
         idCampania,
         tipoParticipacion,
+        intervalo,
+        periodo,
+        valorAcumulado,
         estado: 1
     });
 

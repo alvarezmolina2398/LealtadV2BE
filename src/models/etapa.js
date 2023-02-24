@@ -28,6 +28,13 @@ const Etapa = sequelize.define('etapa', {
         type: DataTypes.INTEGER,
         allowNull:false
     },
+    intervalo : {
+        type: DataTypes.INTEGER,
+    },
+    periodo : {
+        type: DataTypes.INTEGER,
+
+    },
     valorAcumulado: {
         type: DataTypes.DECIMAL(18,2)
     },

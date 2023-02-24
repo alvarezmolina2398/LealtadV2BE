@@ -10,8 +10,7 @@ const Parametro = sequelize.define('parametro', {
 
     },
     limiteParticipacion: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: DataTypes.INTEGER
     },
     idTransaccion: {
         type: DataTypes.INTEGER,
@@ -33,14 +32,7 @@ const Parametro = sequelize.define('parametro', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
-    intervalo : {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    periodo : {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
+    
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -48,9 +40,9 @@ const Parametro = sequelize.define('parametro', {
 },{timestamps: false});
 
 
-// (async () => {
-//     await sequelize.sync({ force: false });
+/*(async () => {
+await sequelize.sync({ force: false });
 //     // Code here
-//  })();
+})();*/
 
 module.exports = {Parametro}
