@@ -1,4 +1,5 @@
-const { Op, Sequelize } = require('sequelize');
+const { Op, Sequelize, where } = require('sequelize');
+const { asignarCategoria } = require('../models/asignarCategoria');
 const { participantesBloqueados, Bloqueados } = require('../models/bloqueados');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
@@ -413,8 +414,12 @@ const TestearTransaccion = async (req, res) => {
             }
 
 
+            for (const param of transaccionesCampanias) {
 
-            console.log(transaccionesCampanias)
+            }
+
+
+
 
 
 
@@ -625,7 +630,6 @@ const ParticipacionPorParametro = async (transaccionesCampanias, transaccion, id
 const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
-    console.log('ax')
 
     if (filterTransaccion.length === 0) {
         return { premiado: false, guardaParticipacion: false, result: false, message: 'No aplica Transaccion' }
@@ -744,14 +748,14 @@ const ParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, 
     const valorActual = await GetValorAcumulado(idCampania, etapaActual.id, valorAnterior, customerId);
 
 
-    if(valorActual == -1){
+    if (valorActual == -1) {
         return { premiado: false, guardaParticipacion: true, result: false, message: 'Ha sucedido un error al consultar los datos' }
     }
 
     if ((valorActual + transaccion.valor) >= etapaActual.valorAcumulado) {
-        return { premiado: true, guardaParticipacion: true, result: true, message: ""}
+        return { premiado: true, guardaParticipacion: true, result: true, message: "" }
     } else {
-        return { premiado: false, guardaParticipacion: true, result: false , message: 'No a alcanzado la cantidad maxima : (' + (valorActual.toFixed(2) +' + '+ transaccion.valor.toFixed(2)) + '/ '+ valorAcumulado +')'}
+        return { premiado: false, guardaParticipacion: true, result: false, message: 'No a alcanzado la cantidad maxima : (' + (valorActual.toFixed(2) + ' + ' + transaccion.valor.toFixed(2)) + '/ ' + valorAcumulado + ')' }
     }
 
 }
@@ -812,7 +816,7 @@ const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) =
 
             return cantidad;
 
-        }else{
+        } else {
             const cantidad = await Participacion.sum('valor',
                 {
                     where: {
@@ -823,9 +827,9 @@ const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) =
                 });
 
 
-                console.log(cantidad)
+            console.log(cantidad)
 
-            return cantidad != null ? cantidad: 0;
+            return cantidad != null ? cantidad : 0;
         }
 
 
@@ -859,6 +863,29 @@ const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania
     }
 }
 
+
+const GetTransaccionesXCategoria = async (idCategoria) => {
+    try {
+        const result = await asignarCategoria.findAll({
+            include: [
+                {
+                    model:Transaccion,
+                    
+                }
+            ],
+            where: {
+                idCategoria: idCategoria
+            }
+        });
+
+        console.log(result)
+
+        return result;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
 
 
 
