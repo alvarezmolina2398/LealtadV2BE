@@ -671,6 +671,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 
 const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
+    console.log(transaccion)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
     if (filterTransaccion.length === 0) {
@@ -682,16 +683,15 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
     //const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, periodo, intervalo } = filterTransaccion[0];
 
 
-    //console.log(periodo, intervalo)
+    
 
 
+    console.log(etapaActual.periodo)
 
-
-    switch (periodo) {
+    switch (etapaActual.periodo) {
         case 1:
-            await GetParticipacionsXdias(limiteParticipacion, '2023-01-01', '2023-03-30')
-
-
+            console.log('a')
+            await GetParticipacionsXdias(3,  new Date(2023,0,01), new Date(2023,03,01))
             break;
 
         default:
@@ -764,33 +764,74 @@ const GetParticipacionsXdias = async (dias, startDate, endDate) => {
     try {
 
 
-        const participaciones = await Participacion.findAll({
-            attributes: [
-                [Sequelize.literal(`DATE_FORMAT(fecha, '%Y-%m-%d')`), 'fecha'],
-                [Sequelize.fn('COUNT', Sequelize.col('id')), 'cantidad']
-            ],
+        // const participaciones = await Participacion.findAll({
+        //     attributes: [
+        //         [Sequelize.literal(`DATE_FORMAT(fecha, '%Y-%m-%d')`), 'fecha'],
+        //         [Sequelize.fn('COUNT', Sequelize.col('id')), 'cantidad']
+        //     ],
+        //     where: {
+        //         fecha: {
+        //             [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
+        //         }
+        //     },
+        //     group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
+
+        // });
+
+
+
+        // let index = 0;
+        // let actuales = [];
+        // for (const item of participaciones) {
+        //     const { fecha, cantidad } = item.dataValues;
+
+        //     console.log(fecha, cantidad)
+        //     index++;
+        // }
+
+
+        // return 0;
+
+        
+        const registros = await Participacion.findAll({
             where: {
                 fecha: {
-                    [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
+                    [Op.between]: [startDate, endDate]
                 }
             },
-            group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
-
+            attributes: [[Sequelize.fn('date', Sequelize.col('fecha')), 'fecha'], [Sequelize.fn('count', Sequelize.col('*')), 'count']],
+            group: [Sequelize.fn('date', Sequelize.col('fecha'))]
         });
 
+        // Comprobar si hay registros en tres días seguidos
+        if (registros.length >= 0) {
+            let diasSeguidos = 0;
+            let ultimaFecha = null;
+            let fechaAnterior = null;
+            registros.forEach(registro => {
+                const fechaActual = new Date(registro.get('fecha'));
+                if (fechaAnterior && (fechaActual - fechaAnterior) === 86400000) {
+                    diasSeguidos++;
+                } else {
+                    diasSeguidos = 1;
+                    ultimaFecha = fechaActual
+                }
+                fechaAnterior = fechaActual;
+            });
 
 
-        let index = 0;
-        let actuales = [];
-        for (const item of participaciones) {
-            const { fecha, cantidad } = item.dataValues;
+            if (diasSeguidos >= dias) {
+                console.log('El registro se hizo en tres días seguidos');
+                return  { premiado: true, guardaParticipacion: true, result: true}
+            } else {
+                console.log('El registro no se hizo en '+ dias +'  días seguidos ' + diasSeguidos + ' de ' + dias);
 
-            console.log(fecha, cantidad)
-            index++;
+                return  { premiado: false, guardaParticipacion: true, result: false, message: 'El Registro no se hizo por tres dias seguidos. 1ra Transaccion Agregada' }
+            }
+        } else {
+           // console.log('no hay registro')
+           return  { premiado: false, guardaParticipacion: true, result: false, message: '1ra Transaccion Agregada' }
         }
-
-
-        return 0;
 
     } catch (error) {
         console.error(error)
@@ -869,8 +910,8 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         const result = await asignarCategoria.findAll({
             include: [
                 {
-                    model:Transaccion,
-                    
+                    model: Transaccion,
+
                 }
             ],
             where: {
