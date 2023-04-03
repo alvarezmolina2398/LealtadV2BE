@@ -30,7 +30,7 @@ const addPermiso = async (req, res) => {
 const getPermisos = async (req, res) => {
   const { username } = req.params;
 
-  try {
+  try { 
 
     const usuario = await Usuario.findByPk(username);
 

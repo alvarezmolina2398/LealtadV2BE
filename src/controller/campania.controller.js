@@ -1,17 +1,13 @@
-const { Op, Sequelize, where } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { asignarCategoria } = require('../models/asignarCategoria');
-const { participantesBloqueados, Bloqueados } = require('../models/bloqueados');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
 const { Participacion } = require('../models/Participacion');
 const { Participantes } = require('../models/participantes');
-const { Premio } = require('../models/premio');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
 const { Transaccion } = require('../models/transaccion');
-const { param } = require('../routes/pagina.routes');
-
 
 //accion para insertar una nueva trnasaccion
 const AddCampania = async (req, res) => {
@@ -300,13 +296,6 @@ const TestearTransaccion = async (req, res) => {
         let result = [];
 
 
-        // campanias.forEach(async element => {
-
-
-
-        // });
-
-
         for (const element of campanias) {
             let enviaPremio = true;
 
@@ -442,9 +431,6 @@ const TestearTransaccion = async (req, res) => {
     }
 }
 
-
-
-
 //devuelve la lista de transacciones validas
 const transaccionesValidas = async (id) => {
     try {
@@ -501,7 +487,6 @@ const PausarCampaña = async (req, res) => {
 
     }
 }
-
 
 //metodo para activas campanias
 const ActivarCampaña = async (req, res) => {

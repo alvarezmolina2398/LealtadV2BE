@@ -44,9 +44,11 @@ app.use(require('./src/routes/premiacion.routes'));
 app.use(require('./src/routes/reportePromocion.routes'));
 app.use(require('./src/routes/reporteReferidos.routes'));
 app.use(require('./src/routes/loggin.routes'));
+app.use(require('./src/routes/trxCampanias.routes'))
 
 
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
+    
 }); 
