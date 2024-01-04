@@ -10,7 +10,7 @@ const path = 'Departamento';
 router.get(`/${path}`, GetDepartamentos);
 router.post(`/${path}`,AddDepartamentos);
 router.put(`/${path}/:id`,validateCreate,UpdateDepartamento);
-router.delete(`/${path}/:id`,validateCreate,DeleteDepartamento);
+router.delete(`/${path}/:id`,DeleteDepartamento);
 router.get(`/${path}/:id`,GetDepartamentobyId);
 
 module.exports = router;

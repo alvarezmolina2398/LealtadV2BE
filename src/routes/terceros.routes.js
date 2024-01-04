@@ -9,7 +9,7 @@ const path = 'Tercero';
 router.get(`/${path}`,GetTerceros);
 router.post(`/${path}`,AddTercero);
 router.put(`/${path}/:id`,validateCreate,UpdateTercero);
-router.delete(`/${path}/:id`,validateCreate,DeleteTercero);
+router.delete(`/${path}/:id`,DeleteTercero);
 router.get(`/${path}/:id`,GetTerceroById);
 
 module.exports = router;

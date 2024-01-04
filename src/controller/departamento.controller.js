@@ -64,6 +64,7 @@ const DeleteDepartamento = async (req, res) => {
     try{
 
         const {id} = req.params;
+        console.log(id);
 
         await Departamento.update({
             estado: 0

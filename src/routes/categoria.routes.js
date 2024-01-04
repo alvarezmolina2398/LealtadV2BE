@@ -11,7 +11,7 @@ const path = 'Categoria';
 router.get(`/${path}`,GetCategorias);
 router.post(`/${path}`,AddCategoria);
 router.put(`/${path}/:id`,validateCreate,UpdateCategoria);
-router.delete(`/${path}/:id`,validateCreate,DeleteCategoria);
+router.delete(`/${path}/:id`,DeleteCategoria);
 router.get(`/${path}/:id`,GetCategoriaById);
 
 module.exports = router;
