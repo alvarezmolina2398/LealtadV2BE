@@ -16,6 +16,7 @@ router.put(`/${path}/Pau/:id`,PausarPromocion);
 router.put(`/${path}/Act/:id`,ActivarPromocion);
 //router.post(`/${path}/Testear`,TestearCodigo);
  router.delete(`/${path}/:id`,DeletePromocion);
+ 
 
 
 module.exports = router
