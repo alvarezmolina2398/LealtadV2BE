@@ -229,6 +229,29 @@ const GetPromocionById = async (req, res) => {
 
 }
 
+    //eliminado logico de Promociones
+    const DeletePromocion = async (req, res) => {
+        try{
+    
+            const {id} = req.params;
+            console.log(id);
+    
+            await Promocion.update({
+                estado: 0
+            }, {
+                where: {
+                    id: id
+                }
+            });
+    
+            res.json({code: 'ok', message: 'Promocion inhabilitado con exito.'});
+    
+        } catch (e) {
+            res.status(403);
+            res.send({errors: 'Ha ocurrido un error al intentar inhabilitar la promocion.'});
+        }
+    }
+
 const TestearCodigo = async (req, res) => {
     const { cupon } = req.body;
     const cantidadCupones = await DetallePromocion.count({
@@ -337,11 +360,6 @@ const TestearCodigo = async (req, res) => {
     
     }
 
-
-
-
-
-
 }
 
-module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, GetPromocionById, TestearCodigo }
+module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, DeletePromocion, GetPromocionById, TestearCodigo }

@@ -11,7 +11,7 @@ const path = 'Columna';
 router.get(`/${path}`,GetColumnas);
 router.post(`/${path}`,AddColumna);
 router.put(`/${path}/:id`,validateCreate,UpdateColumna);
-router.delete(`/${path}/:id`,validateCreate,DeleteColumna);
+router.delete(`/${path}/:id`,DeleteColumna);
 router.get(`/${path}/:id`,GetColumnaById);
 
 module.exports = router;
