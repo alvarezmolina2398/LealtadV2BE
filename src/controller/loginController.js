@@ -1,5 +1,8 @@
 const { Rol } = require("../models/rol");
 const { Usuario } = require("../models/usuario");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const env = require("../Bin/Env");
 
 const loggin = async (req, res) => {
   let { username, password } = req.body;
@@ -18,11 +21,17 @@ const loggin = async (req, res) => {
     });
 
     if (usuario != null) {
-      res.json({
-        code: "ok",
-        message: "Bienvenido " + usuario.nombre,
-        info: usuario,
-      });
+          if(bcrypt.compareSync(password, usuario.dataValues.password)){
+            let token = jwt.sign({
+                id : usuario.id
+            }, env.jwt.secret, { algorithm: 'HS256' });
+            
+            usuario.dataValues['password'] = null;
+
+            res.status(200).send({data: usuario, token: token});
+        }else{
+            res.status(403).send({message : "No tienes permisos para poder loguearte"});
+        }
     } else {
       res.json({ code: "01", message: "Usuario o Contraseña Incorrecta" });
     }
