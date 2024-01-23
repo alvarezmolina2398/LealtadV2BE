@@ -9,19 +9,20 @@ const { AddCampania,
         ActivarCampaña,
         DeleteCampania } = require('../controller/campania.controller');
 //const {validateCreate} = require('../validator/categoria')
+const authUser = require('../Middleware/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Campania';
 
 
 //rutas del proyecto
-router.get(`/${path}`, GetcampanasActivas);
-router.get(`/${path}/TestearSimple`, TestearTransaccion);
-router.post(`/${path}`, AddCampania);
-router.put(`/${path}/:id`, UpdateCampania);
-router.put(`/${path}/pausar/:id`, PausarCampaña);
-router.put(`/${path}/activar/:id`, ActivarCampaña);
-router.delete(`/${path}/:id`,DeleteCampania);
-router.get(`/${path}/:id`,GetcampanasActivasById);
+router.get(`/${path}`,authUser, GetcampanasActivas);
+router.get(`/${path}/TestearSimple`,authUser, TestearTransaccion);
+router.post(`/${path}`,authUser, AddCampania);
+router.put(`/${path}/:id`,authUser, UpdateCampania);
+router.put(`/${path}/pausar/:id`,authUser, PausarCampaña);
+router.put(`/${path}/activar/:id`,authUser, ActivarCampaña);
+router.delete(`/${path}/:id`,authUser,DeleteCampania);
+router.get(`/${path}/:id`,authUser,GetcampanasActivasById);
 
 module.exports = router;

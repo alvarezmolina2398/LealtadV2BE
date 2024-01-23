@@ -7,7 +7,7 @@ const { Usuario } = require("../models/usuario");
 
 const addPermiso = async (req, res) => {
   let { data } = req.body;
-  console.log(data);
+  console.log(data, "acaa 1");
 
   try {
     data.forEach((element, index) => {
@@ -22,7 +22,7 @@ const addPermiso = async (req, res) => {
     res.status(403);
     res.send({
       errors:
-        "Ha sucedido un  error al intentar realizar la consulta de Categoria.",
+        "Ha sucedido un  error al intentar crear el permiso.",
     });
   }
 };
@@ -141,7 +141,7 @@ const getAsignados = async (req, res) => {
 const deletePermisos = async (req, res) => {
   try {
     const { id } = req.body;
-    console.log(id);
+    console.log(id, "acaaaaa");
     await permisoUsuario.destroy({
       where: {
         id: {

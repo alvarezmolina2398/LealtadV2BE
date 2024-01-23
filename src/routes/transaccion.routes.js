@@ -10,11 +10,11 @@ const path = 'Transaccion';
 
 
 //rutas del proyecto
-router.get(`/${path}`, GetTransaccions);
-router.get(`/${path}/:id`,GetTransaccionById);
-router.post(`/${path}`,validateCreate,AddTransaccion);
-router.put(`/${path}/:id`,validateCreate,UpdateTransaccion);
-router.delete(`/${path}/:id`,DeleteTransaccion);
+router.get(`/${path}`,authUser, GetTransaccions);
+router.get(`/${path}/:id`,authUser, GetTransaccionById);
+router.post(`/${path}`,validateCreate,authUser, AddTransaccion);
+router.put(`/${path}/:id`,validateCreate,authUser, UpdateTransaccion);
+router.delete(`/${path}/:id`,authUser, DeleteTransaccion);
 
 
 module.exports = router
