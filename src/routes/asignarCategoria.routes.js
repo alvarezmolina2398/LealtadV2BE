@@ -13,7 +13,7 @@ const path = 'asignarCategoria';
 //rutas para metodos de asignacion de transacciones a una categoria
 //router.get(`/${path}`, getPermisos);
 router.patch(`/${path}/NoAsignados`,authUser,  getNoAsignados);
-router.patch(`/${path}/Asignados`,authUser,  getAsignados);
+router.patch(`/${path}/asignados`,authUser,  getAsignados);
 router.post(`/${path}`,authUser, addCategoria);
 router.delete(`/${path}`,authUser, deleteTransacciones);
 

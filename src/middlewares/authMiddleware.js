@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const env = require("../bin/Env");
+const env = require("../bin/env");
 
 const authUser = (req, res, next) => {
   try {
