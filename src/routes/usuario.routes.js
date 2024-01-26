@@ -3,7 +3,7 @@ const router = Router();
 const {GetUsuarios, AddUsuario, UpdateUsuario, DeleteUsuario, GetUsuarioById} = require('../controllers/usuario.controller')
 const {validateCreate} = require('../validators/usuario')
 const env = require('../bin/Env');
-const authUser = require('../middlewares/AuthMiddleware');
+const authUser = require('../middlewares/authMiddleware');
 
 
 //declarampos nuestra constante para almacenar el path`

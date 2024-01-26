@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {AddPagina,GetPaginas,GetPaginaById,DeletePagina,UpdatePagina} = require('../controllers/pagina.controller');
-const authUser = require('../middlewares/AuthMiddleware');
+const authUser = require('../middlewares/authMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Pagina';

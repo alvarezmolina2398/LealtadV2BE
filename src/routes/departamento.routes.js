@@ -2,7 +2,7 @@ const {Router} = require('express');
 const router = Router();
 const{GetDepartamentos, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId} = require('../controllers/departamento.controller');
 const {validateCreate} = require('../validators/departamento')
-const authUser = require('../middlewares/AuthMiddleware');
+const authUser = require('../middlewares/authMiddleware');
 
 //almacenamos el path
 const path = 'Departamento';
