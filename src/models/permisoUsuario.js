@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../database/database');
 
-const permisoUsuario = sequelize.define('permisoUsuario', {
+const permisoUsuario = sequelize.define('permisousuarios', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
