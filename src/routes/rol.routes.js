@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {GetRoles, AddRol, UpdateRol, DeleteRol, GetRolById} = require('../controller/rol.controller')
+const {GetRoles, AddRol, UpdateRol, DeleteRol, GetRolById} = require('../controllers/rol.controller')
 const {validateCreate} = require('../validator/rol')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 
 //declarampos nuestra constante para almacenar el path`

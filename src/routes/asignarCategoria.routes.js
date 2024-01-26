@@ -5,8 +5,8 @@ const {
     getNoAsignados,
     getAsignados,
     deleteTransacciones
-} = require('../controller/asignarCategoria.controller');
-const authUser = require('../Middleware/AuthMiddleware');
+} = require('../controllers/asignarCategoria.controller');
+const authUser = require('../middlewares/AuthMiddleware');
 
 const path = 'asignarCategoria';
 

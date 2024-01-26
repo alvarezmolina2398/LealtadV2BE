@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const router = Router();
-const {getCodigoReferido} = require('../controller/codigosReferidos.controller')
+const {getCodigoReferido} = require('../controllers/codigosReferidos.controller')
 
 
 //declarampos nuestra constante para almacenar el path`

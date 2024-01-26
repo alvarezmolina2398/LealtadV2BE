@@ -1,8 +1,8 @@
 const {Router} =require('express');
 const router = Router();
-const {addPermiso, getPermisos,getNoAsignados, getAsignados, deletePermisos} = require('../controller/permisoUsuario.controller')
+const {addPermiso, getPermisos,getNoAsignados, getAsignados, deletePermisos} = require('../controllers/permisoUsuario.controller')
 const {} = require('../validator/permisoUsuario');
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 const path = 'permisosUsuario';
 

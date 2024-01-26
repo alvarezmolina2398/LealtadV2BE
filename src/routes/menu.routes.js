@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
 
-const {AddMenu,GetMenus,GetMenuById,DeleteMenu,UpdateMenu} = require('../controller/menu.controller');
-const authUser = require('../Middleware/AuthMiddleware');
+const {AddMenu,GetMenus,GetMenuById,DeleteMenu,UpdateMenu} = require('../controllers/menu.controller');
+const authUser = require('../middlewares/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Menu';

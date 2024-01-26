@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {AddColumna,UpdateColumna,DeleteColumna,GetColumnaById,GetColumnas} = require('../controller/columna.controller');
+const {AddColumna,UpdateColumna,DeleteColumna,GetColumnaById,GetColumnas} = require('../controllers/columna.controller');
 const {validateCreate} = require('../validator/columna')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Columna';

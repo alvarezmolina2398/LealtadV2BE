@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {AddCategoria,GetCategorias,GetCategoriaById,DeleteCategoria,UpdateCategoria} = require('../controller/categoria.controller');
+const {AddCategoria,GetCategorias,GetCategoriaById,DeleteCategoria,UpdateCategoria} = require('../controllers/categoria.controller');
 const {validateCreate} = require('../validator/categoria')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Categoria';

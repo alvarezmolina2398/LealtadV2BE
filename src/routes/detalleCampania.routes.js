@@ -16,7 +16,7 @@ const{
     addParametro,
     addPremio,
     addPresupuesto
-} = require('../controller/detallesCampania.controller')
+} = require('../controllers/detallesCampania.controller')
 
 const pathParam = 'parametros';
 const pathPremio = 'premios';

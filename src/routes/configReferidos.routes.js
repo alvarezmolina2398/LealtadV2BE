@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
-const {GetConfigReferidos, UpdateConfigReferidos, DeleteConfigReferidos} = require('../controller/configReferidos.controller');
-const authUser = require('../Middleware/AuthMiddleware');
+const {GetConfigReferidos, UpdateConfigReferidos, DeleteConfigReferidos} = require('../controllers/configReferidos.controller');
+const authUser = require('../middlewares/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'ConfigReferidos';

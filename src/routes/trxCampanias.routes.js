@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { testTransaccion } = require('../controller/trxCampania.controller')
+const { testTransaccion } = require('../controllers/trxCampania.controller')
 
 
 //declarampos nuestra constante para almacenar el path`

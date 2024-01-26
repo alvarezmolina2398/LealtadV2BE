@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const {canjearCodigo} = require('../controller/participacionReferidos.controller');
+const {canjearCodigo} = require('../controllers/participacionReferidos.controller');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Canjear';

@@ -7,9 +7,9 @@ const { AddCampania,
         UpdateCampania, 
         PausarCampaña,
         ActivarCampaña,
-        DeleteCampania } = require('../controller/campania.controller');
+        DeleteCampania } = require('../controllers/campania.controller');
 //const {validateCreate} = require('../validator/categoria')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'Campania';

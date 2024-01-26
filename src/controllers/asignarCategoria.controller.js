@@ -1,21 +1,21 @@
-const { Op} = require("sequelize");
-const {asignarCategoria} = require("../models/asignarCategoria");
+const { Op } = require("sequelize");
+const { asignarCategoria } = require("../models/asignarCategoria");
 const { Transaccion } = require("../models/transaccion");
 
-const addCategoria = async(req, res) => {
+const addCategoria = async (req, res) => {
 
-    let {data} = req.body;
+    let { data } = req.body;
     console.log(data)
 
     try {
-        
-        data.forEach((element,index) => {
+
+        data.forEach((element, index) => {
             data[index].fecha = new Date()
         });
 
         await asignarCategoria.bulkCreate(data);
 
-        res.json({code: 'ok', message: 'Transaccion asignada exitosamente.'});
+        res.json({ code: 'ok', message: 'Transaccion asignada exitosamente.' });
 
     } catch (error) {
         console.log(error)
@@ -28,21 +28,21 @@ const getNoAsignados = async (req, res) => {
 
     try {
 
-        const {idCategoria} = req.body;
+        const { idCategoria } = req.body;
 
         const transaccionesAct = await asignarCategoria.findAll({
 
             include: {
                 model: Transaccion,
             },
-            where : {
+            where: {
                 idCategoria: idCategoria
             }
         })
 
         console.log(transaccionesAct)
 
-        let transaccionesAsignadas=[];
+        let transaccionesAsignadas = [];
 
         transaccionesAct.forEach(element => {
             transaccionesAsignadas.push(element.idTransaccion)
@@ -51,14 +51,14 @@ const getNoAsignados = async (req, res) => {
         const trx = await Transaccion.findAll({
             where: {
                 estado: 1,
-                id : {
-                    [Op.notIn]:transaccionesAsignadas
+                id: {
+                    [Op.notIn]: transaccionesAsignadas
                 }
             }
         })
 
         res.json(trx);
-        
+
     } catch (error) {
 
         console.log(error)
@@ -71,12 +71,12 @@ const getAsignados = async (req, res) => {
 
     try {
 
-        const {idCategoria} = req.body;
+        const { idCategoria } = req.body;
 
         const transaccionesAct = await asignarCategoria.findAll({
             include: {
                 model: Transaccion
-            }, 
+            },
             where: {
                 idCategoria: idCategoria
             }
@@ -90,11 +90,11 @@ const getAsignados = async (req, res) => {
     }
 }
 
-const deleteTransacciones = async(req,res) => {
+const deleteTransacciones = async (req, res) => {
 
     try {
 
-        const {id} = req.body;
+        const { id } = req.body;
 
         await asignarCategoria.destroy({
             where: {

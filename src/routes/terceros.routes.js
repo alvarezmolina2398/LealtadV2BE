@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {GetTerceros, AddTercero, UpdateTercero, DeleteTercero, GetTerceroById} = require('../controller/tercero.controller')
+const {GetTerceros, AddTercero, UpdateTercero, DeleteTercero, GetTerceroById} = require('../controllers/tercero.controller')
 const {validateCreate} = require('../validator/terceros')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 const path = 'Tercero';
 

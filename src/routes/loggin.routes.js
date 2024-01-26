@@ -1,6 +1,6 @@
 const {Router} =require('express');
 const router = Router();
-const { loggin, getTokenStatus } = require('../controller/loginController');
+const { loggin, getTokenStatus } = require('../controllers/loginController');
 
 const path = 'loggin';
 

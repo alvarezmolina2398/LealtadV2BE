@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const router = Router();
-const {addPremiacion} =  require('../controller/premiacion.controller');
+const {addPremiacion} =  require('../controllers/premiacion.controller');
 
 const path = 'Premiacion';
 

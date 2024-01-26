@@ -1,8 +1,8 @@
 const {Router} = require('express');
 const router = Router();
-const {GetPremios, AddPremio, UpdatePremio, DeletePremio, GetPremioById} = require('../controller/premio.controller')
+const {GetPremios, AddPremio, UpdatePremio, DeletePremio, GetPremioById} = require('../controllers/premio.controller')
 const {validateCreate} = require('../validator/premio')
-const authUser = require('../Middleware/AuthMiddleware');
+const authUser = require('../middlewares/AuthMiddleware');
 
 
 //declarampos nuestra constante para almacenar el path`
