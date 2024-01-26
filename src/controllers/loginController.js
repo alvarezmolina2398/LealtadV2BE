@@ -2,7 +2,7 @@ const { Rol } = require("../models/rol");
 const { Usuario } = require("../models/usuario");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const env = require("../bin/Env");
+const env = require("../bin/env");
 const { error } = require("console");
 
 
