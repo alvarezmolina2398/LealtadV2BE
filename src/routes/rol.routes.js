@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {GetRoles, AddRol, UpdateRol, DeleteRol, GetRolById} = require('../controllers/rol.controller')
-const {validateCreate} = require('../validator/rol')
+const {validateCreate} = require('../validators/rol')
 const authUser = require('../middlewares/AuthMiddleware');
 
 

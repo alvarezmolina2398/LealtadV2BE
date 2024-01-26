@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {GetUsuarios, AddUsuario, UpdateUsuario, DeleteUsuario, GetUsuarioById} = require('../controllers/usuario.controller')
-const {validateCreate} = require('../validator/usuario')
+const {validateCreate} = require('../validators/usuario')
 const env = require('../bin/Env');
 const authUser = require('../middlewares/AuthMiddleware');
 

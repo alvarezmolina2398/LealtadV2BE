@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {GetMunicipios, AddMunicipio, UpdateMunicipio, DeleteMunicipio, GetMunicipioById} = require('../controllers/municipio.controller')
-const {validateCreate} = require('../validator/municipio')
+const {validateCreate} = require('../validators/municipio')
 const authUser = require('../middlewares/AuthMiddleware');
 
 

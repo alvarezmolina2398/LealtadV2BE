@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {GetPremios, AddPremio, UpdatePremio, DeletePremio, GetPremioById} = require('../controllers/premio.controller')
-const {validateCreate} = require('../validator/premio')
+const {validateCreate} = require('../validators/premio')
 const authUser = require('../middlewares/AuthMiddleware');
 
 
