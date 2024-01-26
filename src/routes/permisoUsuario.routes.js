@@ -8,8 +8,8 @@ const path = 'permisosUsuario';
 
 //rutas para metodos de departamento
 router.get(`/${path}/:username`,authUser,  getPermisos);
-router.patch(`/${path}/NoAsignados`,authUser,  getNoAsignados);
-router.patch(`/${path}/Asignados`,  getAsignados);
+router.patch(`/${path}/noAsignados`,authUser,  getNoAsignados);
+router.patch(`/${path}/asignados`,  getAsignados);
 router.post(`/${path}`, addPermiso);
 //router.put(`/${path}/:id`,validateCreate,UpdateDepartamento);
 router.delete(`/${path}`, deletePermisos);
