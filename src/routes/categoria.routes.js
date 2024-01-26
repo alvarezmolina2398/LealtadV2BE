@@ -5,7 +5,7 @@ const {validateCreate} = require('../validators/categoria')
 const authUser = require('../middlewares/authMiddleware');
 
 //declarampos nuestra constante para almacenar el path`
-const path = 'Categoria';
+const path = 'categoria';
 
 
 //rutas del proyecto
