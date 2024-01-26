@@ -2,7 +2,7 @@ const {Router} = require('express');
 const router = Router();
 const {GetTransaccions, AddTransaccion, UpdateTransaccion, DeleteTransaccion, GetTransaccionById} = require('../controllers/transaccion.controller')
 const {validateCreate} = require('../validators/transaccion')
-const authUser = require('../middlewares/authMiddleware');
+const authUser = require('../middlewares/auth.js');
 
 
 //declarampos nuestra constante para almacenar el path`

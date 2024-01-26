@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const {GetConfigReferidos, UpdateConfigReferidos, DeleteConfigReferidos} = require('../controllers/configReferidos.controller');
-const authUser = require('../middlewares/authMiddleware');
+const authUser = require('../middlewares/auth.js');
 
 //declarampos nuestra constante para almacenar el path`
 const path = 'ConfigReferidos';
