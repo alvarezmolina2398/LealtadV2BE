@@ -30,11 +30,11 @@ const Promocion = sequelize.define('promocion', {
         allowNull: false,
     },
     imgSuccess: {
-        type: DataTypes.STRING(1000),
+        type: DataTypes.TEXT('long'),
         allowNull: false,
     },
     imgFail: {
-        type: DataTypes.STRING(1000),
+        type: DataTypes.TEXT('long'),
         allowNull: false,
     },
     fechaInicio: {
