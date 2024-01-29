@@ -61,11 +61,11 @@ const Campania = sequelize.define('campania', {
         allowNull: false
     },
     imgPush: {
-        type:  DataTypes.STRING(1000),
+        type:  DataTypes.TEXT('long'),
         allowNull: false
     },
     imgAkisi: {
-        type:  DataTypes.STRING(1000),
+        type:  DataTypes.TEXT('long'),
         allowNull: false
     },
     estado : {
