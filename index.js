@@ -26,6 +26,7 @@ app.use(require('./src/routes/categoria.routes'));
 app.use(require('./src/routes/promocion.routes'));
 app.use(require('./src/routes/departamento.routes'));
 app.use(require('./src/routes/municipio.routes'));
+app.use(require('./src/routes/proyectos.routes.js'));
 app.use(require('./src/routes/rol.routes'));
 app.use(require('./src/routes/terceros.routes'));
 app.use(require('./src/routes/premio.routes'));
