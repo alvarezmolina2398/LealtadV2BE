@@ -3,9 +3,9 @@ const { Proyectos } = require('../models/proyectos.model.js')
 const GetProjects = async (req, res) => {
     try {
         const trx = await Proyectos.findAll({
-            where: {
+            /* where: {
                 estado: 1
-            }
+            } */
         })
         res.json(trx)
     } catch (error) {
@@ -36,11 +36,10 @@ const AddProject = async (req, res) => {
 const UpdateProject = async (req, res) => {
 
     try {
-        const { descripcion, } = req.body;
+        const { descripcion, estado } = req.body;
         const { id } = req.params
-        await Proyecto.update({
-            descripcion,
-
+        await Proyectos.update({
+            descripcion, estado
         }, {
             where: {
                 id: id
@@ -61,7 +60,7 @@ const DeleteProject = async (req, res) => {
 
     try {
         const { id } = req.params
-        await Proyecto.update({
+        await Proyectos.update({
             estado: 0
         }, {
             where: {
