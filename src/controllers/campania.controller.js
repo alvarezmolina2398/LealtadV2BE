@@ -521,7 +521,7 @@ const DeleteCampania = async (req, res) => {
         const { id } = req.params;
 
         await Campania.update({
-            estado: 3
+            estado: 0
         }, {
 
             where: {
