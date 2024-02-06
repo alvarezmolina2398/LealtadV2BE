@@ -3,7 +3,7 @@ const { sequelize } = require('../database/database');
 const { DetallePromocion } = require('./detallePromocion');
 
 
-const PremioPromocion = sequelize.define('premioPromocion', {
+const PremioPromocion = sequelize.define('premiopromocions', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

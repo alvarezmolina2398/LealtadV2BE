@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
 
-const PremioCampania = sequelize.define('premioCampania', {
+const PremioCampania = sequelize.define('premiocampania', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

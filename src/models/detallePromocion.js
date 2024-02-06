@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { CangePromocion } = require('./cangePromocion');
 
-const DetallePromocion = sequelize.define('detallepromocion', {
+const DetallePromocion = sequelize.define('detallepromocions', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -36,9 +36,9 @@ CangePromocion.belongsTo(DetallePromocion, {
 });
 
 
-/* (async () => {
+(async () => {
  await sequelize.sync({ force: false });
     // Code here
- })(); */
+ })();
 
 module.exports = { DetallePromocion }

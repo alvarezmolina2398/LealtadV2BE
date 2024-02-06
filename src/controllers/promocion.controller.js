@@ -224,7 +224,7 @@ const GetPromocionById = async (req, res) => {
         res.json(project)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar consultar las Promociones.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar consultar las Promociones.' + error});
     }
 
 }
@@ -314,7 +314,7 @@ const TestearCodigo = async (req, res) => {
     
             const datax = promoxionx.dataValues;
     
-            const detallePromocions = datax.detallePromocions;
+            const detallePromocions = datax.detallepromocions;
             const cuponValido = detallePromocions[0].dataValues;
             if (datax.estado === 2) {
                 res.json(
