@@ -224,7 +224,7 @@ const GetPromocionById = async (req, res) => {
         res.json(project)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar consultar las Promociones.' + error});
+        res.send({ errors: 'Ha sucedido un  error al intentar consultar las Promociones.' });
     }
 
 }
