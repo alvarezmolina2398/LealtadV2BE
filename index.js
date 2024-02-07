@@ -15,9 +15,8 @@ app.use((req, res, next) => {
 //Seting
 app.set('port', process.env.PORT || 3000);
 
-
-//declacion de los MiddelWare
-app.use(express.json());
+//app.use(express.urlencoded({ limit: '2048kb' }));
+app.use(express.json({ limit: '2048kb' }));
 
 
 app.use(require('./src/routes/transaccion.routes'));
