@@ -4,8 +4,9 @@ const env = require("../bin/env");
 const authUser = (req, res, next) => {
   try {
     // Renovar el token si es necesario
-    if (req.headers.authorization) {
+    if (req.headers.authorization != "undefined") {
       try {
+
         const tokenDecoded = jwt.verify(req.headers.authorization, env.jwt.secret);
         
         const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -14,7 +15,7 @@ const authUser = (req, res, next) => {
 
         if (currentTimestamp >= fiveMinutesBeforeExpiration) {
           // Generar un nuevo token y enviarlo en la respuesta
-          const newToken = jwt.sign({ username: tokenDecoded.username }, env.jwt.secret, { expiresIn: '2m' });
+          const newToken = jwt.sign({ username: tokenDecoded.username }, env.jwt.secret, { expiresIn: env.jwt.exp });
           res.setHeader('Authorization', newToken);
         }
       } catch (err) {

@@ -1,20 +1,27 @@
 const { Rol } = require('../models/rol')
 const { Usuario } = require('../models/usuario')
-
+const bcrypt = require("bcryptjs");
+const env = require("../bin/env");
 
 //controllador paa obtener la lista de los usuarios
 const GetUsuarios = async (req, res) => {
+
     try {
+        
         const usr = await Usuario.findAll({
             include: { model: Rol },
             where: {
                 estado: 1
             }
         })
+
         res.json(usr)
+
     } catch (error) {
+
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Transaccion.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la transacción.' });
+
     }
 
 }
@@ -24,20 +31,26 @@ const GetUsuarios = async (req, res) => {
 const AddUsuario = async (req, res) => {
 
     try {
-        const { username, nombre, password, telefono, emailNotificacion,idRol } = req.body;
+
+        const { username, nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        const hpassword = (bcrypt.genSalt(env.bcrypt.sr, (err, salt) => bcrypt.hash(password, salt, (err, hash) => hash)));
+
         await Usuario.create({
             username,
             nombre,
-            password,
+            hpassword,
             telefono,
             emailNotificacion,
             idRol
         })
+
         res.json({ code: 'ok', message: 'Usuario creado con exito' });
 
     } catch (error) {
+
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar agrear un usuario.' });
+
     }
 
 }
@@ -47,9 +60,11 @@ const AddUsuario = async (req, res) => {
 const UpdateUsuario = async (req, res) => {
 
     try {
-        const { nombre, password, telefono, emailNotificacion, idRol} = req.body;
-        const {username} = req.params
+
+        const { nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        const { username } = req.params
         console.log(username)
+
         await Usuario.update({
             nombre,
             password,
@@ -66,8 +81,10 @@ const UpdateUsuario = async (req, res) => {
         res.json({ code: 'ok', message: 'Usuario actualizado con exito' });
 
     } catch (error) {
+
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar actualizar un usuario.' });
+
     }
 
 }
@@ -77,9 +94,13 @@ const UpdateUsuario = async (req, res) => {
 const DeleteUsuario = async (req, res) => {
 
     try {
-        const {username} = req.params
+
+        const { username } = req.params
+
         await Usuario.update({
-            estado : 0
+
+            estado: 0
+
         }, {
             where: {
                 username: username
@@ -90,22 +111,29 @@ const DeleteUsuario = async (req, res) => {
         res.json({ code: 'ok', message: 'Usuario inhabilitado con exito' });
 
     } catch (error) {
+
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar eliminar un usuario.' });
+
     }
 
 }
 
 
 const GetUsuarioById = async (req, res) => {
+    
     try {
+
         const { username } = req.params;
         const project = await Usuario.findByPk(username);
         res.json(project)
+
     } catch (error) {
+
         console.log(error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar ver el usuario.' });
+
     }
 
 }
