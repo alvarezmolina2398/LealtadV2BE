@@ -8,11 +8,12 @@ const GetUsuarios = async (req, res) => {
 
     try {
         
-        const usr = await Usuario.findAll({
+        let usr = await Usuario.findAll({
             include: { model: Rol },
             where: {
                 estado: 1
-            }
+            },
+            attributes: ["username", "nombre", "telefono", "emailNotificacion", "idRol"],
         })
 
         res.json(usr)
@@ -32,13 +33,13 @@ const AddUsuario = async (req, res) => {
 
     try {
 
-        const { username, nombre, password, telefono, emailNotificacion, idRol } = req.body;
-        const hpassword = (bcrypt.genSalt(env.bcrypt.sr, (err, salt) => bcrypt.hash(password, salt, (err, hash) => hash)));
+        let { username, nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        password = await bcrypt.hash(password, env.bcrypt.sr);
 
         await Usuario.create({
             username,
             nombre,
-            hpassword,
+            password,
             telefono,
             emailNotificacion,
             idRol
@@ -49,7 +50,7 @@ const AddUsuario = async (req, res) => {
     } catch (error) {
 
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar agrear un usuario.' });
+        res.send({ errors: 'Ha sucedido un error al intentar agrear un usuario.'  + error});
 
     }
 
