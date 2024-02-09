@@ -46,11 +46,11 @@ const UpdateMunicipio = async (req, res) => {
 
     try {
         const { nombre, departamento, } = req.body;
-        const {id} = req.params
+        const { id } = req.params
         await Municipio.update({
             nombre,
             idDepartamento: departamento,
-            
+
         }, {
             where: {
                 id: id
@@ -72,9 +72,9 @@ const UpdateMunicipio = async (req, res) => {
 const DeleteMunicipio = async (req, res) => {
 
     try {
-        const {id} = req.params
+        const { id } = req.params
         await Municipio.update({
-            estado : 0
+            estado: 0
         }, {
             where: {
                 id: id
@@ -105,6 +105,22 @@ const GetMunicipioById = async (req, res) => {
 
 }
 
+const getMunicipalitiesByDepartment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const trx = await Municipio.findAll({
+            include: { model: Departamento },
+            where: {
+                idDepartamento: id
+            }
+        })
+        res.json(trx)
+    } catch (error) {
+        console.log(error)
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un error al obtener los municipios.' });
+    }
 
+}
 
-module.exports = { GetMunicipios, AddMunicipio, UpdateMunicipio, DeleteMunicipio, GetMunicipioById }
+module.exports = { GetMunicipios, AddMunicipio, UpdateMunicipio, DeleteMunicipio, GetMunicipioById, getMunicipalitiesByDepartment }
