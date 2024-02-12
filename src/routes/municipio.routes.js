@@ -12,7 +12,7 @@ const path = 'Municipio';
 //rutas del proyecto
 router.get(`/${path}`, authUser, GetMunicipios);
 router.get(`/${path}/:id`, authUser, GetMunicipioById);
-router.options(`/${path}/:id`, authUser, getMunicipalitiesByDepartment);
+router.get(`/${path}/by/:id`, authUser, getMunicipalitiesByDepartment);
 router.post(`/${path}`, validateCreate, authUser, AddMunicipio);
 router.put(`/${path}/:id`, validateCreate, authUser, UpdateMunicipio);
 router.delete(`/${path}/:id`, authUser, DeleteMunicipio);
