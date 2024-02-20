@@ -1,7 +1,6 @@
 const { QueryTypes } = require('sequelize');
 const XLSX = require("xlsx");
-const { usuarioParticipantes, reporteClientesParticipando } = require('./reports.controller.js')
-const { CampanasActualesActivas } = require('./apiPremio.controller.js')
+const { reporteClientesParticipando } = require('./reports.controller.js')
 
 const reporteClientesParticipandoExcel = async (req, res) => {
 
@@ -85,4 +84,4 @@ const reporteClientesParticipandoExcel = async (req, res) => {
 
 }
 
-module.exports = { clientesParticipando, clientesParticipandoExcel }
+module.exports = { reporteClientesParticipandoExcel }
