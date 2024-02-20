@@ -23,4 +23,15 @@ const usuarioParticipantes = async () =>
                     GROUP BY pc.idUsuarioParticipante, tc.telno, tui.fname, tui.mname, tui.lname, tui.slname;
         `, { type: QueryTypes.SELECT });
 
-module.exports = { fechaminimavalida, fechamaximavalida, usuarioParticipantes }
+const reporteClientesParticipando = async (req, res) => {
+
+    const infoParticipantes = usuarioParticipantes();
+    const campanasActivasEnc = CampanasActualesActivas();
+
+    const ws2 = XLSX.utils.aoa_to_sheet([row4]);
+    XLSX.utils.book_append_sheet(wb, ws, 'Usuario notificados');
+    XLSX.writeFile(wb, "reporte-notificaciones-offercraft.xlsx");
+
+}
+
+module.exports = { fechaminimavalida, fechamaximavalida, usuarioParticipantes, reporteClientesParticipando }
