@@ -38,4 +38,10 @@ const CampanasActualesActivas = async (idUsuario = 0, soloMostrar = 0) => {
     }
 }
 
-module.exports = { CampanasActualesActivas }
+const CampanaPremiosInfoCliente = async (base, tabla, campoid, idTransaccion) => {
+
+        await sequelize.query(`SELECT telno, department, municipality FROM pronet.tbl_customer WHERE customer_id = :idTransaccion;`, { type: QueryTypes.SELECT, replacements: { idTransaccion } });
+
+}
+
+module.exports = { CampanasActualesActivas, CampanaPremiosInfoCliente }
