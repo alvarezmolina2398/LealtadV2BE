@@ -1,5 +1,29 @@
 const { QueryTypes } = require('sequelize');
 
+const check_auth_client = async () => {
+
+    const client_service = req.headers['Client-Service'];
+    const token = req.headers['Auth-Key'];
+
+    return true
+
+}
+
+const auth = async (req, res) => {
+
+    const users_id = req.headers['User-ID'];
+    const token = req.headers['Authorization'];
+
+    return { 'status': 200, 'message': 'Authorized.' }
+
+}
+
+const getTestTransaccion = async (base, tabla, campo, campoid, idTransaccion) => {
+
+    await sequelize.query(`SELECT * FROM :base.:tabla WHERE :campoid = :idTransaccion;`, { type: QueryTypes.SELECT, replacements: { base, tabla, campo, campoid, idTransaccion } });
+
+}
+
 const CampanasActualesActivas = async (idUsuario = 0, soloMostrar = 0) => {
 
     if (idUsuario == 0) {
@@ -36,6 +60,33 @@ const CampanasActualesActivas = async (idUsuario = 0, soloMostrar = 0) => {
             , { type: QueryTypes.SELECT, replacements: { idUsuario } });
 
     }
+}
+
+const CampanasActualesActivasTercero = async () => {
+
+    await sequelize.query(`SELECT fechaRegistro, edadInicial, edadFinal, tipoUsuario,
+                            sexo, usuariosInternos, UsuariosNuevos, UsuariosAntiguos,
+                            idCampana, nombreCampana, filtradoNumero, tipoPremio,
+                            limiteParticipaciones, tipoParticipacion, minimoTransacciones,
+                            minimoAcumular, IFNULL(tituloNotificacion, 'Felicidades!!!') tituloNotificacion,
+                            IFNULL(descripcionNotificacion, REPLACE('Usted esta participando en nuestra nueva promoción {nombreCampana}', '{nombreCampana}',
+                            REPLACE(REPLACE(nombreCampana,'&#34;','\"'),'&#39;','\''))) descripcionNotificacion, iconoAkisi, imagenPush, descripcionCampana
+                                FROM genesis.enc_campana
+                            WHERE estado = 1
+                                AND fechaFinal >= CAST(NOW() AS DATE)
+                                AND fechaInicio <= CAST(NOW() AS DATE)
+                                AND terceros = 1
+                            ORDER BY fechaCreacion DESC;`, { type: QueryTypes.SELECT });
+
+}
+
+const CampanaTransaccionesValidas = async (idCampana) => {
+
+    await sequelize.query(`SELECT idLocal, valorMinimo, valorMaximo
+                                FROM genesis.det_campana_participacion dcp
+                            INNER JOIN genesis.transacciones t ON t.idTransaccion = dcp.idTransaccion
+                            WHERE idCampana = :idCampana AND dcp.estado = 1;`, { type: QueryTypes.SELECT, replacements: { idCampana } });
+
 }
 
 const CampanaPremiosRetornarRandom = async (idCampana, idCampanaRegion) => {
@@ -82,8 +133,8 @@ const CampanaPremiosInfoCliente = async (base, tabla, campoid, idTransaccion) =>
 
     await sequelize.query(`SELECT telno, department, municipality
                                     FROM pronet.tbl_customer
-                                WHERE customer_id = :idTransaccion;`, { type: QueryTypes.SELECT, replacements: { idTransaccion } });
+                                WHERE customer_id = :idTransaccion;`, { type: QueryTypes.SELECT, replacements: { base, tabla, campoid, idTransaccion } });
 
 }
 
-module.exports = { CampanasActualesActivas, CampanaPremiosInfoCliente }
+module.exports = { check_auth_client, auth, getTestTransaccion, CampanasActualesActivas, CampanasActualesActivasTercero, CampanaTransaccionesValidas, CampanaPremiosRetornarRandom, CampanaPremiosRetornarTodas, CampanaPremiosInfoCliente }
