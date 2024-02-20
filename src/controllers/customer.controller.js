@@ -4,7 +4,15 @@ const dataUsuario = async (idUsuario = 0) => {
 
     if (idUsuario == 0) {
 
-        const dataUsuario = await sequelize.query(`SELECT
+        const dataUsuario = await sequelize.query(`telno, has_commerce FROM pronet.tbl_customer WHERE customer_id = :idUsuario`);
+
+        if (dataUsuario) {
+            
+        } else {
+            
+        }
+
+        const dataUsuario_ = await sequelize.query(`SELECT
                 telno, has_commerce
                 FROM pronet.tbl_customer
                 WHERE customer_id ${dataUsuario ? `AND (
@@ -22,7 +30,7 @@ const dataUsuario = async (idUsuario = 0) => {
                             ) AND ( tipoUsuario = 2
                                 OR tipoUsuario = ${dataUsuario.has_commerce})` :
                     'AND tipoUsuario = 2'}`
-        , { type: QueryTypes.SELECT })
+        , { raw: false, type: QueryTypes.SELECT })
 
 
     } else {
@@ -37,12 +45,12 @@ const dataUsuario = async (idUsuario = 0) => {
                     REPLACE(REPLACE(nombreCampana,'&#34;','\"'),'&#39;','\''))) descripcionNotificacion, iconoAkisi,
                     imagenPush, descripcionCampana, 0 AS maximoDiario, limiteParticipaciones,
                         (SELECT COUNT(*) FROM genesis.participante_campana
-                        WHERE idUsuarioParticipante = $idUsuario
+                        WHERE idUsuarioParticipante = :idUsuario
                             AND participante_campana.idCampana = enc_campana.idCampana)
                         AS actualParticipaciones 
                 FROM genesis.enc_campana 
                 WHERE estado = 1 AND fechaFinal >= CAST(NOW() AS DATE) AND fechaInicio <= CAST(NOW() AS DATE)`
-            , { type: QueryTypes.SELECT });
+            , { raw: false, type: QueryTypes.SELECT });
 
     }
 }

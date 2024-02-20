@@ -45,6 +45,7 @@ app.use(require('./src/routes/reportePromocion.routes'));
 app.use(require('./src/routes/reporteReferidos.routes'));
 app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
+app.use(require('./src/routes/excelReports.routes.js'))
 
 
 //corremos el servidor

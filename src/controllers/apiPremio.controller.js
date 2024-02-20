@@ -39,7 +39,7 @@ const CampanasActualesActivas = async (idUsuario = 0, soloMostrar = 0) => {
 
     } else {
 
-        await sequelize.query(`SELECT
+        /* await sequelize.query(`SELECT
                     fechaRegistro, edadInicial, edadFinal, tipoUsuario,
                     sexo, usuariosInternos, UsuariosNuevos, UsuariosAntiguos,
                     idCampana, nombreCampana, filtradoNumero, tipoPremio,
@@ -54,7 +54,7 @@ const CampanasActualesActivas = async (idUsuario = 0, soloMostrar = 0) => {
                         AS actualParticipaciones 
                 FROM genesis.enc_campana 
                 WHERE estado = 1 AND fechaFinal >= CAST(now() as date) AND fechaInicio <= CAST(now() as date)`
-            , { raw: false, type: QueryTypes.SELECT, replacements: { idUsuario } });
+            , { raw: false, type: QueryTypes.SELECT, replacements: { idUsuario } }); */
 
     }
 }

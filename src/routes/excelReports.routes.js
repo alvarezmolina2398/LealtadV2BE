@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const router = Router();
-const { clientesParticipando } = require('../controllers/excelReports.controller.js');
+const { reporteClientesParticipandoExcel, reporteClientesContraCampanasExcel } = require('../controllers/excelReports.controller.js');
 const authUser = require('../middlewares/auth.js');
 
 const path = 'reports/excel';
 
-router.get(`/${path}`,authUser, clientesParticipando);
+router.get(`/${path}/reporteClientesParticipando`, authUser, reporteClientesParticipandoExcel);
+router.get(`/${path}/reporteClientesContraCampanas`, reporteClientesContraCampanasExcel);
 /* router.get(`/${path}/TestearSimple`,authUser, TestearTransaccion);
 router.post(`/${path}`,authUser, AddCampania);
 router.put(`/${path}/:id`,authUser, UpdateCampania);
