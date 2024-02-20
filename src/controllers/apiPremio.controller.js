@@ -3,7 +3,7 @@ const { QueryTypes } = require('sequelize');
 const check_auth_client = async () => {
 
     const client_service = req.headers['Client-Service'];
-    const token = req.headers['Auth-Key'];
+    const auth_key = req.headers['Auth-Key'];
 
     return true
 
