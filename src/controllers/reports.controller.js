@@ -1,5 +1,5 @@
 const { QueryTypes } = require('sequelize');
-const { getTestTransaccion, CampanasActualesActivas, CampanasActualesActivasTercero, CampanaTransaccionesValidas, CampanaPremiosRetornarRandom, CampanaPremiosRetornarTodas, CampanaPremiosInfoCliente } = require('./apiPremio.controller.js')
+const { getTestTransaccion, campanasActualesActivas, campanasActualesActivasTercero, campanaTransaccionesValidas, campanaPremiosRetornarRandom, campanaPremiosRetornarTodas, campanaPremiosInfoCliente } = require('./apiPremio.controller.js')
 
 
 const fechaminimavalida = async () =>
@@ -28,7 +28,7 @@ const usuarioParticipantes = async () =>
 const reporteClientesParticipando = async (req, res) => {
 
     const infoParticipantes = usuarioParticipantes();
-    const campanasActivasEnc = CampanasActualesActivas();
+    const campanasActivasEnc = campanasActualesActivas();
 
     infoParticipantes.forEach((value, index) => {
         const idRevision = value.idUsuarioParticipante;
@@ -36,7 +36,7 @@ const reporteClientesParticipando = async (req, res) => {
         const telretornar = value.telno;
         const ultimaFecha = '';
         const nombreretornar = value.nombre;
-        const infCliente = CampanaPremiosInfoCliente("pronet", "tbl_customer", "customer_id", idRevision);
+        const infCliente = campanaPremiosInfoCliente("pronet", "tbl_customer", "customer_id", idRevision);
         const informacionUsuario = informacionGeneralUsuario(idRevision);
         const depto = infCliente[0].department;
         const muni = infCliente[0].municipality;
@@ -45,7 +45,7 @@ const reporteClientesParticipando = async (req, res) => {
         const edad = informacionUsuario[0].edad;
         const genero = informacionUsuario[0].genero;
         const retorno = [];
-        const campanasActivasEnc = CampanasActualesActivas();
+        const campanasActivasEnc = campanasActualesActivas();
     });
 
     const ws2 = XLSX.utils.aoa_to_sheet([row4]);
