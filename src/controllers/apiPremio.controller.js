@@ -452,11 +452,140 @@ const campanasRevisionGeneral = async () =>
                                 UsuariosNuevos, nombreCampana, filtradoNumero, tipoPremio, tituloNotificacion, descripcionNotificacion, limiteParticipaciones, minimoTransacciones, minimoAcumular FROM genesis.enc_campana WHERE tipoParticipacion IN (2,4,5) AND estado = '1' AND fechaFinal >= CAST(NOW() as date);`
         , { raw: false, type: QueryTypes.SELECT });
 
+const transaccionesDelUsurioPendientesXcampana = async (idUsuario, fecha1, fecha2, idCampana) =>
+    await sequelize.query(`SELECT *, CAST(fechaParticipacion AS DATE) solofecha
+                            FROM genesis.participante_campana_adicional
+                            WHERE yaAplico = 0
+                                AND idCampanaParticipacion = :idCampana
+                                AND idUsuarioParticipante = :idUsuario
+                                AND (fechaParticipacion
+                                    BETWEEN ':fecha1 00:00:00'
+                                        AND ':fecha2 23:59:59')
+                                AND fechaParticipacion >= (SELECT fechaCreacion
+                                    FROM enc_campana
+                                    WHERE idCampana = idCampana);`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idUsuario, fecha1, fecha2, idCampana } });
+
+const TransaccionesDelUsurioPendientes = async (idUsuario, fecha1, fecha2) =>
+    await sequelize.query(`SELECT *, CAST(fechaParticipacion AS DATE) solofecha
+                            FROM genesis.participante_campana_adicional
+                            WHERE yaAplico = 0
+                                AND idCampana = 0
+                                AND idUsuarioParticipante = :idUsuario
+                                AND fechaParticipacion BETWEEN ':fecha1'
+                                AND ':fecha2 23:59:59';`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idUsuario, fecha1, fecha2 } });
+
+const actualizarTransaccionesAplicadas = async (idCampana, transacciones) =>
+    await sequelize.query(`UPDATE genesis.participante_campana_adicional
+                            SET idCampana = :idCampana, yaAplico = 1
+                            WHERE idParticipante IN (:transacciones)
+                                AND idCampanaParticipacion = :idCampana;`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana, transacciones } });
+
+const limiteTransaccionesCampana = async idCampana =>
+    await sequelize.query(`SELECT limiteTransacciones
+                            FROM det_campana_participacion
+                            WHERE idCampana = :idCampana
+                                AND tipoTransaccion = 'c'`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana } });
+
+const participacionesAdicionales = async (idparticipante, idCampana) =>
+    await sequelize.query(`SELECT COUNT(idParticipante) cantidad
+                            FROM genesis.participante_campana_adicional
+                            WHERE idUsuarioParticipante = :idparticipante
+                                AND CAST(fechaParticipacion AS DATE) = CAST(NOW() AS DATE)
+                                AND idCampanaParticipacion = :idCampana"`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idparticipante, idCampana } });
+
+const participacionesAdicionalesList = async (idparticipante, idCampana) =>
+    await sequelize.query(`SELECT *
+                            FROM genesis.participante_campana_adicional
+                            WHERE idUsuarioParticipante = :idparticipante
+                                AND idCampanaParticipacion = :idCampana"`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idparticipante, idCampana } });
+
+
+const TransaccionenXCampana = async idCampana =>
+    await sequelize.query(`SELECT dcp.valorMinimo, dcp.valorMaximo, idTipoParticipacion, limiteTransacciones,
+                                tipoTransaccion, t.descripcion, ctdb.columna, dcp.idCampanaParticipacion
+                            FROM genesis.det_campana_participacion dcp
+                            INNER JOIN genesis.transacciones t
+                                ON t.idTransaccion = dcp.idTransaccion
+                            INNER JOIN genesis.columnastablasdb ctdb
+                                ON ctdb.id = t.columna WHERE idCampana = :idCampana
+                            AND dcp.estado = 1;`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana } });
+
+const TransaccionenXNew = async idCampana =>
+    await sequelize.query(`SELECT dcp.valorMinimo, dcp.valorMaximo, idTipoParticipacion, limiteTransacciones,
+                            tipoTransaccion,  dcp.idCampanaParticipacion
+                            FROM genesis.det_campana_participacion dcp
+                            WHERE idCampana =:idCampana`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana } });
+
+const cantidadParametros = async idCampana =>
+    await sequelize.query(`SELECT SUM(limiteTransacciones) cantidad
+                            FROM genesis.det_campana_participacion
+                            WHERE idCampana = :idCampana`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana } });
+
+const cantidadParticipacionesAdicional = async (idCampana, idRevision) =>
+    await sequelize.query(`SELECT *
+                            FROM participante_campana_adicional 
+                            WHERE yaAplico = 0
+                                AND idCampanaParticipacion = :idCampana
+                                AND idUsuarioParticipante = :idRevision`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana, idRevision } });
+
+const cantidadParticipaciones = async (idCampana, idRevision) =>
+    await sequelize.query(`SELECT
+                                COUNT(*) cantidad
+                            FROM participante_campana
+                            WHERE idCampana = :idCampana
+                            AND idUsuarioParticipante = :idRevision`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana, idRevision } });
+
+const getDatosXCampana = async idCampana =>
+    await sequelize.query(`SELECT tituloNotificacion, descripcionNotificacion, tipoPremio,
+                            (SELECT idCampanaRegion FROM genesis.det_campana_regiones
+                                WHERE idCampana = enc_campana.idCampana limit 1) idCampanaRegion
+    FROM enc_campana WHERE idCampana = :idCampana`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana, idRevision } });
+
+const getCustomerID = async telno =>
+    await sequelize.query(`SELECT customer_id
+                            FROM pronet.tbl_customer
+                            WHERE telno = :telno`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { telno } });
+
+const removeAdicionales = async (idCampana, idUsuario) =>
+    await sequelize.query(`UPDATE participante_campana_adicional
+                            SET yaAplico = 1, idCampana = :idCampana
+                            WHERE idCampanaParticipacion = :idCampana
+                            AND yaAplico = 0
+                            AND idUsuarioParticipante = ':idUsuario';`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana, idUsuario } });
+
+const getPremiosXCamapa = async idCampana =>
+    await sequelize.query(`SELECT p.idTransaccion, dcp.valor,
+                                IFNULL(t.descripcion, '---') AS descripcion, p.idPremio
+                                    AS idtablaPremios, 0 AS idPremioPR
+                            FROM genesis.det_campana_premios dcp
+                            INNER JOIN genesis.premios p
+                                ON p.idPremio = dcp.idPremio
+                                    LEFT JOIN genesis.transacciones t
+                                        ON p.idTransaccion = t.idTransaccion
+                            WHERE dcp.idCampana = :idCampana;`
+        , { raw: false, type: QueryTypes.SELECT, replacements: { idCampana } });
+    
 
 module.exports = {
     check_auth_client, auth, getTestTransaccion, campanasActualesActivas, campanasActualesActivasTercero, campanaTransaccionesValidas, campanaPremiosRetornarRandom, campanaPremiosRetornarTodas, campanaPremiosInfoCliente,
     ValidarNumeroTelefono, CampanaNumerosRestringidos, validarUnicaTransaccion, validarUnicaTransaccion2, validarUnicaTransaccion3, validarLimiteParticipacionesPorUsuario, validarlimitetransacciones, validarParticipantesRestantes,
     actualizarParticipantesRestantes, transaccionesUsuario, informacionGeneralUsuario, transaccionesValidasCampana, transaccionesValidasCampanaCategoria, transaccionesValidasCampanasFusion, transaccionesValidasCampanasFusionL,
     regionesValidasCampana, guardarParticipacion, guardarParticipacionAlterna, guardaOfferCraftNotification, revisionCampanaTransaccionesRecurrentes, obtenerTransaccionesParaRevision, obtenerTransaccionesParaRevisionDias,
-    obtenerTransaccionesParaRevisionValor, actualizarTransaccionesRevisadas, campanasRecurrentesAcumulativasParaRevision, deptosMunisCampanasRecurrentesAcumulativasParaRevision, participanteCampanasRecurrentesAcumulativasParaRevision, campanasRevisionGeneral
+    obtenerTransaccionesParaRevisionValor, actualizarTransaccionesRevisadas, campanasRecurrentesAcumulativasParaRevision, deptosMunisCampanasRecurrentesAcumulativasParaRevision, participanteCampanasRecurrentesAcumulativasParaRevision,
+    campanasRevisionGeneral, transaccionesDelUsurioPendientesXcampana, TransaccionesDelUsurioPendientes, actualizarTransaccionesAplicadas, limiteTransaccionesCampana, participacionesAdicionales, participacionesAdicionalesList,
+    TransaccionenXCampana, TransaccionenXNew, cantidadParametros, cantidadParticipacionesAdicional, cantidadParticipaciones, getDatosXCampana, getCustomerID, removeAdicionales, getPremiosXCamapa
 }
