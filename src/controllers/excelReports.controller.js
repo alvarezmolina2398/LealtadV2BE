@@ -179,22 +179,6 @@ const reporteClientesContraCampanasExcel = async (req, res) => {
     const file = await XLSX.write(wb, { bookType: "xlsx", bookSST: false, type: "buffer" });
     res.send(file)
 
-
-    /* 
-        return
-        console.log(ws)
-    
-        return
-    
-        XLSX.writeFile(wb, "./temp/reporte-notificaciones-offercraft.xlsx")
-        return res.download("./temp/reporte-notificaciones-offercraft.xlsx");
-    
-    
-        return XLSX.writeFile(wb, "reporte-notificaciones-offercraft.xlsx");
-    
-        res.send(XLSX.writeFile(wb, "reporte-notificaciones-offercraft.xlsx")); */
-
-
 }
 
 
