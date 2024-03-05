@@ -1,11 +1,9 @@
-const { Router } = require('express');
-const router = Router();
-const {addParticipacion} = require('../controllers/participacion.controller');
+const express = require('express');
+const router = express.Router();
+const participacionController = require('../controllers/participacion.controller');
 
-//declarampos nuestra constante para almacenar el path`
-const path = 'Participacion';
-
-//rutas dle proyecto
-router.post(`/${path}`, addParticipacion);
+// Rutas del proyecto
+router.post('/Participacion', participacionController.addParticipacion);
+router.get('/Participacion', participacionController.getParticipaciones);
 
 module.exports = router;
