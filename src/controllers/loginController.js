@@ -69,6 +69,8 @@ const loggin = async (req, res) => {
         return res.status(401).send({ message: "No se pudo generar el token" });
       }
 
+      console.log("Contraseñas a comparar: ", password, usuario.dataValues.password);
+
       bcrypt.compare(password, usuario.dataValues.password, (err, result) => {
 
         // Incluye el token en la respuesta JSON al front-end.
@@ -77,6 +79,8 @@ const loggin = async (req, res) => {
         //   message: "Bienvenido " + usuario.nombre,
         //   info: usuario,
         //   token: token,  // Agregado para incluir el token en la respuesta.
+
+        console.log("Resultado de la comparación de contraseñas: ", result);
         // });
 
         if (result) {
