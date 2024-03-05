@@ -29,7 +29,10 @@ const AddCampania = async (req, res) => {
         etapas,
         Participacion,
         Bloqueados,
-        maximoParticipaciones
+        maximoParticipaciones,
+        horaReporte,
+        diaReporte,
+        emails,
     } = req.body;
 
 
@@ -49,6 +52,9 @@ const AddCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
+            horaReporte,
+            diaReporte,
+            emails,
             estado: 1,
             maximoParticipaciones
         });
@@ -219,7 +225,10 @@ const UpdateCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
-            maximoParticipaciones
+            maximoParticipaciones,
+             horaReporte,
+            diaReporte,
+            emails,
         } = req.body;
 
         const { id } = req.params;

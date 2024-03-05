@@ -21,9 +21,19 @@ const GetPremios = async (req, res) => {
 //controllador para agregar nuevos Premios
 const AddPremio = async (req, res) => {
 
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+    console.log("si llega el metodo crear ");
+
+
+    console.log(req.body);
     try {
 
-        
+
             const { descripcion, nombre,link, claveSecreta, tipoTransaccion, idTransaccion } = req.body;
             await Premio.create({
                 descripcion,
@@ -35,12 +45,25 @@ const AddPremio = async (req, res) => {
             })
 
             res.json({ code: 'ok', message: 'Premio creado con exito' });
+
+            console.log("si llega el metodo crear despues de agregar ");
+            console.log("si llega el metodo crear despues de agregar");
+            console.log("si llega el metodo crear despues de agregar");
+            console.log("si llega el metodo crear despues de agregar");
+            console.log("si llega el metodo crear despues de agregar");
         
         
 
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar agregar el premio.' });
+
+        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES "+ error)
     }
 
 }
