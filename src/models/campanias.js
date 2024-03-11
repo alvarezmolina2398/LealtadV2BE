@@ -26,7 +26,7 @@ const Campania = sequelize.define('campania', {
     },
     fechaRegistro:{
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: true
     },
     fechaInicio: {
         type: DataTypes.DATEONLY,
