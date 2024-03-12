@@ -4,7 +4,7 @@ const { Pagina } = require("../models/pagina");
 const { permisoUsuario } = require("../models/permisoUsuario");
 const { Rol } = require("../models/rol");
 const { Usuario } = require("../models/usuario");
-
+const { Proyectos } = require("../models/proyectos.model");
 const addPermiso = async (req, res) => {
   let { data } = req.body;
   console.log(data, "acaa 1");

@@ -3,9 +3,9 @@ const { Proyectos } = require('../models/proyectos.model.js')
 const GetProjects = async (req, res) => {
     try {
         const trx = await Proyectos.findAll({
-            /* where: {
+             where: {
                 estado: 1
-            } */
+            } 
         })
         res.json(trx)
     } catch (error) {
@@ -19,12 +19,15 @@ const GetProjects = async (req, res) => {
 const AddProject = async (req, res) => {
 
     try {
+        console.log('Data recibida en AddProject:', req.body);
         console.log(req.body);
-        const { descripcion } = req.body;
+        
+        const { descripcion,ruta } = req.body;
         await Proyectos.create({
-            descripcion,
+            descripcion,ruta
         })
         res.json({ code: 'ok', message: 'Proyecto creado con éxito.' });
+        console.log('Data recibida en AddProject:', req.body);
 
     } catch (error) {
         res.status(403)
@@ -36,10 +39,15 @@ const AddProject = async (req, res) => {
 const UpdateProject = async (req, res) => {
 
     try {
-        const { descripcion, estado } = req.body;
+        const { descripcion, ruta } = req.body;
         const { id } = req.params
+
+        console.log('ID:', id);
+        console.log('Descripción:', descripcion);
+        console.log('Ruta:', ruta);
+
         await Proyectos.update({
-            descripcion, estado
+            descripcion, ruta
         }, {
             where: {
                 id: id
@@ -50,8 +58,7 @@ const UpdateProject = async (req, res) => {
         res.json({ code: 'ok', message: 'Proyecto actualizado con éxito' });
 
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar actualizar el proyecto.' });
+        res.status(403).send({ errors: 'Ha sucedido un  error al intentar actualizar el proyecto.' });
     }
 
 }
@@ -60,6 +67,7 @@ const DeleteProject = async (req, res) => {
 
     try {
         const { id } = req.params
+        console.log("ID del proyecto a eliminar:", id);
         await Proyectos.update({
             estado: 0
         }, {
@@ -72,8 +80,7 @@ const DeleteProject = async (req, res) => {
         res.json({ code: 'ok', message: 'Proyecto inhabilitado con éxito.' });
 
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar el proyecto.' });
+        res.status(403).send({ errors: 'Ha sucedido un  error al intentar realizar el proyecto.' });
     }
 
 }
