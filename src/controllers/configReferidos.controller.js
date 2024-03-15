@@ -77,7 +77,7 @@ const GetConfigReferidosById = async (req, res) => {
     try {
         const { id } = req.params;
         const { estado } = req.params;
-        const { duracion} =req.params;
+      
         const project = await ConfigReferido.findByPk(id, estado);
         res.json(project)
     } catch (error) {
