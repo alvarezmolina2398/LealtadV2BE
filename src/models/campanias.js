@@ -76,6 +76,21 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
+    diaReporte: {
+        type:  DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 1
+    },
+    horaReporte: {
+        type:  DataTypes.TIME,
+        allowNull: true,
+        defaultValue: '09:00:00'
+    },
+    emails: {
+        type:  DataTypes.STRING(1000),
+        allowNull: true,
+        defaultValue: 'estiven6647@gmail.com'
+    },
 },{timestamps: false});
 
 
@@ -125,10 +140,13 @@ Participacion.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
-
 //(async () => {
     //await sequelize.sync({ force: true });
 //     // Code here
 //})();
+
+// Campania.sync({ force: false }).then(() => {
+//     console.log('tabla campania creada');
+// });
 
 module.exports = {Campania}

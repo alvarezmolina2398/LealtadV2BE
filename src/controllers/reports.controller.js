@@ -1,7 +1,6 @@
 const { QueryTypes } = require('sequelize');
 const { getTestTransaccion, campanasActualesActivas, campanasActualesActivasTercero, campanaTransaccionesValidas, campanaPremiosRetornarRandom, campanaPremiosRetornarTodas, campanaPremiosInfoCliente } = require('./apiPremio.controller.js')
 
-
 const fechaminimavalida = async () =>
     await sequelize.query(`SELECT MIN(fechaInicio) AS fechaApartir
         FROM genesis.enc_campana
