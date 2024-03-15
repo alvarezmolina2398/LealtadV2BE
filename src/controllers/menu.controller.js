@@ -17,13 +17,15 @@ const GetMenus = async (req, res) => {
     }
 }
 
-//controllador para agregar nuevos menus
+
+
 const AddMenu = async (req, res) => {
     try {
-        const { descripcion, pagina } = req.body;
+        const { descripcion,icono, pagina } = req.body;
 
         await Menu.create({
             descripcion,
+            icono,
             idPagina: pagina,
         })
         res.json({ code: 'ok', message: 'Menu creado con exito' });
@@ -34,13 +36,37 @@ const AddMenu = async (req, res) => {
     }
 }
 
-//controllador para actualizar Menus
+
+//controllador para agregar nuevos menus
+// const AddMenu = async (req, res) => {
+//     try {
+//         const { descripcion,icono } = req.body;
+
+//         await Menu.create({
+//             descripcion,
+//             icono,
+           
+//         })
+//         res.json({ code: 'ok', message: 'Menu creado con exito' });
+
+//     } catch (error) {
+//         res.status(403)
+//         res.send({ errors: 'Ha sucedido un  error al intentar realizar el menu.' });
+//     }
+// }
+
+
+
+
+// controllador para actualizar Menus
 const UpdateMenu = async (req, res) => {
     try {
-        const { descripcion } = req.body;
+        const { descripcion, icono } = req.body;
         const { id } = req.params
         await Menu.update({
-            descripcion
+            descripcion,
+            icono,
+           
         }, {
             where: {
                 id: id
