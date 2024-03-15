@@ -305,7 +305,7 @@ const TestearTransaccion = async (req, res) => {
             tipoUsuario: 1,
             profesion: 1,
             fechaNacimineto: '1998-07-23',
-            fechaRegistro: new Date(2023, 01, 31),
+            fechaRegistro: new Date(2023, 1, 31),
         }
 
 
@@ -693,7 +693,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
     switch (etapaActual.periodo) {
         case 1:
             console.log('a')
-            await GetParticipacionsXdias(3,  new Date(2023,0,01), new Date(2023,03,01))
+            await GetParticipacionsXdias(3,  new Date(2023,0,1), new Date(2023,3,1))
             break;
 
         default:

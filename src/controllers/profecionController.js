@@ -19,21 +19,7 @@ const GetProfecion = async (req, res) => {
 
 
 
-// const GetProfecion = async (req, res) => {
-//     try {
-//         const trx = await Proyectos.findAll({
-//             /* where: {
-//                 estado: 1
-//             } */
-//         })
-//         res.json(trx)
-//     } catch (error) {
-//         res.status(403)
-//         console.log(error)
-//         res.send({ errors: 'Ha sucedido un error al obtener los proyectos.' });
-//     }
 
-// }
 
 
 
