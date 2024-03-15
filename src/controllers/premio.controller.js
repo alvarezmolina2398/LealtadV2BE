@@ -33,7 +33,6 @@ const AddPremio = async (req, res) => {
     console.log(req.body);
     try {
 
-<<<<<<< HEAD
         
         //const { descripcion, nombre,link, claveSecreta, tipoTransaccion, idTransaccion } = req.body;
 
@@ -41,10 +40,6 @@ const AddPremio = async (req, res) => {
 
         if(tipoTransaccion === "1"){
             const {tipoTransaccion, idTransaccion } = req.body;
-=======
-
-            const { descripcion, nombre,link, claveSecreta, tipoTransaccion, idTransaccion } = req.body;
->>>>>>> feature/profecions
             await Premio.create({
                 tipo: tipoTransaccion,
                 idTransaccion,
@@ -54,7 +49,6 @@ const AddPremio = async (req, res) => {
 
             res.json({ code: 'ok', message: 'Premio creado con exito' });
 
-<<<<<<< HEAD
         } else if(tipoTransaccion === "2"){
             const { descripcion, link, claveSecreta} = req.body;
 
@@ -69,13 +63,6 @@ const AddPremio = async (req, res) => {
             res.json({ code: 'ok', message: 'Premio creado con exito' });
         }
 
-=======
-            console.log("si llega el metodo crear despues de agregar ");
-            console.log("si llega el metodo crear despues de agregar");
-            console.log("si llega el metodo crear despues de agregar");
-            console.log("si llega el metodo crear despues de agregar");
-            console.log("si llega el metodo crear despues de agregar");
->>>>>>> feature/profecions
         
         
 

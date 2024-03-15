@@ -88,7 +88,6 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-<<<<<<< HEAD
     diaReporte: {
         type:  DataTypes.INTEGER,
         allowNull: true,
@@ -104,9 +103,6 @@ const Campania = sequelize.define('campania', {
         allowNull: true,
         defaultValue: 'estiven6647@gmail.com'
     },
-=======
-    
->>>>>>> feature/profecions
 },{timestamps: false});
 
 
