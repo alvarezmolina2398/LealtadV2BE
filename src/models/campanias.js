@@ -26,7 +26,7 @@ const Campania = sequelize.define('campania', {
     },
     fechaRegistro:{
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: true
     },
     fechaInicio: {
         type: DataTypes.DATEONLY,
@@ -34,6 +34,18 @@ const Campania = sequelize.define('campania', {
     },
     fechaFin: {
         type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    diaReporte: { // Nuevo campo: Entero para el día
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    horaReporte: { // Nuevo campo: Tipo Time que guarda únicamente la hora
+        type: DataTypes.TIME,
+        allowNull: false
+    },
+    emails: { // Nuevo campo: String de correos electrónicos separados por coma
+        type: DataTypes.STRING(1000),
         allowNull: false
     },
     edadInicial: {
@@ -76,6 +88,7 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
+<<<<<<< HEAD
     diaReporte: {
         type:  DataTypes.INTEGER,
         allowNull: true,
@@ -91,6 +104,9 @@ const Campania = sequelize.define('campania', {
         allowNull: true,
         defaultValue: 'estiven6647@gmail.com'
     },
+=======
+    
+>>>>>>> feature/profecions
 },{timestamps: false});
 
 
