@@ -33,7 +33,7 @@ const AddUsuario = async (req, res) => {
 
     try {
 
-        let { username, nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        let { username, nombre, password, telefono, emailNotificacion,tipoUsuario, idRol } = req.body;
         password = await bcrypt.hash(password, env.bcrypt.sr);
 
         await Usuario.create({
@@ -42,6 +42,7 @@ const AddUsuario = async (req, res) => {
             password,
             telefono,
             emailNotificacion,
+            tipoUsuario,
             idRol
         })
 
@@ -62,7 +63,7 @@ const UpdateUsuario = async (req, res) => {
 
     try {
 
-        const { nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        const { nombre, password, telefono, emailNotificacion,  tipoUsuario, idRol } = req.body;
         const { username } = req.params
         console.log(username)
 
@@ -71,6 +72,7 @@ const UpdateUsuario = async (req, res) => {
             password,
             telefono,
             emailNotificacion,
+            tipoUsuario,
             idRol
         }, {
             where: {

@@ -57,18 +57,19 @@ const UpdateConfigReferidos = async (req, res) => {
 //controllador para eliminar
 const DeleteConfigReferidos = async (req, res) => {
     try {
-        const { estado } = req.body;
-
         const { id } = req.params
+        const {estado} = req.body;
+        console.log("actuaizando estado:"+estado)
         await ConfigReferido.update({
-            estado:estado
+            estado: estado
         }, {
             where: {
                 id: id
             }
         });
-    res.json({ code: 'ok', message: 'Referido inhabilitado con exito' });
+    res.json({ code: 'ok', message: `Referido ${estado == 1 ? "habilitado" : "deshabilitado"} con exito` });
     } catch (error) {
+        console.log(error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar al Referido.' });
     }
