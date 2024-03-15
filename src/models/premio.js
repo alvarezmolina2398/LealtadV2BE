@@ -14,15 +14,15 @@ const Premio = sequelize.define('premio', {
     },
     descripcion: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: true
     },
-    nombre: {
+    usuario: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: true
     },
     tipo: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     link: {
         type: DataTypes.STRING(500),
