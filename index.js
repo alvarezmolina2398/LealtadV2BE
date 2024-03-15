@@ -34,6 +34,7 @@ app.use(require('./src/routes/campania.routes'));
 app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
+app.use(require('./src/routes/profecion.routes'));
 app.use(require('./src/routes/permisoUsuario.routes'))
 app.use(require('./src/routes/cangepromocion.routes'))
 app.use(require('./src/routes/asignarCategoria.routes'));
@@ -46,6 +47,7 @@ app.use(require('./src/routes/reporteReferidos.routes'));
 app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'))
+
 
 
 //corremos el servidor
