@@ -7,7 +7,7 @@ const { Campania } = require('../models/campanias');
 
 
 
-const GetEnviaPremio = async (req, res) => {
+const GetEnviaPremio = async(req, res) => {
     try {
         console.log("Si llega el método obtener premios");
         const trx = await EnviaPremio.findAll({
@@ -29,24 +29,48 @@ const GetEnviaPremio = async (req, res) => {
     }
 }
 
-// const GetEnviaPremio = async (req, res) => {
+const AddEnvio = async(req, res) => {
+    try {
+        const data = req.body; // El cuerpo de la solicitud contendrá un array de objetos
+        console.log('Estos son los datos recibidos:', data);
+
+        // Iterar sobre cada objeto en el array y crear una entrada en la base de datos
+        for (const item of data) {
+            const { telefono, campania } = item;
+            await EnviaPremio.create({
+                telefono,
+                campania
+            });
+        }
+
+        res.json({ code: 'ok', message: 'Datos enviados con éxito' });
+    } catch (error) {
+        console.error('Error al procesar los datos:', error);
+        res.status(500).json({ error: 'Ha ocurrido un error al procesar los datos' });
+    }
+};
+
+
+
+
+
+// const AddEnvio= async (req, res) => {
 //     try {
 
-//         console.log("si llega el metodo obtener premios")
-//         const trx = await EnviaPremio.findAll({
-//             where: {
-//                 estado: 1
-//             }
-//         });
+//         const { telefono, campania} = req.body;
+//         console.log('esta llegando',telefono)
 
+//         await EnviaPremio.create({
+//             telefono,
+//             campania
 
+//         })
 
-//         console.log(trx);
+//         res.json({ code: 'ok', message: 'profecion creada con exito' });
 
-//         res.json(trx);
 //     } catch (error) {
-//         res.status(403);
-//         res.send({ errors: 'Ha sucedido un error al intentar obtener la lista de premios.' });
+//         res.status(403)
+//         res.send({ errors: 'Ha sucedido un  error al intentar realizar la profecion.' });
 //     }
 // }
 
@@ -54,34 +78,10 @@ const GetEnviaPremio = async (req, res) => {
 
 
 
-const AddEnvio= async (req, res) => {
-    try {
-
-        const { telefono, campania} = req.body;
-        console.log('esta llegando',telefono)
-
-        await EnviaPremio.create({
-            telefono,
-            campania
-          
-        })
-       
-        res.json({ code: 'ok', message: 'profecion creada con exito' });
-
-    } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la profecion.' });
-    }
-}
 
 
 
-
-
-
-
-
-const UpdateEnvio = async (req, res) => {
+const UpdateEnvio = async(req, res) => {
     try {
         const { telefono } = req.body;
         const { id } = req.params;
@@ -99,12 +99,12 @@ const UpdateEnvio = async (req, res) => {
     }
 };
 
-const DeleteEnvio = async (req, res) => {
+const DeleteEnvio = async(req, res) => {
     try {
         const { id } = req.params;
 
         await EnviaPremio.update({
-            estado: 0, 
+            estado: 0,
         }, {
             where: {
                 id,
@@ -116,7 +116,7 @@ const DeleteEnvio = async (req, res) => {
     }
 };
 
-const GetEnvioById = async (req, res) => {
+const GetEnvioById = async(req, res) => {
     try {
         const { id } = req.params;
 
