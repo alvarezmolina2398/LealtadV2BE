@@ -42,7 +42,7 @@ const getDatosCupon = async (req, res) => {
   } catch (error) {
     console.log(error)
     res.status(403)
-    res.send({errors: 'Hubo un problema al cargar la data.'})
+    res.send({errors: 'Hubo un problema al cargar la data.'});
 
   }
 
