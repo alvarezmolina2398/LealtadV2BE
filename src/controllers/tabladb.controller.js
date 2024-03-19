@@ -68,7 +68,7 @@ const DeleteTablaDB = async(req, res) =>{
 const GetTablaDbById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Profecion.findByPk(id,{
+        const project = await TablaDB.findByPk(id,{
            
             where: {
                 estado: 1

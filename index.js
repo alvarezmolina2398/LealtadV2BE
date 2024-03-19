@@ -50,7 +50,7 @@ app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
 app.use(require('./src/routes/configReferidos.routes.js'));
-
+app.use(require('./src/routes/tabladb.routes.js'))
 
 
 //corremos el servidor
