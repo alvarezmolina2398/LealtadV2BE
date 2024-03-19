@@ -928,13 +928,14 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         console.error(error);
         return [];
     }
-}
+} 
 
 
 
 
 
-module.exports = {
+
+module.exports = {  
     AddCampania,
     GetcampanasActivas,
     TestearTransaccion,

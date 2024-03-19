@@ -25,4 +25,6 @@ router.put(`/${path}/activar/:id`,authUser, ActivarCampaña);
 router.delete(`/${path}/:id`,authUser,DeleteCampania);
 router.get(`/${path}/:id`,authUser,GetcampanasActivasById);
 
+
+
 module.exports = router;
