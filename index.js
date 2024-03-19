@@ -37,6 +37,7 @@ app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
 app.use(require('./src/routes/profecion.routes'));
+app.use(require('./src/routes/enviaPremio.routes'));
 app.use(require('./src/routes/permisoUsuario.routes'))
 app.use(require('./src/routes/cangepromocion.routes'))
 app.use(require('./src/routes/asignarCategoria.routes'));

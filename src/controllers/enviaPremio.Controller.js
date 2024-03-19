@@ -1,32 +1,85 @@
 const { EnviaPremio } = require('../models/enviaPremio.js');
+const { Campania } = require('../models/campanias');
+
+
+
+
 
 
 
 const GetEnviaPremio = async (req, res) => {
     try {
-        const envios = await EnviaPremio.findAll({
+        console.log("Si llega el método obtener premios");
+        const trx = await EnviaPremio.findAll({
             where: {
-                estado: 1 // Mostrar solo envíos activos
-            }
+                estado: 1
+            },
+            include: [{
+                model: Campania,
+                as: 'campaign', // Así es como especificamos el alias de la asociación en el modelo EnviaPremio
+                attributes: ['nombre'] // Solo seleccionamos el nombre de la campaña para mostrar
+            }]
         });
-        res.json(envios);
-    } catch (error) {
-        res.status(403).send({ errors: 'Ha ocurrido un error al obtener la lista de envíos.' });
-    }
-};
 
-const AddEnvio = async (req, res) => {
+        console.log(trx);
+        res.json(trx);
+    } catch (error) {
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar obtener la lista de premios.' });
+    }
+}
+
+// const GetEnviaPremio = async (req, res) => {
+//     try {
+
+//         console.log("si llega el metodo obtener premios")
+//         const trx = await EnviaPremio.findAll({
+//             where: {
+//                 estado: 1
+//             }
+//         });
+
+
+
+//         console.log(trx);
+
+//         res.json(trx);
+//     } catch (error) {
+//         res.status(403);
+//         res.send({ errors: 'Ha sucedido un error al intentar obtener la lista de premios.' });
+//     }
+// }
+
+
+
+
+
+const AddEnvio= async (req, res) => {
     try {
-        const { telefono } = req.body;
+
+        const { telefono, campania} = req.body;
+        console.log('esta llegando',telefono)
 
         await EnviaPremio.create({
             telefono,
-        });
-        res.json({ code: 'ok', message: 'Envío creado con éxito.' });
+            campania
+          
+        })
+       
+        res.json({ code: 'ok', message: 'profecion creada con exito' });
+
     } catch (error) {
-        res.status(403).send({ errors: 'Ha ocurrido un error al realizar el envío.' });
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la profecion.' });
     }
-};
+}
+
+
+
+
+
+
+
 
 const UpdateEnvio = async (req, res) => {
     try {
