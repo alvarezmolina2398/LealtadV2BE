@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
-const TablaDB = sequelize.define('TablaDB',{
+const TablaDB = sequelize.define('tabladb',{
     id:{
         type: DataTypes.INTEGER,
         primaryKey: true,

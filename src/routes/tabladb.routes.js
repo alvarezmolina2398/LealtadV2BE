@@ -5,7 +5,7 @@ const { GetTablaDB, AddTablaDB, UpdateTablaDB, DeleteTablaDB, GetTablaDbById} = 
 const authUser = require('../middlewares/auth.js');
 
 //declaracion y almacenamiento del path
-const path = 'TablaDB';
+const path = 'tabladb';
 
 //rutas de proyecto
 router.get(`/${path}`, authUser,GetTablaDB);

@@ -4,7 +4,7 @@ const GetTablaDB = async(req, res) =>{
     try{
         const table = await TablaDB.findAll({
             where: {
-                status: 1,
+                estado: 1,
             }
         })
         res.json(table)
@@ -17,12 +17,14 @@ const GetTablaDB = async(req, res) =>{
 const AddTablaDB = async (req, res) =>{
     try{
         console.log(req.body);
-        const {descripcion} = req.body;
+        const {nombre_tabla, idProyectos} = req.body;
         await TablaDB.create({
-            descripcion
+            nombre_tabla,
+            idProyectos
         })
         res.json({code: 'ok', message:'Tabla creada exitosamente.'})
     }catch(err){
+        console.log(err)
         res.status(403)
         res.send({errors: 'Ha sucedido un  error al intentar agregar un nuevo proyecto.'})
     }
@@ -30,10 +32,11 @@ const AddTablaDB = async (req, res) =>{
 
 const UpdateTablaDB = async(req, res)=>{
     try{
-        const {descripcion} = req.body
+        const {nombre_tabla, idProyectos} = req.body
         const {id} = req.params 
         await TablaDB.update({
-            descripcion
+            nombre_tabla, 
+            idProyectos
         }, {
             where:{
                 id:id
@@ -68,14 +71,14 @@ const DeleteTablaDB = async(req, res) =>{
 const GetTablaDbById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await TablaDB.findByPk(id,{
+        const table = await TablaDB.findByPk(id,{
            
             where: {
                 estado: 1
             }
         });
 
-        res.json(project)
+        res.json(table)
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un error al intentar buscar la Profecion.' });
