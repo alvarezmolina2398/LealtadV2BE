@@ -54,30 +54,6 @@ const AddEnvio = async(req, res) => {
 
 
 
-// const AddEnvio= async (req, res) => {
-//     try {
-
-//         const { telefono, campania} = req.body;
-//         console.log('esta llegando',telefono)
-
-//         await EnviaPremio.create({
-//             telefono,
-//             campania
-
-//         })
-
-//         res.json({ code: 'ok', message: 'profecion creada con exito' });
-
-//     } catch (error) {
-//         res.status(403)
-//         res.send({ errors: 'Ha sucedido un  error al intentar realizar la profecion.' });
-//     }
-// }
-
-
-
-
-
 
 
 
