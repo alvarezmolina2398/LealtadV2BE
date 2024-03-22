@@ -76,4 +76,4 @@ PremioPromocion.belongsTo(Promocion, {
 
 });
 
-module.exports = { ReportePromocion }
+module.exports = { ReportePromocion, sequelize }
