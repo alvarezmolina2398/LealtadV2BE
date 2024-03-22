@@ -22,15 +22,15 @@ const GetTerceros = async (req, res) => {
 //Agregar cliente tercero
 const AddTercero = async(req, res) => {
     try {
-        const {nombre, nemonico, token} = req.body;
+        const {nombre, token} = req.body;
         await Tercero.create({
             nombre,
-            nemonico, 
             token
         })
         res.json({code: "ok", message: 'Agregado exitosamente'});
 
     } catch(e) {
+        console.log(e);
         res.status(403);
         res.send({errors:'Ha ocurrido un error al intentar agregar tercero'});
     }
@@ -39,11 +39,10 @@ const AddTercero = async(req, res) => {
 //Actualizar cliente tercero
 const UpdateTercero = async(req, res) => {
     try{
-        const {nombre, nemonico, token} = req.body;
+        const {nombre, token} = req.body;
         const {id} = req.params;
         await Tercero.update({
             nombre,
-            nemonico,
             token
         }, {
             where: {
@@ -53,6 +52,7 @@ const UpdateTercero = async(req, res) => {
 
         res.json({code: 'ok', message: 'Actualizacion exitosa'})
     }catch(e) {
+        console.log(e);
         res.status(403);
         res.send({errors: 'Ha ocurrido un error al intentar realziar la modificacion'});
     }

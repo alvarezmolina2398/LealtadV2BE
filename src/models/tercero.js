@@ -11,10 +11,10 @@ const Tercero = sequelize.define('tercero', {
         type: DataTypes.STRING(150),
         allowNull: false
     }, 
-    nemonico: {
-        type: DataTypes.STRING(15),
-        allowNull: false,
-    },
+    // nemonico: {
+    //     type: DataTypes.STRING(15),
+    //     allowNull: false,
+    // },
     token: {
         type: DataTypes.STRING(250),
         allowNull: false,
