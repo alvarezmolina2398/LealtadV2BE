@@ -1,4 +1,5 @@
 const {Participacion} = require("../models/Participacion");
+const { TransaccionPremio } = require("../models/transaccionPremio");
 
 
 
@@ -89,7 +90,7 @@ const getSumarValor = async (req,res) => {
         console.error("\n\n\n\nError al calcular la suma de valor:", error);
     }
 }
-
+ 
 
 
 
@@ -98,5 +99,5 @@ module.exports = {
     addParticipacion,
     getParticipaciones,
     getcountCustomerName,
-    getSumarValor
+    getSumarValor 
 }
