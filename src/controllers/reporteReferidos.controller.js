@@ -13,7 +13,7 @@ const GetParticipacionReferidos = async (req, res) => {
 
         const trx = await participacionReferidos.findAll({
 
-            include: { model: codigoReferidos },
+            include: { model: ConfigReferido },
             where: {
                 estado: 1,
                 fecha: {

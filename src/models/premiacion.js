@@ -42,7 +42,7 @@ Premiacion.hasMany(TransaccionPremio,{
 
 TransaccionPremio.belongsTo(Premiacion, {
     foreignKey: 'idPremiacion',
-    targetId: 'id',
+    targetKey: 'id',
 });
 
 // (async () => {
