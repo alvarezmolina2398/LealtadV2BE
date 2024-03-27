@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TablaDB } = require('./tabladb');
+const { Columna } = require('./columna');
 
 const Proyectos = sequelize.define('proyectos', {
     id: {
@@ -37,6 +38,16 @@ Proyectos.hasMany(TablaDB,{
 TablaDB.belongsTo(Proyectos,{
     foreignKey: 'idProyectos',
     sourceKey: 'id'
+});
+
+Proyectos.hasMany(Columna, {
+    foreignKey: 'idProyectos',
+    targetId: 'id',
+});
+
+Columna.belongsTo(Proyectos,{
+    foreignKey: 'idProyectos',
+    targetId: 'id',
 });
 
 module.exports = { Proyectos }

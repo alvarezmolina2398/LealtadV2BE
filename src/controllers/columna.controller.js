@@ -1,11 +1,14 @@
 const { Columna } = require('../models/columna');
+const { TablaDB } = require('../models/tabladb.js');
+const { Proyectos } = require('../models/proyectos.model.js')
 
 //controllador paa obtener la lista de Columnaes
 const GetColumnas = async (req, res) => {
     try {
         const trx = await Columna.findAll({
+            include:{model: TablaDB},
             where: {
-                estado: 1
+                estado: 1,
             }
         })
         res.json(trx)
@@ -19,9 +22,13 @@ const GetColumnas = async (req, res) => {
 //controllador para agregar nuevas Columnaes
 const AddColumna = async (req, res) => {
     try {
-        const { nombre } = req.body;
+        const { nombre, fila_insertada, fila_actualizada, idProyectos, idTablas } = req.body;
         await Columna.create({
-            nombre
+            nombre,
+            fila_insertada,
+            fila_actualizada,
+            idProyectos,
+            idTablas
         })
         res.json({ code: 'ok', message: 'Columna creada con exito' });
 
@@ -35,10 +42,14 @@ const AddColumna = async (req, res) => {
 //controllador para actualizar Columnaes
 const UpdateColumna = async (req, res) => {
     try {
-        const { nombre } = req.body;
+        const { nombre, fila_insertada, fila_actualizada, idProyectos, idTablas } = req.body;
         const { id } = req.params
         await Columna.update({
-            nombre
+            nombre,
+            fila_insertada,
+            fila_actualizada,
+            idProyectos,
+            idTablas
         }, {
             where: {
                 id: id
@@ -85,9 +96,23 @@ const GetColumnaById = async (req, res) => {
     }
 }
 
+const GetTablaByProyectos = async(req,res) =>{
+    try{
+        const{idProyectos} = req.params;
+        const trx = await TablaDB.findAll({
+            include:{model: Proyectos},
+            where:{
+                idProyectos:idProyectos, 
+                estado: 1
+            }
+        })
+        res.json(trx)
+    }catch(error){
+        res.status(403)
+        console.log(error)
+        res.send({ errors: 'Ha sucedido un error al acceder a Tablas.' });
+    }
+}
 
 
-
-
-
-module.exports = { GetColumnas, AddColumna, UpdateColumna, DeleteColumna, GetColumnaById }
+module.exports = { GetColumnas, AddColumna, UpdateColumna, DeleteColumna, GetColumnaById , GetTablaByProyectos}

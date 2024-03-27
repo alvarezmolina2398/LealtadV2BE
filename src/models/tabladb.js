@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { Columna } = require('./columna');
 
 const TablaDB = sequelize.define('tabladb',{
     id:{
@@ -16,5 +17,15 @@ const TablaDB = sequelize.define('tabladb',{
         defaultValue: 1,
     }
 },{timestamps: false});
+
+TablaDB.hasMany(Columna,{
+    foreignKey: 'idTablas',
+    sourceKey: 'id'
+});
+
+Columna.belongsTo(TablaDB,{
+    foreignKey: 'idTablas',
+    sourceKey: 'id'
+});
 
 module.exports = {TablaDB}
