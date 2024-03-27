@@ -3,13 +3,13 @@ const { sequelize } = require('../database/database');
 const { participacionReferidos } = require('./participacionReferidos');
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
-const CodigoReferido = sequelize.define('codigoReferido', {
+const codigoReferido = sequelize.define('codigoReferido', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    codigoReferido: {
+    codigoReferido: {   
         type: DataTypes.STRING(500),
         allowNull: false
     },
@@ -27,16 +27,11 @@ const CodigoReferido = sequelize.define('codigoReferido', {
     }
 },{timestamps: false});
 
-CodigoReferido.hasMany(participacionReferidos,{
+codigoReferido.hasMany(participacionReferidos,{
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
 
-participacionReferidos.belongsTo(CodigoReferido, {
-    foreignKey: 'idParticipacion',
-    targetId: 'id',
-    
-});
 
 
-module.exports = {CodigoReferido}
+module.exports = {codigoReferido}

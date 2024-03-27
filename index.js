@@ -40,7 +40,6 @@ app.use(require('./src/routes/profecion.routes'));
 app.use(require('./src/routes/permisoUsuario.routes'))
 app.use(require('./src/routes/cangepromocion.routes'))
 app.use(require('./src/routes/asignarCategoria.routes'));
-app.use(require('./src/routes/codigoReferidos.routes'));
 app.use(require('./src/routes/participacionReferidos.routes'));
 app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
@@ -50,6 +49,7 @@ app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
 app.use(require('./src/routes/configReferidos.routes.js'));
+app.use(require('./src/routes/codigoReferidos.routes.js'))
 
 
 
