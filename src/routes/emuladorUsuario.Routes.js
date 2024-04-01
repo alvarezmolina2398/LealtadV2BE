@@ -6,6 +6,7 @@ const {
   // AddEnvio,
   // UpdateEnvio,
   // DeleteEnvio,
+  // generaCampanasUsuarios,
   GetNumeroById,
 } = require('../controllers/emuladorUsuarioController.js');
 const authUser = require('../middlewares/auth.js'); 
@@ -18,7 +19,9 @@ const path = 'ConsultaNumber';
 // router.post(`/${path}`, AddEnvio);
 // router.put(`/${path}/:id`, UpdateEnvio); 
 // router.delete(`/${path}/:id`, DeleteEnvio); 
+// router.get(`/${path}/:referens`,generaCampanasUsuarios);
 router.get(`/${path}/:telefono`, GetNumeroById); 
+
 // router.get(`/${path}/:telno`, GetNumeroById); 
 
 

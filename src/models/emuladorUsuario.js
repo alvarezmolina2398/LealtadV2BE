@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
-const { sequelizeBilletera } = require('../database/database');
+const { pronet } = require('../database/database');
 // const { Campania } = require('../models/campanias');
 
-const emuladorUsuario = sequelizeBilletera.define('tbl_customer', {
+const EmuladorUsuario = pronet.define('tbl_customer', {
     customer_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -258,4 +258,4 @@ const emuladorUsuario = sequelizeBilletera.define('tbl_customer', {
 
 // EnviaPremio.belongsTo(Campania, { foreignKey: 'campania', as: 'campaign' });
 
-module.exports = { emuladorUsuario };
+module.exports = { EmuladorUsuario };
