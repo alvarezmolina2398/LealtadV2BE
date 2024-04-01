@@ -88,7 +88,11 @@ const DeleteColumna = async (req, res) => {
 const GetColumnaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Columna.findByPk(id);
+        const project = await Columna.findByPk(id,{
+            where: {
+                estado: 1
+            }
+        });
         res.json(project)
     } catch (error) {
         res.status(403)
