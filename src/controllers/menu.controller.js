@@ -1,5 +1,6 @@
 const { Menu } = require('../models/menu');
 const { Pagina } = require('../models/pagina');
+const {pronet} = require('../database/database');
 
 //controllador paa obtener la lista de Columnaes
 const GetMenus = async (req, res) => {
@@ -10,20 +11,28 @@ const GetMenus = async (req, res) => {
                 estado: 1
             }
         })
+
+        // const result = await pronet.query('SELECT * FROM pronet.tbl_customer', { type: pronet.QueryTypes.SELECT });
+
+        // console.log(result);
+
         res.json(trx)
     } catch (error) {
+        console.log("sucedio algun error: ", error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de menus.' });
     }
 }
 
-//controllador para agregar nuevos menus
+
+
 const AddMenu = async (req, res) => {
     try {
-        const { descripcion, pagina } = req.body;
+        const { descripcion,icono, pagina } = req.body;
 
         await Menu.create({
             descripcion,
+            icono,
             idPagina: pagina,
         })
         res.json({ code: 'ok', message: 'Menu creado con exito' });
@@ -34,13 +43,37 @@ const AddMenu = async (req, res) => {
     }
 }
 
-//controllador para actualizar Menus
+
+//controllador para agregar nuevos menus
+// const AddMenu = async (req, res) => {
+//     try {
+//         const { descripcion,icono } = req.body;
+
+//         await Menu.create({
+//             descripcion,
+//             icono,
+           
+//         })
+//         res.json({ code: 'ok', message: 'Menu creado con exito' });
+
+//     } catch (error) {
+//         res.status(403)
+//         res.send({ errors: 'Ha sucedido un  error al intentar realizar el menu.' });
+//     }
+// }
+
+
+
+
+// controllador para actualizar Menus
 const UpdateMenu = async (req, res) => {
     try {
-        const { descripcion } = req.body;
+        const { descripcion, icono } = req.body;
         const { id } = req.params
         await Menu.update({
-            descripcion
+            descripcion,
+            icono,
+           
         }, {
             where: {
                 id: id

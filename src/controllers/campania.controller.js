@@ -8,9 +8,11 @@ const { Participantes } = require('../models/participantes');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
 const { Transaccion } = require('../models/transaccion');
+const { Bloqueados} = require('../models/bloqueados');
 
 //accion para insertar una nueva trnasaccion
 const AddCampania = async (req, res) => {
+    
 
     const {
         fechaRegistro,
@@ -29,13 +31,17 @@ const AddCampania = async (req, res) => {
         etapas,
         Participacion,
         Bloqueados,
-        maximoParticipaciones
+        maximoParticipaciones,
+        horaReporte,
+        diaReporte,
+        emails,
     } = req.body;
 
 
     try {
         const newCampains = await Campania.create({
-            fechaRegistro,
+            fechaRegistro: fechaRegistro || null,
+            // fechaRegistro,
             fechaCreacion: new Date(),
             fechaInicio,
             fechaFin,
@@ -49,6 +55,9 @@ const AddCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
+            horaReporte,
+            diaReporte,
+            emails,
             estado: 1,
             maximoParticipaciones
         });
@@ -86,16 +95,21 @@ const AddCampania = async (req, res) => {
 
 const AddEtapas = async (etapa) => {
     const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos, intervalo, periodo, valorAcumulado } = etapa;
-
+    const periodoValue = periodo ? parseInt(periodo) : null;
+    const intervaloValue = intervalo ? parseInt(intervalo) : null;
+    const valorValue = periodo ? parseInt(valorAcumulado) : null;
     const newEtatpa = await Etapa.create({
         nombre,
         descripcion,
         orden,
         idCampania,
         tipoParticipacion,
-        intervalo,
-        periodo,
-        valorAcumulado,
+        // intervalo,
+        // periodo,
+        intervalo: intervaloValue,
+        periodo: periodoValue,
+        valorAcumulado: valorValue,
+        // valorAcumulado,
         estado: 1
     });
 
@@ -219,7 +233,10 @@ const UpdateCampania = async (req, res) => {
             descripcionNotificacion,
             imgPush,
             imgAkisi,
-            maximoParticipaciones
+            maximoParticipaciones,
+             horaReporte,
+            diaReporte,
+            emails,
         } = req.body;
 
         const { id } = req.params;
@@ -288,7 +305,7 @@ const TestearTransaccion = async (req, res) => {
             tipoUsuario: 1,
             profesion: 1,
             fechaNacimineto: '1998-07-23',
-            fechaRegistro: new Date(2023, 01, 31),
+            fechaRegistro: new Date(2023, 1, 31),
         }
 
 
@@ -676,7 +693,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
     switch (etapaActual.periodo) {
         case 1:
             console.log('a')
-            await GetParticipacionsXdias(3,  new Date(2023,0,01), new Date(2023,03,01))
+            await GetParticipacionsXdias(3,  new Date(2023,0,1), new Date(2023,3,1))
             break;
 
         default:
@@ -912,6 +929,7 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         return [];
     }
 }
+
 
 
 

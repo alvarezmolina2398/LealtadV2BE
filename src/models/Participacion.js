@@ -19,7 +19,7 @@ const Participacion = sequelize.define('participacion', {
         allowNull: false
     },
     idtxt: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(15),
         allowNull: false
     },
     descripcionTrx: {

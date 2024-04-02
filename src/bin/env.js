@@ -7,7 +7,9 @@ const env = {
     bcrypt: {
         key: 'Ky706D2xB%c#S%PL*W#W@c1RHCaqD@vhwgLealtadV2',
         sr: 10
-    }
+    },
+    EMAIL_USER: 'appsolucionesun@gmail.com',
+    EMAIL_PASS: 'ncjwwibwbqwknliy',
 }
 
 module.exports = env;

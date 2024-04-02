@@ -1,8 +1,9 @@
 const { QueryTypes } = require('sequelize');
 const XLSX = require("xlsx");
-const { reporteClientesParticipando } = require('./reports.controller.js')
+const { reporteClientesParticipando } = require('../controllers/reports.controller.js')
 
-const reporteClientesParticipandoExcel = async (req, res) => {
+
+const generarReporteClientesParticipando = async () => {
 
     const datas = reporteClientesParticipando();
 
@@ -80,12 +81,14 @@ const reporteClientesParticipandoExcel = async (req, res) => {
 
     const ws2 = XLSX.utils.aoa_to_sheet([row4]);
     XLSX.utils.book_append_sheet(wb, ws, 'Usuario notificados');
-    XLSX.writeFile(wb, "reporte-notificaciones-offercraft.xlsx");
+    const file = await XLSX.writeFile(wb, { bookType: "xlsx", bookSST: false, type: "buffer" });
+
+    return file;
 
 }
 
 
-const reporteClientesContraCampanasExcel = async (req, res) => {
+const generarReporteCampaniaContraClientes = async () =>{
 
     const datas = [
         {
@@ -149,15 +152,12 @@ const reporteClientesContraCampanasExcel = async (req, res) => {
         infoFinal.push(rowInfo);
         contador += 1;
     });
-    // let row2 = [1, 2, 3];
-    // let row3 = [
-    // 	{ v: 'Courier 24', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
-    // 	{ v: 'bold', t: 's', s: { font: { bold: true, color: { rgb: 'FFFF0000' } } } },
-    // 	{ v: 'filled', t: 's', s: { fill: { fgColor: { rgb: 'FFE9E9E9' } } } },
-    // 	{ v: 'line break\n"test"', t: 's', s: { alignment: { wrapText:true } } },
-    // ]
+
+
+
     const ws = XLSX.utils.aoa_to_sheet(infoFinal);
-    // ws['!cols'] = [{ width: 30 }, { width: 20 }, { width: 20 }]
+
+
     ws['!cols'] = [
         { width: 15 },
         { width: longitud1 + 2 },
@@ -172,14 +172,15 @@ const reporteClientesContraCampanasExcel = async (req, res) => {
     ]
     const ws2 = XLSX.utils.aoa_to_sheet([row4]);
     XLSX.utils.book_append_sheet(wb, ws, 'Usuario notificados');
-
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader("Content-Disposition", "attachment; filename=" + "reporte-notificaciones-offercraft.xlsx");
     
     const file = await XLSX.write(wb, { bookType: "xlsx", bookSST: false, type: "buffer" });
-    res.send(file)
+
+    return file;
 
 }
 
 
-module.exports = { reporteClientesParticipandoExcel, reporteClientesContraCampanasExcel }
+module.exports = {
+    generarReporteCampaniaContraClientes,
+    generarReporteClientesParticipando
+};
