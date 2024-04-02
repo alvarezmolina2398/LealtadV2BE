@@ -115,7 +115,7 @@ const generaCampanasUsuarios = async(req, res) => {
 
                     for (const bloqueado of Bloqueado) {
                         const resultadoBloqueado = validaBloqueado(bloqueado, Participante);
-                        console.log(`El numero a participar   ${bloqueado.numero} es ${resultadoBloqueado}.`);
+                        console.log(`El numero a participar   ${participantes.numero} es ${resultadoBloqueado}.`);
 
                         // Si algún bloqueado es invalido, cambia el valor de resultado a 'Invalido'
                         if (resultadoBloqueado === 'No permitido') {
@@ -126,18 +126,6 @@ const generaCampanasUsuarios = async(req, res) => {
 
 
                 }
-
-
-
-
-
-
-
-
-
-
-
-
 
                 // Filtrar campanas según los criterios requeridos (departamento y municipio)
                 const campanasFiltradas = campanasActivasEnc.filter(camp => {
