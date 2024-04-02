@@ -1,36 +1,44 @@
-const { Op } = require('sequelize');
-const { codigoReferidos } = require('../models/codigoReferidos');
-const { ConfigReferido } = require('../models/configReferidos');
-const { participacionReferidos } = require('../models/participacionReferidos');
-
+const { Sequelize } = require("sequelize");
+const { genesis, pronet } = require("../database/database");
 
 const GetParticipacionReferidos = async (req, res) => {
-    try {
-        const { fechaInicial, fechaFinal, campanas } = req.body; // Obtener también las campañas desde el cuerpo de la solicitud
+  try {
+    const { fechaInicio, fechaFin, campana } = req.body;
 
-        const date = fechaFinal.split("-");
-        const newDate = new Date(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]), 23, 59, 59);
+    console.log("fecha inicial", fechaInicio);
+    console.log("fecha final ", fechaFin);
 
-        const trx = await participacionReferidos.findAll({
-            include: [{ model: codigoReferidos }],
-            where: {
-                estado: 1,
-                fecha: {
-                    [Op.gte]: new Date(fechaInicial),
-                    [Op.lte]: newDate
-                },
-                // Agregar condición para las campañas
-                '$codigoReferidos.campana$': campanas // Ajusta el nombre de la columna según tu modelo
-            }
-        });
+    // Usar la instancia 'genesis' para la consulta
+    const resultados = await genesis.query(
+      `SELECT eca.nombreCampana, eca.descripcionNotificacion,
+      CONCAT(tui.fname, ' ', tui.lname) nombre, tui.userno,
+      DATE_FORMAT(pca.fechaParticipacion, '%d/%m/%Y %H:%i') fecha, pca.idTransaccion, pca.descTransaccion,
+      FORMAT(pca.valorPremio,2) valorPremio, cre.codigo, cor.opcion,
+      CONCAT(tur.fname, ' ', tur.lname) nombreref, tur.userno telref
+  FROM lealtadv2.campania pca
+  INNER JOIN lealtadv2.enc_campana eca ON eca.idCampana = pca.idCampana
+  LEFT JOIN pronet.tbl_customer tc ON tc.customer_id = pca.idUsuarioParticipante
+  LEFT JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid
+  LEFT JOIN lealtadv2.referidos_ingresos rin ON rin.idreferidos_ingresos = pca.idTransaccion
+  LEFT JOIN lealtadv2.codigos_referidos cre ON cre.idcodigos_referidos = rin.idcodigos_referidos
+  LEFT JOIN lealtadv2.confi_referidos cor ON cor.idconfi_referidos = cre.idconfi_referidos
+  LEFT JOIN pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario
+  LEFT JOIN pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
+  WHERE (SELECT COUNT(*) FROM lealtadv2.det_campana_participacion dcp
+  WHERE dcp.idCampana = eca.idCampana AND dcp.idTransaccion IN (68,69)) > 0 
+  AND pca.fechaParticipacion BETWEEN :fechaInicio AND :fechaFin;`,
+      {
+        replacements: { fechaInicio, fechaFin },
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
 
-        console.log(trx);
-        res.json(trx);
-    } catch (error) {
-        console.error(error);
-        res.status(403);
-        res.send({ errors: 'Ha sucedido un error al intentar obtener la lista de referidos.' });
-    }
-}
+    console.log("Resultados",resultados);
+    res.status(200).json(resultados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Ha ocurrido un error al obtener los datos." });
+  }
+};
 
 module.exports = { GetParticipacionReferidos };

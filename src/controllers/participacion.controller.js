@@ -70,6 +70,7 @@ const getcountCustomerName = async (req,res) =>{
         
         
     } catch (error) {
+        
       
         console.error("Error al obtener las participaciones:", error);
         res.status(500).json({ error: 'Ha ocurrido un error al obtener las participaciones.' });

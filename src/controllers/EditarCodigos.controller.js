@@ -27,4 +27,4 @@ const actualizarCodigoReferido = async (idReferido, nuevoCodigo) => {
 
 
 
-module.exports={updateCodigoReferido}
+module.exports={actualizarCodigoReferido}
