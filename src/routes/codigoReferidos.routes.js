@@ -13,4 +13,5 @@ router.patch(`/${path}`,getCodigoReferido);
 router.post(`/${path}/actualizarCodigoReferido`,actualizarCodigoReferido);
 router.post(`/${path}/getCodigoReferidoByPhone`,getCodigoReferidoByPhone);
 
+
 module.exports = router;

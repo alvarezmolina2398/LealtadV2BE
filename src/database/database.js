@@ -2,13 +2,13 @@ const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
   "lealtadV2",
-  "DesaSolUn",
-  "SolUn123",
-  //   "root",
-  // "admin",
+  // "DesaSolUn",
+  // "SolUn123",
+    "root",
+  "admin",
   {
-    host: "34.170.217.35",
-    // host: 'localhost',
+    // host: "34.170.217.35",
+    host: 'localhost',
     dialect: "mysql",
   }
 );
