@@ -11,17 +11,21 @@ const Bloqueados = sequelize.define('bloqueados', {
     numero: {
         type: DataTypes.STRING(150),
         allowNull: false
-    }, 
+    },
+    idCampania: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false
     }
-}, {timestamps: false});
+}, { timestamps: false });
 
 //(async () => {
-     //await sequelize.sync({ force: true });
-      //Code here
+//await sequelize.sync({ force: true });
+//Code here
 //})();
 
-module.exports = {Bloqueados}
+module.exports = { Bloqueados }
