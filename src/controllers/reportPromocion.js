@@ -31,18 +31,18 @@ const postDatosCupon = async (req, res) => {
           model: PremioPromocion,
           include: {
             model: Premio,
-            include: {
-              model: Premiacion,
-              include: {
-                model: TransaccionPremio,
-                include: {
-                  model: Participacion,
-                  include: {
-                    model: Campania,
-                  },
-                },
-              },
-            },
+             include: {
+               model: Premiacion,
+            //   include: {
+            //     model: TransaccionPremio,
+            //     include: {
+            //       model: Participacion,
+            //       include: {
+            //         model: Campania,
+            //       },
+            //     },
+            //   },
+             },
           },
         },
         where: {
@@ -59,15 +59,6 @@ const postDatosCupon = async (req, res) => {
       },
     });
     res.json(trxAll)
-
-    trxAll.forEach(trx => {
-      console.log('ID de la transacción de canje:', trx.id);
-      console.log('Descripción de la transacción de canje:', trx.descripcion);
-      console.log('Fecha de la transacción de canje:', trx.fecha);
-      console.log('Número de teléfono del cliente:', trx.numeroTelefono);
-      console.log('ID del detalle de promoción:', trx.idDetallePromocion);
-      console.log('Detalle de promoción:', trx.detallepromocion.dataValues);
-    });
 
   
   } catch (error) {

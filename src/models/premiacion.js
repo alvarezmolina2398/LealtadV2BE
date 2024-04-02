@@ -50,4 +50,4 @@ TransaccionPremio.belongsTo(Premiacion, {
 //     // Code here
 // })();
 
-module.exports = {Premiacion}
+module.exports = {Premiacion, sequelize}
