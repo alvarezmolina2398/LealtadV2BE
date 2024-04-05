@@ -1,5 +1,3 @@
-
-
 const { CangePromocion } = require("../models/cangePromocion");
 const { DetallePromocion } = require("../models/detallePromocion");
 const { Op, sequelize, } = require("sequelize");

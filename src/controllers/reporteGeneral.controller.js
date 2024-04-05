@@ -1,141 +1,101 @@
+const { pronet, genesis } = require('../database/database');
 
-// const { Sequelize, DataTypes, Op, pronet, genesis } = require('sequelize');
+// Función para obtener participaciones en fechas generales desde la base de datos "pronet"
+async function getParticipacionesFechasGeneral(fecha1, fecha2) {
+  try {
+    const results = await genesis.query(`
+      SELECT uic.userno, CONCAT(uic.fname, ' ', uic.lname) AS nombreReferidor, codRef.codigo, uir.userno AS noReferido,
+        CONCAT(uir.fname, ' ', uir.lname) AS nombreReferido, DATE_FORMAT(ri.fecha, '%d/%m/%Y %H:%i') AS fecha
+        FROM genesis.codigos_referidos codRef
+        INNER JOIN genesis.referidos_ingresos ri ON codRef.idcodigos_referidos = ri.idcodigos_referidos
+        INNER JOIN pronet.tbl_customer csc ON csc.customer_id = codRef.idUsuario
+        INNER JOIN pronet.tblUserInformation uic ON uic.userid = csc.fk_userid
+        INNER JOIN pronet.tbl_customer csr ON csr.customer_id = ri.usuario
+        INNER JOIN pronet.tblUserInformation uir ON uir.userid = csr.fk_userid
+        WHERE ri.fecha BETWEEN :fecha1 AND :fecha2
+    `, {
+      replacements: { fecha1: `${fecha1} 00:00:00`, fecha2: `${fecha2} 23:59:59` },
+      type: genesis.QueryTypes.SELECT
+    });
+
+    return results;
+  } catch (error) {
+    console.error('Error al obtener participaciones en la base de datos "genesis":', error);
+    throw error;
+  }
+}
+
+// Función para obtener participaciones en fechas generales desde la base de datos "genesis"
+async function getParticipacionesFechasGeneralGenesis(fecha1, fecha2) {
+  try {
+    const results = await genesis.query(`
+      SELECT * FROM codigos_referidos WHERE fecha BETWEEN :fecha1 AND :fecha2
+    `, {
+      replacements: { fecha1: `${fecha1} 00:00:00`, fecha2: `${fecha2} 23:59:59` },
+      type: genesis.QueryTypes.SELECT
+    });
+
+    return results;
+  } catch (error) {
+    console.error('Error al obtener participaciones en la base de datos "genesis":', error);
+    throw error;
+  }
+}
+
+
+// Ejemplo de uso de la función
+const fecha1 = '2024-01-01';
+const fecha2 = '2024-01-31';
+
+getParticipacionesFechasGeneral(fecha1, fecha2)
+  .then(results => {
+    console.log('Participaciones obtenidas desde la base de datos "pronet":', results);
+  })
+  .catch(error => {
+    console.error('Error al obtener participaciones en la base de datos "pronet":', error);
+  });
+
+getParticipacionesFechasGeneralGenesis(fecha1, fecha2)
+  .then(results => {
+    console.log('Participaciones obtenidas desde la base de datos "genesis":', results);
+  })
+  .catch(error => {
+    console.error('Error al obtener participaciones en la base de datos "genesis":', error);
+  });
+  
+  module.exports = { getParticipacionesFechasGeneral };
+
+
+// const { Op, sequelize, } = require("sequelize");
+// const { participacionReferidos } = require("../models/participacionReferidos");
 // const {CodigoReferido} = require('../models/codigoReferidos');
-// const {Participacion} = require('../models/Participacion')
-// const sequelize = new Sequelize('database', 'username', 'password', {
-//   host: 'localhost',
-//   dialect: 'mysql'
-// });
 
-// const referidosIngresos = sequelize.define('referidos_ingresos', {
-//   idcodigos_referidos: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false
-//   },
-//   usuario: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false
-//   },
-//   fecha: {
-//     type: DataTypes.DATE,
-//     allowNull: false
-//   }
-// });
-
-// const tblCustomer = sequelize.define('tbl_customer', {
-//   customer_id: {
-//     type: DataTypes.INTEGER,
-//     autoIncrement: true,
-//     primaryKey: true
-//   },
-//   fk_userid: {
-//     type: DataTypes.INTEGER,
-//     allowNull: false
-//   }
-// });
-
-// const tblUserInformation = sequelize.define('tblUserInformation', {
-//   userid: {
-//     type: DataTypes.INTEGER,
-//     autoIncrement: true,
-//     primaryKey: true
-//   },
-//   userno: {
-//     type: DataTypes.STRING,
-//     allowNull: false
-//   },
-//   fname: {
-//     type: DataTypes.STRING,
-//     allowNull: false
-//   },
-//   lname: {
-//     type: DataTypes.STRING,
-//     allowNull: false
-//   }
-// });
-
-// CodigoReferido.hasMany(referidosIngresos, { foreignKey: 'idcodigos_referidos' });
-// referidosIngresos.belongsTo(codigosReferidos, { foreignKey: 'idcodigos_referidos' });
-
-// tblCustomer.hasOne(tblUserInformation, { foreignKey: 'userid' });
-// tblUserInformation.belongsTo(tblCustomer, { foreignKey: 'userid' });
-
-// async function getParticipacionesFechasGeneral(fechaIni, fechafin) {
-
-//   // const { fechaInicial, fechaFinal } = req.body;
+// const getParticipacionesFechasGeneral = async (req, res) => {
+//   try {
+//     const { fechaInicial, fechaFinal } = req.body;
 
 //     const fechafin = new Date(fechaFinal);
 //     const fechaIni = new Date(fechaInicial);
-//   const Participacion = await CodigoReferido.findAll({
-//     include: [
-//       {
-//         model: referidosIngresos,
-//         where: {
-//           fecha: {
-//             [Op.between]: [fechaIni + ' 00:00:00', fechafin + ' 23:59:59']
-//           }
+
+//     const trxAll = await CodigoReferido.findAll({
+//       // include: {
+//       //   model: CodigoReferido,
+//       // },
+//       where: {
+//         fecha: {
+//           [Op.gte]: fechaIni,
 //         },
-//         include: [
-//           {
-//             model: tblCustomer,
-//             as: 'csc',
-//             include: [
-//               {
-//                 model: tblUserInformation,
-//                 as: 'uic'
-//               }
-//             ]
-//           },
-//           {
-//             model: tblCustomer,
-//             as: 'csr',
-//             include: [
-//               {
-//                 model: tblUserInformation,
-//                 as: 'uir'
-//               }
-//             ]
-//           }
-//         ]
-//       }
-//     ]
-//   });
+//         fecha: {
+//           [Op.lte]: fechafin,
+//         },
+//       },
+//     });
+//     res.json(trxAll);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(403);
+//     res.send({ errors: "Hubo un problema al cargar la data." });
+//   }
+// };
 
-//   return Participacion;
-// }
-
-// module.exports = {getParticipacionesFechasGeneral, Participacion}
-
-const { Op, sequelize, } = require("sequelize");
-const { participacionReferidos } = require("../models/participacionReferidos");
-const {CodigoReferido} = require('../models/codigoReferidos')
-
-const getParticipacionesFechasGeneral = async (req, res) => {
-  try {
-    const { fechaInicial, fechaFinal } = req.body;
-
-    const fechafin = new Date(fechaFinal);
-    const fechaIni = new Date(fechaInicial);
-
-    const trxAll = await participacionReferidos.findAll({
-      include: {
-        model: CodigoReferido,
-      },
-      where: {
-        fecha: {
-          [Op.gte]: fechaIni,
-        },
-        fecha: {
-          [Op.lte]: fechafin,
-        },
-      },
-    });
-    res.json(trxAll);
-  } catch (error) {
-    console.log(error);
-    res.status(403);
-    res.send({ errors: "Hubo un problema al cargar la data." });
-  }
-};
-
-module.exports = { getParticipacionesFechasGeneral };
+// module.exports = { getParticipacionesFechasGeneral };

@@ -1,14 +1,14 @@
-const {Router} = require('express');
-const {getParticipacionesFechasGeneral} = require('../controllers/reporteGeneral.controller');
+const { Router } = require('express');
+const { getParticipacionesFechasGeneral } = require('../controllers/reporteGeneral.controller');
 const router = Router();
 
 const path = 'reporteGeneralReferido';
 
-// router.post(`/${path}`, postParticipacionesFechasGeneral);
-router.get(`/${path}`, getParticipacionesFechasGeneral);
-//router.get(`/${path}/getParticipacionesFechasFeneral`, getParticipacionesFechasGeneral);
+router.post(`/${path}/postParticipacionesFechasGeneral`, getParticipacionesFechasGeneral);
+//router.get(`/${path}`, getParticipacionesFechasGeneral);
 
-module.exports = router
+module.exports = router;
+
 
 // const express = require('express');
 // const router = express.Router();
