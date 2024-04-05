@@ -11,7 +11,6 @@ const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
   //host: '192.168.1.100',
   host: "34.71.104.161",
   dialect: "mysql",
-  
 });
 
 const pronet = new Sequelize(
