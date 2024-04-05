@@ -59,16 +59,18 @@ const getCodigoReferidoByPhone = async (req, res) => {
         SELECT c.customer_id as customer
         FROM tbl_customer c 
         WHERE c.telno = '${phone}'
-        ORDER BY c.customer_id DESC
-        LIMIT 1
+        ORDER BY c.customer_id
+        DESC LIMIT 1
       `;
     const [resultsPronet, metadataPronet] = await pronet.query(queryPronet);
-
+  
+      
     const queryLealtadV2 = `
         SELECT a.id, a.codigo
         FROM codigosreferidos a 
         WHERE  customerId = ${resultsPronet[0].customer}
-        ORDER BY a.id DESC LIMIT 1
+        ORDER BY a.id 
+        DESC LIMIT 1
       `;
     const [resultsLealtadV2, metadataLealtadV2] = await sequelize.query(
       queryLealtadV2
@@ -87,25 +89,24 @@ const actualizarCodigoReferido = async (req, res) => {
   const { id, codigo } = req.body;
 
   try {
-    const result = await sequelize.query(
+    // Actualizar el código de referido utilizando Sequelize
+    const [rowsAffected, _] = await sequelize.query(
       `
-          UPDATE codigosreferidos
-          SET codigo = '${codigo}'
-          WHERE id = ${id}
-        `
+      UPDATE codigosreferidos
+      SET codigo = :codigo  
+      WHERE id = :id
+      `,  
+      {
+        replacements: { codigo:codigo , id:id },
+        type: sequelize.QueryTypes.UPDATE,
+      }
     );
 
-    const rowsAffected = result[0].affectedRows;
-
-    // Verifica si se ha actualizado al menos una fila
-    if (rowsAffected > 0) {
       res.status(200).send({
         code: 'ok',
         message: "Datos actualizados exitosamente",
       });
-    } else {
-      throw new Error("El código referido especificado no existe");
-    }
+    
   } catch (error) {
     console.error("Ocurrió un error:", error);
     res.status(403).send({
@@ -115,8 +116,9 @@ const actualizarCodigoReferido = async (req, res) => {
   }
 };
 
+  
 module.exports = {
   getCodigoReferido,
   actualizarCodigoReferido,
-  getCodigoReferidoByPhone,
+  getCodigoReferidoByPhone
 };

@@ -49,6 +49,7 @@ app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
 app.use(require('./src/routes/configReferidos.routes.js'));
+app.use(require('./src/routes/tabladb.routes.js'));
 app.use(require('./src/routes/codigoReferidos.routes.js'));
 app.use(require('./src/routes/graficaCampanias.routes.js'))
 
@@ -58,6 +59,7 @@ app.use(require('./src/routes/graficaCampanias.routes.js'))
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
+    // taskSendEmail.start();
     // taskSendEmail.start();
     // sendEmail("juliaelenagaal@gmail.com", "Prueba", "Prueba de envio de correo", "reporte-notificaciones-offercraft.xlsx", "./reporte-notificaciones-offercraft.xlsx");
     // sendEmail("estiven6647@gmail.com", "Prueba", "Prueba de envio de correo", "reporte-notificaciones-offercraft.xlsx", "./reporte-notificaciones-offercraft.xlsx");
