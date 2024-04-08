@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
+// const { Transaccion } = require('./transaccion');
+
 
 const Participacion = sequelize.define('participacion', {
 
