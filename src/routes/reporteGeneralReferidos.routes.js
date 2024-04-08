@@ -1,10 +1,10 @@
 const { Router } = require('express');
-const { getParticipacionesFechasGeneral } = require('../controllers/reporteGeneral.controller');
+const { postParticipacionesFechasGeneral } = require('../controllers/reporteGeneral.controller');
 const router = Router();
 
 const path = 'reporteGeneralReferido';
 
-router.post(`/${path}/postParticipacionesFechasGeneral`, getParticipacionesFechasGeneral);
+router.post(`/${path}`, postParticipacionesFechasGeneral);
 //router.get(`/${path}`, getParticipacionesFechasGeneral);
 
 module.exports = router;

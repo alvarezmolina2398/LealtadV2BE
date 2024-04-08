@@ -9,6 +9,7 @@ const { Participacion } = require("../models/Participacion");
 const { Premiacion } = require("../models/premiacion");
 const { asignarCategoria } = require("../models/asignarCategoria");
 const { Campania } = require("../models/campanias");
+const { PremioCampania } = require("../models/premioCampania");
 
 
 const postDatosCupon = async (req, res) => {
@@ -30,15 +31,9 @@ const postDatosCupon = async (req, res) => {
           include: {
             model: Premio,
              include: {
-               model: Premiacion,
+               model: PremioCampania,
             //   include: {
             //     model: TransaccionPremio,
-            //     include: {
-            //       model: Participacion,
-            //       include: {
-            //         model: Campania,
-            //       },
-            //     },
             //   },
              },
           },

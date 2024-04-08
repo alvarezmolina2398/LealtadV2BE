@@ -3,7 +3,7 @@ const { sequelize } = require('../database/database');
 const { DetallePromocion } = require("../models/detallePromocion");
 const { PremioPromocion } = require('./premioPromocion');
 
-const Promocion = sequelize.define('promocion', {
+const Promocion = sequelize.define('promocions', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

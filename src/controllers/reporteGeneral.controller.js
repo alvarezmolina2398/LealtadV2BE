@@ -1,7 +1,7 @@
 const { pronet, genesis } = require('../database/database');
 
 // Función para obtener participaciones en fechas generales desde la base de datos "pronet"
-async function getParticipacionesFechasGeneral(fecha1, fecha2) {
+async function postParticipacionesFechasGeneral(fecha1, fecha2) {
   try {
     const results = await genesis.query(`
       SELECT uic.userno, CONCAT(uic.fname, ' ', uic.lname) AS nombreReferidor, codRef.codigo, uir.userno AS noReferido,
@@ -13,6 +13,7 @@ async function getParticipacionesFechasGeneral(fecha1, fecha2) {
         INNER JOIN pronet.tbl_customer csr ON csr.customer_id = ri.usuario
         INNER JOIN pronet.tblUserInformation uir ON uir.userid = csr.fk_userid
         WHERE ri.fecha BETWEEN :fecha1 AND :fecha2
+        LIMIT 10;
     `, {
       replacements: { fecha1: `${fecha1} 00:00:00`, fecha2: `${fecha2} 23:59:59` },
       type: genesis.QueryTypes.SELECT
@@ -44,10 +45,10 @@ async function getParticipacionesFechasGeneralGenesis(fecha1, fecha2) {
 
 
 // Ejemplo de uso de la función
-const fecha1 = '2024-01-01';
-const fecha2 = '2024-01-31';
+const fecha1 = '2023-03-26';
+const fecha2 = '2024-03-26';
 
-getParticipacionesFechasGeneral(fecha1, fecha2)
+postParticipacionesFechasGeneral(fecha1, fecha2)
   .then(results => {
     console.log('Participaciones obtenidas desde la base de datos "pronet":', results);
   })
@@ -63,7 +64,7 @@ getParticipacionesFechasGeneralGenesis(fecha1, fecha2)
     console.error('Error al obtener participaciones en la base de datos "genesis":', error);
   });
   
-  module.exports = { getParticipacionesFechasGeneral };
+  module.exports = { postParticipacionesFechasGeneral };
 
 
 // const { Op, sequelize, } = require("sequelize");
