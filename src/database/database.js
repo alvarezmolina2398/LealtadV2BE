@@ -2,11 +2,7 @@ const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
   //host: '192.168.1.100',
-<<<<<<< HEAD
     host: "34.170.217.35",
-=======
-  host: "34.170.217.35",
->>>>>>> feature-tablaDB
   dialect: "mysql",
 });
 
