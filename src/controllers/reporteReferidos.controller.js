@@ -61,13 +61,20 @@ console.log("\n\n\ncodigo",codigo);
 
 // Consulta a la segunda base de datos (lealtadv2)
 const resultadosLealtadV2 = await sequelize.query(`
-select c.id, c.nombre, c3.codigo 
+select  c.nombre,c.descripcionNotificacion
+
 from campania c 
-left join codigoreferidos c3 on c3.id = '${id}' 
-left join configreferidos c2 on c2.id = '${id}' `);
+left join codigoreferidos c3 on c3.id = c.id 
+left join configreferidos c2 on c2.id = c3.id;  `);
     
-    res.status(200).json(resultadosLealtadV2);
+
+console.log(resultadosLealtadV2);
+const resultadosCombinados = [...resultadosPronet, ...resultadosLealtadV2];
+
+
+    // res.status(200).json(resultadosLealtadV2);
     // res.status(200).json(resultadosPronet);
+    res.status(200).json(resultadosCombinados);
     // res.status(200).json(resultadosLealtadV2);
     // console.log("lealtadV2",lealtadV2);
   } catch (error) {
