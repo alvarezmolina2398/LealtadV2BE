@@ -44,7 +44,7 @@ app.use(require('./src/routes/participacionReferidos.routes'));
 app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
 app.use(require('./src/routes/reportePromocion.routes'));
-app.use(require('./src/routes/reporteReferidos.routes'));
+app.use(require('./src/routes/reporteReferidos.routes.js'));
 app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
