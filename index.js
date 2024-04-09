@@ -1,7 +1,7 @@
 const express = require('express');
-const {sequelize} = require('./src/database/database');
-const {sendEmail} = require('./src/helpers/sendEmail.js');
-const {taskSendEmail} = require('./src/helpers/envioReporteAuitomatico.js');
+const { sequelize } = require('./src/database/database');
+const { sendEmail } = require('./src/helpers/sendEmail.js');
+const { taskSendEmail } = require('./src/helpers/envioReporteAuitomatico.js');
 
 
 const app = express();
@@ -45,6 +45,7 @@ app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
 app.use(require('./src/routes/reportePromocion.routes'));
 app.use(require('./src/routes/reporteReferidos.routes.js'));
+app.use(require('./src/routes/reporteGeneralReferidos.routes.js'));
 app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
