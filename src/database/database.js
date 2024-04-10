@@ -7,7 +7,7 @@ const sequelize = new Sequelize(
   //   "root",
   // "admin",
   {
-    host: "34.70.236.120",
+    host: "35.223.87.209",
     // host: 'localhost',
     dialect: "mysql",
   }
