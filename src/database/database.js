@@ -12,7 +12,6 @@ const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
 //   dialect: "mysql",
 // });
 
-
 const pronet = new Sequelize(
     "pronet",
     "devusr",
