@@ -11,6 +11,7 @@ const { asignarCategoria } = require("../models/asignarCategoria");
 const { Campania } = require("../models/campanias");
 const { PremioCampania } = require("../models/premioCampania");
 const { Etapa } = require("../models/etapa");
+const { Bloqueados } = require("../models/bloqueados");
 
 
 const postDatosCupon = async (req, res) => {
@@ -37,12 +38,12 @@ const postDatosCupon = async (req, res) => {
                 model: Etapa,
                 include: {
                   model: Campania,
-                  // include: {
-                  //   model: Participacion,
-                  //   // include: {
-                  //   //   model: Transaccion
-                  //   // }
-                  // }
+                  include: {
+                    model: Bloqueados,
+                    // include: {
+                    //   model: Transaccion
+                    // }
+                  }
                 }
               },
              },
