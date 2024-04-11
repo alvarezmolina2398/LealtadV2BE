@@ -1,51 +1,75 @@
 const { CangePromocion } = require("../models/cangePromocion");
 const { DetallePromocion } = require("../models/detallePromocion");
-const { Op } = require("sequelize");
+const { Op, sequelize, } = require("sequelize");
 const { Premio } = require("../models/premio");
 const { PremioPromocion } = require("../models/premioPromocion");
+const { TransaccionPremio } = require("../models/transaccionPremio");
+const { Transaccion } = require("../models/transaccion");
+const { Participacion } = require("../models/Participacion");
+const { Premiacion } = require("../models/premiacion");
+const { asignarCategoria } = require("../models/asignarCategoria");
+const { Campania } = require("../models/campanias");
+const { PremioCampania } = require("../models/premioCampania");
+const { Etapa } = require("../models/etapa");
 
 
-
-const getDatosCupon = async (req, res) => {
+const postDatosCupon = async (req, res) => {
   try {
     const { promocion, fechaInicial, fechaFinal } = req.body;
-    
-    const date = fechaFinal.split("-");
-    const newDate = new Date(parseInt(date[0]),parseInt(date[1]), parseInt(date[2]),23,59,59)
 
+    const fechafin = new Date(fechaFinal);
+    const fechaIni = new Date(fechaInicial);
+    
+
+    console.log("estoy buscando inicial", fechaIni);
+    console.log("fecha final", fechafin)
     
     const trxAll = await CangePromocion.findAll({
       include: {
         model: DetallePromocion,
         include: {
-            model: PremioPromocion,
-            include: {
-                model: Premio
-            },
+          model: PremioPromocion,
+          include: {
+            model: Premio,
+             include: {
+               model: PremioCampania,
+              include: {
+                model: Etapa,
+                include: {
+                  model: Campania,
+                  include: {
+                    model: Participacion,
+                    include: {
+                      model: Transaccion
+                    }
+                  }
+                }
+              },
+             },
+          },
         },
         where: {
-            idPromocion: promocion,
+          idPromocion: promocion,
         },
       },
       where: {
         fecha: {
-          [Op.gte]: new Date(fechaInicial),
+          [Op.gte]: fechaIni,
         },
         fecha: {
-          [Op.lte]: newDate,
+          [Op.lte]: fechafin,
         },
       },
     });
     res.json(trxAll)
 
-   
+  
   } catch (error) {
     console.log(error)
     res.status(403)
     res.send({errors: 'Hubo un problema al cargar la data.'})
-
   }
-
 };
 
-module.exports = { getDatosCupon };
+
+module.exports = { postDatosCupon };
