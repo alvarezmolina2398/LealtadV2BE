@@ -1,5 +1,6 @@
 const { Menu } = require('../models/menu');
 const { Pagina } = require('../models/pagina');
+const {pronet} = require('../database/database');
 
 //controllador paa obtener la lista de Columnaes
 const GetMenus = async (req, res) => {
@@ -10,8 +11,14 @@ const GetMenus = async (req, res) => {
                 estado: 1
             }
         })
+
+         const result = await pronet.query('SELECT * FROM pronet.tbl_customer', { type: pronet.QueryTypes.SELECT });
+
+         console.log(result);
+
         res.json(trx)
     } catch (error) {
+        console.log("sucedio algun error: ", error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de menus.' });
     }

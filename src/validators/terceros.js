@@ -7,10 +7,10 @@ const validateCreate = [
         .exists()
         .not()
         .isEmpty(),
-    check('nemonico')
-        .exists()
-        .not()
-        .isEmpty(),
+    // check('nemonico')
+    //     .exists()
+    //     .not()
+    //     .isEmpty(),
     check('token')
         .exists()
         .not()

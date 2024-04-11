@@ -39,9 +39,9 @@ DetallePromocion.belongsTo(PremioPromocion,{
 
 
 
-(async () => {
-  //  await sequelize.sync({ force: false });
-//     // Code here
-})();
+// (async () => {
+//     await sequelize.sync({ force: false });
+// //     // Code here
+// })();
 
-module.exports = {PremioPromocion}
+module.exports = {PremioPromocion, sequelize}

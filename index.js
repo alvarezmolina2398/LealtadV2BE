@@ -37,26 +37,33 @@ app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
 app.use(require('./src/routes/profecion.routes'));
+app.use(require('./src/routes/enviaPremio.routes'));
 app.use(require('./src/routes/permisoUsuario.routes'))
+app.use(require('./src/routes/emuladorUsuario.Routes.js'))
 app.use(require('./src/routes/cangepromocion.routes'))
 app.use(require('./src/routes/asignarCategoria.routes'));
-app.use(require('./src/routes/codigoReferidos.routes'));
 app.use(require('./src/routes/participacionReferidos.routes'));
 app.use(require('./src/routes/participacion.routes'));
 app.use(require('./src/routes/premiacion.routes'));
 app.use(require('./src/routes/reportePromocion.routes'));
-app.use(require('./src/routes/reporteReferidos.routes'));
+app.use(require('./src/routes/reporteReferidos.routes.js'));
 app.use(require('./src/routes/loggin.routes'));
 app.use(require('./src/routes/trxCampanias.routes'))
 app.use(require('./src/routes/excelReports.routes.js'));
 app.use(require('./src/routes/configReferidos.routes.js'));
-app.use(require('./src/routes/tabladb.routes.js'))
+app.use(require('./src/routes/tabladb.routes.js'));
+app.use(require('./src/routes/codigoReferidos.routes.js'));
+app.use(require('./src/routes/graficaCampanias.routes.js'))
+
 
 
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
-    taskSendEmail.start();
+
+    //taskSendEmail.start();
+    // taskSendEmail.start();
+    // taskSendEmail.start();
     // sendEmail("juliaelenagaal@gmail.com", "Prueba", "Prueba de envio de correo", "reporte-notificaciones-offercraft.xlsx", "./reporte-notificaciones-offercraft.xlsx");
     // sendEmail("estiven6647@gmail.com", "Prueba", "Prueba de envio de correo", "reporte-notificaciones-offercraft.xlsx", "./reporte-notificaciones-offercraft.xlsx");
 
