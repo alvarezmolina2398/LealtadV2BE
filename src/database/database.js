@@ -6,12 +6,18 @@ const { Sequelize } = require("sequelize");
 //     dialect: "mysql",
 // });
 
-const sequelize = new Sequelize("lealtadV2", "root", "B@rilhas2003", {
-  //host: '192.168.1.100',
-  host: "localhost",
-  dialect: "mysql",
-});
-
+const sequelize = new Sequelize(
+  "lealtadV2",
+  "DesaSolUn",
+  "SolUn123",
+  //   "root",
+  // "admin",
+  {
+    host: "35.223.87.209",
+    // host: 'localhost',
+    dialect: "mysql",
+  }
+);
 
 const pronet = new Sequelize(
     "pronet",
