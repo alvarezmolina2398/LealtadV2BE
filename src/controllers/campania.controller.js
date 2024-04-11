@@ -40,7 +40,7 @@ const AddCampania = async(req, res) =>{
         await Campania.create({
             nombre,
             descripcion,
-            fechaCreacion,
+            fechaCreacion: new Date(),
             fechaRegistro,
             fechaInicio,
             fechaFin,
