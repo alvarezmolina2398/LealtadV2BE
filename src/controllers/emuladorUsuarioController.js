@@ -168,9 +168,6 @@ const generaCampanasUsuarios = async(req, res) => {
 
                     // console.log("Participantes:", Participante);
 
-
-
-
                     const validaBloqueado = (bloqueado, participantes) => {
                         const participanteCoincidente = participantes.find(participante =>
                             participante.numero === bloqueado.numero && participante.campaniaId === bloqueado.idCampania
@@ -292,13 +289,6 @@ const generaCampanasUsuarios = async(req, res) => {
                             }
                         }
 
-
-
-                        
-                        
-                        
-                    
-                    
                         // Accede a la columna idColumna de Transaccion
                         
                     }

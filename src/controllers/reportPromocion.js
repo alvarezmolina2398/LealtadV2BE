@@ -37,12 +37,12 @@ const postDatosCupon = async (req, res) => {
                 model: Etapa,
                 include: {
                   model: Campania,
-                  include: {
-                    model: Participacion,
-                    include: {
-                      model: Transaccion
-                    }
-                  }
+                  // include: {
+                  //   model: Participacion,
+                  //   // include: {
+                  //   //   model: Transaccion
+                  //   // }
+                  // }
                 }
               },
              },
