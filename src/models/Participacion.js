@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
+const { sumaTotal } = require('sequelize');
 
 const Participacion = sequelize.define('participacion', {
 
@@ -50,6 +51,8 @@ TransaccionPremio.belongsTo(Participacion, {
     foreignKey: 'idParticipacion',
     targetId: 'id',
 });
+
+
 
 // (async () => {
 //     await sequelize.sync({ force: false });

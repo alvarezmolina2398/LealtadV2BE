@@ -10,6 +10,7 @@ const { Premiacion } = require("../models/premiacion");
 const { asignarCategoria } = require("../models/asignarCategoria");
 const { Campania } = require("../models/campanias");
 const { PremioCampania } = require("../models/premioCampania");
+const { Etapa } = require("../models/etapa");
 
 
 const postDatosCupon = async (req, res) => {
@@ -32,9 +33,18 @@ const postDatosCupon = async (req, res) => {
             model: Premio,
              include: {
                model: PremioCampania,
-            //   include: {
-            //     model: TransaccionPremio,
-            //   },
+              include: {
+                model: Etapa,
+                include: {
+                  model: Campania,
+                  include: {
+                    model: Participacion,
+                    include: {
+                      model: Transaccion
+                    }
+                  }
+                }
+              },
              },
           },
         },
@@ -58,9 +68,8 @@ const postDatosCupon = async (req, res) => {
     console.log(error)
     res.status(403)
     res.send({errors: 'Hubo un problema al cargar la data.'})
-
   }
-
 };
+
 
 module.exports = { postDatosCupon };
