@@ -3,6 +3,8 @@ const { sequelize } = require('../database/database');
 const { Premiacion } = require('./premiacion');
 const { PremioCampania } = require('./premioCampania');
 const { PremioPromocion } = require('./premioPromocion');
+const { Participacion } = require('./Participacion');
+
 
 
 
@@ -55,6 +57,18 @@ PremioCampania.belongsTo(Premio, {
     targetId: 'id',
     
 });
+
+
+Premio.hasMany(Participacion,{
+    foreignKey: 'idPremio',
+    sourceKey: 'id'
+});
+Participacion.belongsTo(Premio, {
+    foreignKey: 'idPremio',
+    targetId: 'id',
+    
+});
+
 
 
 Premio.hasMany(PremioPromocion,{

@@ -53,6 +53,7 @@ app.use(require('./src/routes/configReferidos.routes.js'));
 app.use(require('./src/routes/tabladb.routes.js'));
 app.use(require('./src/routes/codigoReferidos.routes.js'));
 app.use(require('./src/routes/graficaCampanias.routes.js'))
+app.use(require('./src/routes/reporteOfercraft.routes.js'))
 
 
 
