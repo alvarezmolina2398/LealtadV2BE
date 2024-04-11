@@ -1,19 +1,20 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { Campania } = require('../models/campanias');
 
-const EnviaPremio  = sequelize.define('enviaPremio', {
+const EnviaPremio = sequelize.define('enviapremios', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     telefono: {
-        type: DataTypes.INTEGER, 
-        allowNull: false,
-    },
-    campania: {
-        type: DataTypes.INTEGER, 
-        allowNull: false,
+        type: DataTypes.STRING(150),
+        allowNull: true,
+        
+    }, campania: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
     estado : {
         type: DataTypes.INTEGER,
@@ -21,10 +22,10 @@ const EnviaPremio  = sequelize.define('enviaPremio', {
     }
 },{timestamps: false});
 
-
+EnviaPremio.belongsTo(Campania, { foreignKey: 'campania', as: 'campaign' });
 
 /*(async () => {
     await sequelize.sync({ force: false });
  })();*/
 
-module.exports = {EnviaPremio }
+module.exports = {EnviaPremio}
