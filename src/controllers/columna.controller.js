@@ -11,7 +11,7 @@ const GetColumnas = async (req, res) => {
                 estado: 1,
             }
         })
-        res.json(trx)
+        res.json(trx);
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
@@ -33,7 +33,7 @@ const AddColumna = async (req, res) => {
         res.json({ code: 'ok', message: 'Columna creada con exito' });
 
     } catch (error) {
-        res.status(403)
+        res.status(403);
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
 }
@@ -59,7 +59,7 @@ const UpdateColumna = async (req, res) => {
         res.json({ code: 'ok', message: 'Columna actualizada con exito' });
 
     } catch (error) {
-        res.status(403)
+        res.status(403);
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
 }
@@ -79,7 +79,7 @@ const DeleteColumna = async (req, res) => {
 
         res.json({ code: 'ok', message: 'Columna inhabilitada con exito' });
     } catch (error) {
-        res.status(403)
+        res.status(403);
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
 }
@@ -95,7 +95,7 @@ const GetColumnaById = async (req, res) => {
         });
         res.json(project)
     } catch (error) {
-        res.status(403)
+        res.status(403);
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Columna.' });
     }
 }
@@ -109,11 +109,10 @@ const GetTablaByProyectos = async(req,res) =>{
                 idProyectos:idProyectos, 
                 estado: 1
             }
-        })
-        res.json(trx)
+        });
+        res.json(trx);
     }catch(error){
-        res.status(403)
-        console.log(error)
+        res.status(403);
         res.send({ errors: 'Ha sucedido un error al acceder a Tablas.' });
     }
 }

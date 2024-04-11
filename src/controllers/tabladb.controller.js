@@ -16,7 +16,6 @@ const GetTablaDB = async(req, res) =>{
 
 const AddTablaDB = async (req, res) =>{
     try{
-        console.log(req.body);
         const {nombre_tabla, idProyectos} = req.body;
         await TablaDB.create({
             nombre_tabla,
@@ -24,7 +23,6 @@ const AddTablaDB = async (req, res) =>{
         })
         res.json({code: 'ok', message:'Tabla creada exitosamente.'})
     }catch(err){
-        console.log(err)
         res.status(403)
         res.send({errors: 'Ha sucedido un  error al intentar agregar un nuevo proyecto.'})
     }
