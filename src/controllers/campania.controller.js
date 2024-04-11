@@ -10,10 +10,65 @@ const { Presupuesto } = require('../models/presupuesto');
 const { Transaccion } = require('../models/transaccion');
 const { Bloqueados} = require('../models/bloqueados');
 
+
+const AddCampania = async(req, res) =>{
+    try{
+
+        
+        const {
+            nombre,
+            descripcion,
+            fechaCreacion,
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            diaReporte,
+            horaReporte,
+            emails ,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            estado,
+            maximoParticipaciones
+        } = req.body;
+    
+        await Campania.create({
+            nombre,
+            descripcion,
+            fechaCreacion,
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            diaReporte,
+            horaReporte,
+            emails ,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            estado,
+            maximoParticipaciones
+        })
+        res.json({code: 'ok', message: 'Campaña creada con exito'});
+    }catch(error){
+        res.status(403);
+        res.send({error: 'Ha sucedido un error al intentar crear la campaña'});
+    }
+    
+}
+
+/*
 //accion para insertar una nueva trnasaccion
 const AddCampania = async (req, res) => {
-    
-
     const {
         fechaRegistro,
         fechaInicio,
@@ -36,7 +91,6 @@ const AddCampania = async (req, res) => {
         diaReporte,
         emails,
     } = req.body;
-
 
     try {
         const newCampains = await Campania.create({
@@ -63,10 +117,6 @@ const AddCampania = async (req, res) => {
         });
         const { id } = newCampains.dataValues;
 
-
-
-        //     console.log(id)
-
         etapas.forEach(element => {
             element.idCampania = id;
             AddEtapas(element);
@@ -90,7 +140,7 @@ const AddCampania = async (req, res) => {
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
     }
 
-}
+}*/
 
 
 const AddEtapas = async (etapa) => {
@@ -177,10 +227,10 @@ const GetcampanasActivas = async (req, res) => {
     try {
         const trx = await Campania.findAll({
             where: {
-                estado: [1, 2, 3]
+                estado: [1, 2, 3, 4]
             }
         });
-        res.json(trx)
+        res.json(trx)   
     } catch (error) {
         console.error(error)
         res.status(403)
@@ -215,6 +265,8 @@ const GetcampanasActivasById = async (req, res) => {
     }
 }
 
+
+//update verificar para la edicion 
 const UpdateCampania = async (req, res) => {
 
     try {
