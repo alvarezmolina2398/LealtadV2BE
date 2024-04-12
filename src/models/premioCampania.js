@@ -33,4 +33,4 @@ const PremioCampania = sequelize.define('premiocampania', {
 //     // Code here
 //  })();
 
-module.exports = {PremioCampania}
+module.exports = {PremioCampania, sequelize}

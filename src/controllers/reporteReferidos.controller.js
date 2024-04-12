@@ -8,7 +8,6 @@ const GetParticipacionReferidos = async (req, res) => {
 
     console.log("fecha inicial", fechaInicio);
     console.log("fecha final ", fechaFin);
-
     // Usar la instancia 'genesis' para la consulta
     // const resultados = await genesis.query(
     //   `SELECT eca.nombreCampana, eca.descripcionNotificacion,
@@ -52,7 +51,6 @@ const GetParticipacionReferidos = async (req, res) => {
     WHERE (SELECT COUNT(*) FROM genesis.det_campana_participacion dcp 
     WHERE dcp.idCampana = eca.idCampana AND dcp.idTransaccion IN (68,69)) >0 
     BETWEEN '${fechaInicio}'  AND '${fechaFin}'`);
-
 // Extraer el código de la primera consulta
 console.log("\n\n\resultadosPronet",resultadosPronet);
 const codigo = resultadosPronet[0].codigos_referidos;

@@ -37,7 +37,9 @@ app.use(require('./src/routes/detalleCampania.routes'));
 app.use(require('./src/routes/menu.routes'));
 app.use(require('./src/routes/pagina.routes'));
 app.use(require('./src/routes/profecion.routes'));
+app.use(require('./src/routes/enviaPremio.routes'));
 app.use(require('./src/routes/permisoUsuario.routes'))
+app.use(require('./src/routes/emuladorUsuario.Routes.js'))
 app.use(require('./src/routes/cangepromocion.routes'))
 app.use(require('./src/routes/asignarCategoria.routes'));
 app.use(require('./src/routes/participacionReferidos.routes'));
@@ -57,10 +59,11 @@ app.use(require('./src/routes/reporteOfercraft.routes.js'))
 
 
 
-
 //corremos el servidor
 app.listen(app.get('port'), () => {
     console.log('Server Running on Port: ' + app.get('port'));
+
+    //taskSendEmail.start();
     // taskSendEmail.start();
     // taskSendEmail.start();
     // sendEmail("juliaelenagaal@gmail.com", "Prueba", "Prueba de envio de correo", "reporte-notificaciones-offercraft.xlsx", "./reporte-notificaciones-offercraft.xlsx");

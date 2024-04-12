@@ -32,6 +32,4 @@ codigoReferido.hasMany(participacionReferidos,{
     sourceKey: 'id'
 });
 
-
-
 module.exports = {codigoReferido}

@@ -2,19 +2,19 @@ const { Router } = require('express');
 const router = Router();
 
 const {
-  GetEnvios,
+  GetEnviaPremio,
   AddEnvio,
   UpdateEnvio,
   DeleteEnvio,
   GetEnvioById,
-} = require('../controllers/enviaPremioController.js');
+} = require('../controllers/enviaPremio.Controller.js');
 const authUser = require('../middlewares/auth.js'); 
 
 
 const path = 'enviaPremio';
 
 
-router.get(`/${path}`, authUser, GetEnvios); 
+router.get(`/${path}`, authUser, GetEnviaPremio); 
 router.post(`/${path}`, AddEnvio);
 router.put(`/${path}/:id`, UpdateEnvio); 
 router.delete(`/${path}/:id`, DeleteEnvio); 
