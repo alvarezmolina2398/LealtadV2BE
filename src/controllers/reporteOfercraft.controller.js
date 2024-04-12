@@ -6,16 +6,18 @@ const { Participacion } = require('../models/Participacion');
 const { PremioCampania } = require('../models/premioCampania');
 const { Premio } = require('../models/premio');
 
+
 const { Op } = require('sequelize');
+
+
 
 const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
     try {
-        const { idCampanas, fecha1, fecha2 } = req.params;
-        const ids = idCampanas.split(',');
+        const { idCampanas, fecha1, fecha2 } = req.body;
 
         const envio = await Campania.findAll({
             where: {
-                id: ids,
+                id: idCampanas,
                 fechaInicio: {
                     [Op.gte]: fecha1
                 },
@@ -27,29 +29,194 @@ const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
             include: [
                 {
                     model: Participacion,
-                    attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion'],
+                    as: 'participaciones',
+                    attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
                     include: [
                         {
                             model: Campania,
-                            attributes: ['nombre'] 
+                            attributes: ['nombre','fechaCreacion'] 
+                        }
+                    ],
+                    include: [
+                        {
+                            model: Premio, // Cambia el modelo a Premio
+                            attributes: ['descripcion'] // Incluye solo la descripción del premio
                         }
                     ]
                 }
             ]
         });
 
-        res.json(envio);
+        // Crear un nuevo array con la estructura deseada
+        const newArray = [];
+        for (const c of envio) {
+            const participaciones = [];
+            for (const p of c.participaciones) {
+                const customerInfo = await getCustomerInfoById(p.customerId);
+                participaciones.push({
+                    ...p.toJSON(),
+                    campanium: {
+                        "nombre": c.nombre,
+                        "fechaCreacion": c.fechaCreacion
+                    },
+                    premioDescripcion: p.premio ? p.premio.descripcion : "Sin premio", // Obtén la descripción del premio
+                    customerInfo
+                });
+            }
+            newArray.push({
+                "id": c.id,
+                "nombre": c.nombre,
+                "descripcion": c.descripcion,
+                "fechaCreacion": c.fechaCreacion,
+                "fechaRegistro": c.fechaRegistro,
+                "fechaInicio": c.fechaInicio,
+                "fechaFin": c.fechaFin,
+                "diaReporte": c.diaReporte,
+                "horaReporte": c.horaReporte,
+                "emails": c.emails,
+                "edadInicial": c.edadInicial,
+                "edadFinal": c.edadFinal,
+                "sexo": c.sexo,
+                "tipoUsuario": c.tipoUsuario,
+                "tituloNotificacion": c.tituloNotificacion,
+                "descripcionNotificacion": c.descripcionNotificacion,
+                "imgPush": c.imgPush,
+                "imgAkisi": c.imgAkisi,
+                "estado": c.estado,
+                "maximoParticipaciones": c.maximoParticipaciones,
+                "participaciones": participaciones
+            });
+        }
+
+        res.json(newArray);
     } catch (error) {
         console.error('Error al obtener las campañas:', error);
         res.status(403).send({ errors: 'Ha ocurrido un error al obtener las campañas.' });
     }
 };
 
+const getCustomerInfoById = async (customerId) => {
+    try {
+        const customerInfo = await pronet.query(`
+            SELECT 
+                cu.customer_id,
+                cu.customer_reference,
+                cu.telno,
+                ui.lname,
+                ui.fname
+            FROM 
+                pronet.tbl_customer cu
+            JOIN 
+                pronet.tblUserInformation ui ON cu.telno = ui.userno
+            WHERE 
+                cu.customer_id = ${customerId}
+        `, {
+            type: pronet.QueryTypes.SELECT
+        });
+
+        return customerInfo[0]; // Devuelve el primer registro encontrado
+    } catch (error) {
+        console.error('Error al obtener la información del cliente:', error);
+        throw new Error('Error al obtener la información del cliente');
+    }
+};
 
 
 
 
-// const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
+// const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
+//     try {
+//         const { idCampanas, fecha1, fecha2 } = req.body;
+
+    
+        
+//         // const ids = idCampanas.split(',');
+
+//         const envio = await Campania.findAll({
+//             where: {
+//                 id: idCampanas,
+//                 fechaInicio: {
+//                     [Op.gte]: fecha1
+//                 },
+//                 fechaFin: {
+//                     [Op.lte]: fecha2
+//                 },
+//                 estado: 1,
+//             },
+//             include: [
+//                 {
+//                     model: Participacion,
+//                     as: 'participaciones',
+//                     attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
+//                     include: [
+//                         {
+//                             model: Campania,
+//                             attributes: ['nombre'] 
+//                         }
+//                     ]
+//                 }
+//             ]
+//         });
+
+//         // Obtener todas las participaciones de todas las campañas
+//         const participaciones = envio.flatMap(c => c.participaciones);
+
+//         // Agrupar las participaciones por customerId
+//         const participacionesPorCliente = participaciones.reduce((acc, participacion) => {
+//             const { customerId } = participacion;
+//             if (!acc[customerId]) {
+//                 acc[customerId] = [];
+//             }
+//             acc[customerId].push(participacion);
+//             return acc;
+//         }, {});
+
+//         // Obtener la información del cliente por las participaciones agrupadas
+//         const customerInfo = await getCustomerInfoById(participacionesPorCliente);
+
+//         res.json({ envio, customerInfo });
+//     } catch (error) {
+//         console.error('Error al obtener las campañas:', error);
+//         res.status(403).send({ errors: 'Ha ocurrido un error al obtener las campañas.' });
+//     }
+// };
+
+
+// const getCustomerInfoById = async (participacionesPorCliente) => {
+//     try {
+//         // Obtener los customerIds de las participaciones agrupadas
+//         const customerIds = Object.keys(participacionesPorCliente);
+
+//         // Consulta SQL para obtener la información del cliente
+//         const customerInfo = await pronet.query(`
+//         SELECT 
+//             cu.customer_id,
+//             cu.customer_reference,
+//             cu.telno,
+//             ui.lname,
+//             ui.fname
+//         FROM 
+//             pronet.tbl_customer cu
+//         JOIN 
+//             pronet.tblUserInformation ui ON cu.telno = ui.userno
+//         WHERE 
+//             cu.customer_id IN (${customerIds.join(',')})
+//         `, {
+//             type: pronet.QueryTypes.SELECT
+//         });
+
+//         return customerInfo;
+//     } catch (error) {
+//         console.error('Error al obtener la información del cliente:', error);
+//         throw new Error('Error al obtener la información del cliente');
+//     }
+// };
+
+
+
+
+
+// const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
 //     try {
 //         const { idCampanas, fecha1, fecha2 } = req.params;
 //         const ids = idCampanas.split(',');
@@ -68,17 +235,74 @@ const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
 //             include: [
 //                 {
 //                     model: Participacion,
-                   
-//                 },
-
+//                     as: 'participaciones',
+//                     attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
+//                     include: [
+//                         {
+//                             model: Campania,
+//                             attributes: ['nombre'] 
+//                         }
+//                     ]
+//                 }
 //             ]
 //         });
 
-//         res.json(envio);
+//         // Obtener todas las participaciones de todas las campañas
+//         const participaciones = envio.flatMap(c => c.participaciones);
+
+//         // Agrupar las participaciones por customerId
+//         const participacionesPorCliente = participaciones.reduce((acc, participacion) => {
+//             const { customerId } = participacion;
+//             if (!acc[customerId]) {
+//                 acc[customerId] = [];
+//             }
+//             acc[customerId].push(participacion);
+//             return acc;
+//         }, {});
+
+//         // Obtener la información del cliente por las participaciones agrupadas
+//         const customerInfo = await getCustomerInfoById(participacionesPorCliente);
+
+//         res.json({ envio, customerInfo });
 //     } catch (error) {
-//         console.error('Error al obtener las campanias:', error);
-//         res.status(403).send({ errors: 'Ha ocurrido un error al obtener las campanias.' });
+//         console.error('Error al obtener las campañas:', error);
+//         res.status(403).send({ errors: 'Ha ocurrido un error al obtener las campañas.' });
 //     }
 // };
+
+
+// const getCustomerInfoById = async (participacionesPorCliente) => {
+//     try {
+//         // Obtener los customerIds de las participaciones agrupadas
+//         const customerIds = Object.keys(participacionesPorCliente);
+
+//         // Consulta SQL para obtener la información del cliente
+//         const customerInfo = await pronet.query(`
+//         SELECT 
+//             cu.customer_id,
+//             cu.customer_reference,
+//             cu.telno,
+//             ui.lname,
+//             ui.fname
+//         FROM 
+//             pronet.tbl_customer cu
+//         JOIN 
+//             pronet.tblUserInformation ui ON cu.telno = ui.userno
+//         WHERE 
+//             cu.customer_id IN (${customerIds.join(',')})
+//         `, {
+//             type: pronet.QueryTypes.SELECT
+//         });
+
+//         return customerInfo;
+//     } catch (error) {
+//         console.error('Error al obtener la información del cliente:', error);
+//         throw new Error('Error al obtener la información del cliente');
+//     }
+// };
+
+
+
+
 
 module.exports = { getUsuariosNotificacionesOfferCraftSel };

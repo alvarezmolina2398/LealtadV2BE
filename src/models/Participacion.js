@@ -2,10 +2,8 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
 
-
 const { sumaTotal } = require('sequelize');
 
-const Participacion = sequelize.define('participacions', {
 const Participacion = sequelize.define('participacions', {
 
     id: {
@@ -46,11 +44,6 @@ const Participacion = sequelize.define('participacions', {
         allowNull: false
     },
     
-    urlPremio: {
-        type: DataTypes.STRING(1),
-        allowNull: false
-    },
-    
     etapa: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -63,11 +56,13 @@ const Participacion = sequelize.define('participacions', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
+
     idCampania: {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
   
+
   
 },{timestamps: false})
 
@@ -78,13 +73,10 @@ Participacion.hasMany(TransaccionPremio,{
 });
 
 
-
 TransaccionPremio.belongsTo(Participacion, {
     foreignKey: 'idParticipacion',
     targetId: 'id',
 });
-
-
 
 
 // (async () => {
