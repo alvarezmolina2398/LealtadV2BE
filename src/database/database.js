@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
     //host: '192.168.1.100',
-    host: "35.223.87.209",
+    host: "35.193.250.241",
     dialect: "mysql",
 });
 
