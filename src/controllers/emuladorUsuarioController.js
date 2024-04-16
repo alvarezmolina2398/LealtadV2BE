@@ -7,10 +7,12 @@ const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro.js');
 const { Participacion } = require('../models/Participacion.js');
 const { Transaccion } = require('../models/transaccion.js');
+const { Categoria } = require('../models/categoria.js');
+const { TablaDB } = require('../models/tabladb.js');
 
 // const { EmuladorUsuario } = require('../models/emuladorUsuario');
-const { pronet } = require('../database/database');
-const { Sequelize } = require('sequelize');
+const { pronet, sequelize } = require('../database/database');
+const { Sequelize, where } = require('sequelize');
 
 
 const transaccionesValidasCampanasFusionL = async (id) => {
@@ -20,6 +22,7 @@ const transaccionesValidasCampanasFusionL = async (id) => {
                 {
                     model: Participantes,
                     attributes: ['id'] ,
+                    // where: { estado: 1}
                 },
 
                 {
@@ -72,8 +75,43 @@ const GetcampanasActivasById = async (id) => {
     }
 }
 
-
-
+const transaccionesValidasCampanasFusion = async(idCampania) => {
+    try {
+        const transaccionesValidas = await DetCampanaParticipacion.findAll({
+            attributes: [
+                'valorMinimo',
+                'valorMaximo',
+                'idTipoParticipacion',
+                'limiteTransacciones',
+                'tipoTranasaccion',
+                [Sequelize.literal('t.descripcion'), 'descripcion'],
+                [Sequelize.literal('ctdb.columna'), 'columna'],
+                'idCampanaParticipacion'
+            ],
+            include: [
+                {
+                    model: Transaccion,
+                    where: {tipoTransaccion: 't'},
+                    required: true
+                },
+                {
+                    model: Categoria,
+                    where: {tipoTransaccion: 'c', estado: 1 },
+                    required: false
+                },
+                {
+                    model: TablaDB,
+                    required: true
+                }
+            ],
+            where: { idCampania: idCampania, estado: 1 },
+            raw: true
+        });
+        return transaccionesValidas;
+    } catch (error){
+        throw error;
+    }
+}
 
 const generaCampanasUsuarios = async(req, res) => {
     try {
@@ -86,8 +124,6 @@ const generaCampanasUsuarios = async(req, res) => {
                 type: Sequelize.QueryTypes.SELECT
             }
         );
-
-
 
         console.log("Resultado de la consulta refer:", refer);
 
@@ -114,7 +150,6 @@ const generaCampanasUsuarios = async(req, res) => {
                 });
 
 
- 
                 console.log("Resultado de la consulta campanasActivasEnc:", campanasActivasEnc);
 
                 // Asignar valores a cada objeto campana
@@ -132,8 +167,6 @@ const generaCampanasUsuarios = async(req, res) => {
                     valorCampanasActivas.nombreCampana = valorCampanasActivas.nombreCampana;
                     valorCampanasActivas.filtradoNumero = valorCampanasActivas.filtradoNumero;
                     valorCampanasActivas.tipoPremiosCampana = valorCampanasActivas.tipoPremio;
-
-
 
                     if (valorCampanasActivas.imgAkisi = valorCampanasActivas.imgAkisi) {
                         valorCampanasActivas.imgAkisi = valorCampanasActivas.imgAkisi;
@@ -156,8 +189,6 @@ const generaCampanasUsuarios = async(req, res) => {
 
 
                     // console.log("Bloqueados:", Bloqueado);
-
-
                     const Participante = await Participantes.findAll({
                         where: {
                             estado: 1,
@@ -165,14 +196,12 @@ const generaCampanasUsuarios = async(req, res) => {
                         attributes: ['id', 'numero', 'campaniaId'],
                     });
 
-
                     // console.log("Participantes:", Participante);
-
                     const validaBloqueado = (bloqueado, participantes) => {
                         const participanteCoincidente = participantes.find(participante =>
                             participante.numero === bloqueado.numero && participante.campaniaId === bloqueado.idCampania
                         );
-    
+
                         return participanteCoincidente ? 'Restrinjido' : 'permitido';
                     };
     
@@ -197,12 +226,8 @@ const generaCampanasUsuarios = async(req, res) => {
                     for (const campania of campanasActivasEnc) {
                         // Obtener las etapas de la campaña
                         const transaccionesValidas = await transaccionesValidasCampanasFusionL(campania.id);
-                    
+                        
                         // Iterar sobre las etapas y mostrar los idDepartamento de los presupuestos asociados
-
-
-                       
-
                         for (const etapa of transaccionesValidas.etapas) {
                             console.log("Información de la etapa:", etapa);
                             console.log("Información de tipoParticipacion:", etapa.tipoParticipacion);
@@ -292,9 +317,6 @@ const generaCampanasUsuarios = async(req, res) => {
                         // Accede a la columna idColumna de Transaccion
                         
                     }
-
-
-
                     for (const campania of campanasActivasEnc) {
                        
                         const departamento = await GetcampanasActivasById(campania.id);
@@ -340,7 +362,8 @@ const campanasUsuariosEmulador_get = async (req, res) => {
         const referens = await pronet.query(
             `SELECT customer_reference 
             FROM pronet.tbl_customer 
-            WHERE telno = :telefono ;`, {
+            WHERE telno = :telefono ;`, 
+            {
                 replacements: { telefono },
                 type: Sequelize.QueryTypes.SELECT
             }
@@ -360,7 +383,9 @@ const campanasUsuariosEmulador_get = async (req, res) => {
         }
 
         res.status(200).json(respData);
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error("Error en campanasUsuariosEmulador_get:", error);
         res.status(500).json({ message: "Error interno del servidor." });
     }
@@ -402,6 +427,7 @@ module.exports = {
 
     // generaCampanasUsuarios,
     campanasUsuariosEmulador_get,
+    // transaccionesValidasCampanasFusion, 
     // DeleteEnvio,
     // GetNumeroById,
 }

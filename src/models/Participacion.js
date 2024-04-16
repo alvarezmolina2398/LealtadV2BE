@@ -52,6 +52,10 @@ const Participacion = sequelize.define('participacions', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
+    idCampania: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
   
 },{timestamps: false})
 
@@ -68,8 +72,9 @@ TransaccionPremio.belongsTo(Participacion, {
 });
 
 
+
 // (async () => {
-//     await sequelize.sync({ force: false });
+//     await Participacion.sync({ alter: false });
 //     //Code here
 // })();
 

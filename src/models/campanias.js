@@ -163,6 +163,9 @@ Parametro.belongsTo(Campania,{
     //await sequelize.sync({ force: true });
 //     // Code here
 //})();
+// (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
 
 // Campania.sync({ force: false }).then(() => {
 //     console.log('tabla campania creada');
