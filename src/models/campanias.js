@@ -103,6 +103,43 @@ const Campania = sequelize.define('campania', {
         allowNull: true,
         defaultValue: 'estiven6647@gmail.com'
     },
+    campaniaTerceros:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    allDay:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    repetir:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    fechaRecordatorioIni:{
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    fechaRecordatorioFin:{
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    terminosCondiciones:{
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    observaciones:{
+        type: DataTypes.STRING(1000),
+        allowNull: true
+    },
+    esArchivada:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    }
+
 },{timestamps: false});
 
 

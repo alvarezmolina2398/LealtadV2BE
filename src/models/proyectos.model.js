@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const { Campania } = require('./campanias');
 
 const Proyectos = sequelize.define('proyectos', {
     id: {
@@ -26,5 +27,16 @@ const Proyectos = sequelize.define('proyectos', {
 
 
 }, { timestamps: false });
+
+
+Proyectos.hasMany(Campania,{
+    foreignKey: 'idProyecto',
+    sourceKey: 'id'
+});
+
+Campania.belongsTo(Proyectos,{
+    foreignKey: 'idProyecto',
+    sourceKey: 'id'
+});
 
 module.exports = { Proyectos }
