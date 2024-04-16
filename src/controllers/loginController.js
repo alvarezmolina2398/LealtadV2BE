@@ -125,7 +125,38 @@ const loggin = async (req, res) => {
 };
 
 
+const getNewSession = (req,res) => {
+  try {
+
+    const token = req.headers.authorization;
+
+    const decodedToken = jwt.decode( token,);
+
+    const tokenPayload = {
+      username: decodedToken.username
+    };
+
+    const Newtoken = jwt.sign( tokenPayload , env.jwt.secret, { algorithm: env.jwt.algo, expiresIn: env.jwt.exp });
+
+    res.send({token: Newtoken});
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500);
+
+    res.send({
+      errors: "Ha sucedido un error al intentar generar un nuevo token.",
+    });
+  }
+}
+
+
+
+
 module.exports = {
   loggin,
   getTokenStatus,
+  getNewSession
 };
