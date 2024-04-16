@@ -16,7 +16,7 @@ const pronet = new Sequelize(
     "pronet",
     "devusr",
     "efHBxdcV", {
-        host: "172.16.50.27",
+        host: "35.223.201.149",
         port: "3306",
         dialect: "mysql",
     }
