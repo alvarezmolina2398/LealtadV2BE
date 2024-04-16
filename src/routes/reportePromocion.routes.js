@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const { getDatosCupon } = require('../controllers/reportPromocion.js');
+const { postDatosCupon } = require('../controllers/reportPromocion.js');
 const router = Router();
 
 
@@ -7,7 +7,7 @@ const router = Router();
 
 const path = 'reportePromocion';
 
-router.post(`/${path}`, getDatosCupon);
+router.post(`/${path}`, postDatosCupon);
 
 
 

@@ -16,4 +16,4 @@ const TransaccionPremio = sequelize.define('transaccionpremios',{
 //     // Code here
 // })();
 
-module.exports = {TransaccionPremio}
+module.exports = {TransaccionPremio, sequelize}

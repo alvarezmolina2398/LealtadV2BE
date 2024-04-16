@@ -42,7 +42,7 @@ Premiacion.hasMany(TransaccionPremio,{
 
 TransaccionPremio.belongsTo(Premiacion, {
     foreignKey: 'idPremiacion',
-    targetId: 'id',
+    targetKey: 'id',
 });
 
 // (async () => {
@@ -50,4 +50,4 @@ TransaccionPremio.belongsTo(Premiacion, {
 //     // Code here
 // })();
 
-module.exports = {Premiacion}
+module.exports = {Premiacion, sequelize}

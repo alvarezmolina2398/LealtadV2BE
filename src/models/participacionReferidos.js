@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
+const {CodigoReferido} = require('../models/codigoReferidos');
 
 const participacionReferidos = sequelize.define('participacionreferidos', {
 
