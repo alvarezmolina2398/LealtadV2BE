@@ -6,7 +6,8 @@ const {GetParticipacionReferidos} = require('../controllers/reporteReferidos.con
 //declarampos nuestra constante para almacenar el path`
 const path = 'reporteReferidos';
 //rutas del proyecto
-router.post(`/${path}`,GetParticipacionReferidos);
+router.post(`/${path}/referidos`,GetParticipacionReferidos);
+
 
 //exportacion de rutas
 module.exports = router;

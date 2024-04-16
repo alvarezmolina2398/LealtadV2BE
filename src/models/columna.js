@@ -14,6 +14,14 @@ const Columna = sequelize.define('columna', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
+    fila_insertada : {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    fila_actualizada : {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
