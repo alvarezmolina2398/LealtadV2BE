@@ -9,9 +9,11 @@ const { Participacion } = require('../models/Participacion.js');
 const { Transaccion } = require('../models/transaccion.js');
 const { Categoria } = require('../models/categoria.js');
 const { TablaDB } = require('../models/tabladb.js');
+const { Departamento} =require('../models/departamento.js');
+const {  Municipio }=require("../models/municipio.js");
 
 // const { EmuladorUsuario } = require('../models/emuladorUsuario');
-const { pronet, sequelize } = require('../database/database');
+const { pronet, sequelize, genesis } = require('../database/database');
 const { Sequelize, where } = require('sequelize');
 
 
@@ -112,6 +114,90 @@ const transaccionesValidasCampanasFusion = async(idCampania) => {
         throw error;
     }
 }
+
+
+async function campanasActualesActivas(idUsuario = 0, soloMostrar = 0) {
+    try {
+      if (idUsuario === 0) {
+        // ES UNA BUSQUEDA GENERAL DE TODAS LAS CAMPAÑAS ACTIVAS (NO POR USUARIO)
+        const campanas = await Campania.findAll({
+          where: {
+            estado: 1,
+            fechaFinal: { [Op.gte]: new Date() },
+            fechaInicio: { [Op.lte]: new Date() },
+          },
+          order: [['fechaCreacion', 'DESC']],
+        });
+  
+        return campanas;
+      } else {
+        //BUSQUEDA POR USUARIO ESPECIFICO
+        let query = `
+          SELECT
+            fechaRegistro, edadInicial, edadFinal, tipoUsuario, sexo, usuariosInternos, UsuariosNuevos, UsuariosAntiguos, idCampana, nombreCampana, filtradoNumero, tipoPremio,limiteParticipaciones,tipoParticipacion,minimoTransacciones,minimoAcumular,IFNULL(tituloNotificacion, 'Felicidades!!!') tituloNotificacion,IFNULL(descripcionNotificacion, REPLACE('Usted esta participando en nuestra nueva promoción {nombreCampana}', '{nombreCampana}', REPLACE(REPLACE(nombreCampana,'&#34;','\"'),'&#39;','\''))) descripcionNotificacion, iconoAkisi, imagenPush, descripcionCampana, 0 AS maximoDiario,
+            limiteParticipaciones, (SELECT COUNT(*) FROM Participante WHERE idUsuarioParticipante = :idUsuario AND Participante.idCampana = Campania.idCampana) AS actualParticipaciones
+          FROM Campania
+          WHERE estado = 1 AND fechaFinal >= CAST(NOW() as date) AND fechaInicio <= CAST(NOW() as date)
+        `;
+  
+        //FILTRAR SEGUN EL TIPO DE CAMPAÑA
+        const dataUsuario = await pronet.query(
+          `SELECT telno, has_commerce FROM tbl_customer WHERE customer_id = :idUsuario`,
+          { replacements: { idUsuario }, type: pronet.QueryTypes.SELECT }
+        );
+  
+        if (dataUsuario) {
+          //filtradoNumero=0 => APLICAN TODOS
+          //filtradoNumero=1 => APLICAN UNICAMENTE LOS REGISTROS ESTABLECIDOS
+          //filtradoNumero=2 => APLICAN TODOS EXCEPTO LOS REGISTROS ESTABLECIDOS
+          query += `
+            AND (
+              filtradoNumero=0 OR
+              (filtradoNumero=1 AND (SELECT COUNT(*) AS permitido FROM det_campana_numeros_p WHERE id_campana=Campania.idCampana AND numero='${dataUsuario.telno}' AND estado=1)=1) OR
+              (filtradoNumero=2 AND (SELECT CASE WHEN COUNT(*)>0 THEN 0 ELSE 1 END AS permitido FROM det_campana_numeros_p WHERE id_campana=Campania.idCampana AND numero='${dataUsuario.telno}' AND estado=1)=1)
+            )
+            AND ( tipoUsuario = 2 OR tipoUsuario = ${dataUsuario.has_commerce } )
+          `;
+        } else {
+          query += " AND tipoUsuario = 2 ";
+        }
+  
+        //ORDENAR LAS CAMPAÑAS
+        query += " ORDER BY fechaCreacion desc";
+  
+        const campanas = await pronet.query(query, { replacements: { idUsuario }, type: pronet.QueryTypes.SELECT });
+  
+        return campanas;
+      }
+    } catch (error) {
+      console.error("Error en campanasActualesActivas:", error);
+      throw error;
+    }
+  }
+
+  //obtener todas las campañas activas que pertenecen a terceros.
+  async function campanasActualesActivasTercero(res, req) {
+    try {
+      const campanias = await Campania.findAll({
+        where: {
+          estado: 1,
+          fechaFin: { [Op.gte]: new Date() },
+          fechaInicial: { [Op.lte]: new Date() },
+          terceros: 1,
+        },
+        order: [['fechaCreacion', 'DESC']],
+      });
+  
+      return campanas;
+    } catch (error) {
+      console.error("Error en campanasActualesActivasTercero:", error);
+      throw error;
+    }
+  }
+
+  
+  
+  
 
 const generaCampanasUsuarios = async(req, res) => {
     try {
@@ -383,6 +469,7 @@ const campanasUsuariosEmulador_get = async (req, res) => {
         }
 
         res.status(200).json(respData);
+        res.json(respData);
     } 
     catch (error) 
     {
@@ -391,9 +478,39 @@ const campanasUsuariosEmulador_get = async (req, res) => {
     }
 };
 
+async function regionesValidasCampana(idCampania) {
+    try {
+      const regiones = await DetCampanaRegiones.findAll({
+        where: {
+          idCampania: idCampania,
+          estado: 1,
+        },
+        include: [
+          {
+            model: Departamento ,
+            as: 'departamento',
+            attributes: ['idLocald'],
+            include: [
+              {
+                model: Municipio,
+                as: 'municipio',
+                attributes: ['idLocalm'],
+              },
+            ],
+          },
+        ],
+      });
+      res.json(regiones);
+  
+      return regiones;
+    } catch (error) {
+      console.error("Error en regionesValidasCampana:", error);
+      throw error;
+    }
+  }
+
 
 // esto es para mostrar en caso de que pidan avanzes
-
 
 const GetNumeroById = async(req, res) => {
     try {
@@ -427,6 +544,7 @@ module.exports = {
 
     // generaCampanasUsuarios,
     campanasUsuariosEmulador_get,
+    // campanasActualesActivas,
     // transaccionesValidasCampanasFusion, 
     // DeleteEnvio,
     // GetNumeroById,
