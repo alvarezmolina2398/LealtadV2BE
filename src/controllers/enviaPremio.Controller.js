@@ -1,34 +1,63 @@
 const { EnviaPremio } = require('../models/enviaPremio.js');
+const { Campania } = require('../models/campanias');
 
 
 
-const GetEnviaPremio = async (req, res) => {
+
+
+
+
+const GetEnviaPremio = async(req, res) => {
     try {
-        const envios = await EnviaPremio.findAll({
+        console.log("Si llega el método obtener premios");
+        const trx = await EnviaPremio.findAll({
             where: {
-                estado: 1 // Mostrar solo envíos activos
-            }
+                estado: 1
+            },
+            include: [{
+                model: Campania,
+                as: 'campaign', // Así es como especificamos el alias de la asociación en el modelo EnviaPremio
+                attributes: ['nombre'] // Solo seleccionamos el nombre de la campaña para mostrar
+            }]
         });
-        res.json(envios);
-    } catch (error) {
-        res.status(403).send({ errors: 'Ha ocurrido un error al obtener la lista de envíos.' });
-    }
-};
 
-const AddEnvio = async (req, res) => {
+        console.log(trx);
+        res.json(trx);
+    } catch (error) {
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar obtener la lista de premios.' });
+    }
+}
+
+const AddEnvio = async(req, res) => {
     try {
-        const { telefono } = req.body;
+        const data = req.body; // El cuerpo de la solicitud contendrá un array de objetos
+        console.log('Estos son los datos recibidos:', data);
 
-        await EnviaPremio.create({
-            telefono,
-        });
-        res.json({ code: 'ok', message: 'Envío creado con éxito.' });
+        // Iterar sobre cada objeto en el array y crear una entrada en la base de datos
+        for (const item of data) {
+            const { telefono, campania } = item;
+            await EnviaPremio.create({
+                telefono,
+                campania
+            });
+        }
+
+        res.json({ code: 'ok', message: 'Datos enviados con éxito' });
     } catch (error) {
-        res.status(403).send({ errors: 'Ha ocurrido un error al realizar el envío.' });
+        console.error('Error al procesar los datos:', error);
+        res.status(500).json({ error: 'Ha ocurrido un error al procesar los datos' });
     }
 };
 
-const UpdateEnvio = async (req, res) => {
+
+
+
+
+
+
+
+const UpdateEnvio = async(req, res) => {
     try {
         const { telefono } = req.body;
         const { id } = req.params;
@@ -46,12 +75,12 @@ const UpdateEnvio = async (req, res) => {
     }
 };
 
-const DeleteEnvio = async (req, res) => {
+const DeleteEnvio = async(req, res) => {
     try {
         const { id } = req.params;
 
         await EnviaPremio.update({
-            estado: 0, 
+            estado: 0,
         }, {
             where: {
                 id,
@@ -63,7 +92,7 @@ const DeleteEnvio = async (req, res) => {
     }
 };
 
-const GetEnvioById = async (req, res) => {
+const GetEnvioById = async(req, res) => {
     try {
         const { id } = req.params;
 

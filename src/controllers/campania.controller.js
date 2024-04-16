@@ -9,9 +9,12 @@ const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
 const { Transaccion } = require('../models/transaccion');
 const { Bloqueados} = require('../models/bloqueados');
+const { sequelize } = require('../database/database');
 
 
 const AddCampania = async(req, res) =>{
+    //me ayuda a tener la integridad en los datos
+    const transaction = await sequelize.transaction();
     try{
 
         
@@ -24,17 +27,29 @@ const AddCampania = async(req, res) =>{
             fechaFin,
             diaReporte,
             horaReporte,
-            emails ,
+            emails,
             edadInicial,
             edadFinal,
             sexo,
             tipoUsuario,
-            tituloNotificacion,
+            tituloNotificacion ,
             descripcionNotificacion,
-            imgPush,
+            imgPush, 
             imgAkisi,
             estado,
-            maximoParticipaciones
+            maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto,
+            etapas,
+            //participacion,
+            //bloqueados
         } = req.body;
     
         await Campania.create({
@@ -56,10 +71,48 @@ const AddCampania = async(req, res) =>{
             imgPush,
             imgAkisi,
             estado,
-            maximoParticipaciones
-        })
+            maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto,
+        },{transaction});
+        const { id } = newCampains.dataValues;
+
+        const etapaData = etapas.map(etapa =>({
+            ...etapa,
+            idCampania: id,
+            periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+            intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+            valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+        }));
+        //bulkcreate me ayuda a insertar los datos de una forma mas rapida en la bd
+        const nuevaEtapa = await Etapa.bulkCreate(etapaData,{transaction});
+        //aqui accedo a mi datos de la que se encuentran dentro de etapa y ese parametro es premio, manteniento la relacion con etapa
+        const premioData = nuevaEtapa.flatMap(etapa => etapa.premio.map(premio =>({...premio, idEtapa: etapa.id})));
+        await PremioCampania.bulkCreate(premioData,{transaction});
+
+        const parametrosData = nuevaEtapa.flatMap(etapa => etapa.parametros.map(parametros =>({...parametros, idEtapa: etapa.id})));
+        await Parametro.bulkCreate(parametrosData,{transaction});
+
+        const presupuestoData = nuevaEtapa.flatMap(etapa => etapa.presupuesto.map(presupuesto =>({...presupuesto, idEtapa: etapa.id})));
+        await Presupuesto.bulkCreate(presupuestoData,{transaction});
+
+       /* const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
+        await Participacion.bulkCreate(participacionData ,{transaction});
+
+        const bloqueoData = bloqueados.map(bloqueo =>({...bloqueo, idCampania: id}));
+        await Bloqueados.bulkCreate(bloqueoData,{transaction});*/
+
+        await transaction.commit();
         res.json({code: 'ok', message: 'Campaña creada con exito'});
     }catch(error){
+        await transaction.rollback();
         res.status(403);
         res.send({error: 'Ha sucedido un error al intentar crear la campaña'});
     }
@@ -142,7 +195,7 @@ const AddCampania = async (req, res) => {
 
 }*/
 
-
+/*
 const AddEtapas = async (etapa) => {
     const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos, intervalo, periodo, valorAcumulado } = etapa;
     const periodoValue = periodo ? parseInt(periodo) : null;
@@ -221,7 +274,7 @@ const AddPresupuesto = async (presupuestos, idEtapa) => {
     });
     await Presupuesto.bulkCreate(presupuestos);
 }
-
+*/
 
 const GetcampanasActivas = async (req, res) => {
     try {
@@ -230,7 +283,13 @@ const GetcampanasActivas = async (req, res) => {
                 estado: [1, 2, 3, 4]
             }
         });
+<<<<<<< HEAD
         res.json(trx)   
+=======
+
+        res.json(trx)
+
+>>>>>>> 27dfa5f9998086e16efd56c6ace6313491efce9d
     } catch (error) {
         console.error(error)
         res.status(403)
@@ -980,13 +1039,14 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         console.error(error);
         return [];
     }
-}
+} 
 
 
 
 
 
-module.exports = {
+
+module.exports = {  
     AddCampania,
     GetcampanasActivas,
     TestearTransaccion,
