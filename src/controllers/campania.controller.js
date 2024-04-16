@@ -27,20 +27,29 @@ const AddCampania = async(req, res) =>{
             fechaFin,
             diaReporte,
             horaReporte,
-            emails ,
+            emails,
             edadInicial,
             edadFinal,
             sexo,
             tipoUsuario,
-            tituloNotificacion,
+            tituloNotificacion ,
             descripcionNotificacion,
-            imgPush,
+            imgPush, 
             imgAkisi,
             estado,
             maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto,
             etapas,
-            participacion,
-            bloqueados
+            //participacion,
+            //bloqueados
         } = req.body;
     
         await Campania.create({
@@ -62,7 +71,16 @@ const AddCampania = async(req, res) =>{
             imgPush,
             imgAkisi,
             estado,
-            maximoParticipaciones
+            maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto,
         },{transaction});
         const { id } = newCampains.dataValues;
 
@@ -85,11 +103,11 @@ const AddCampania = async(req, res) =>{
         const presupuestoData = nuevaEtapa.flatMap(etapa => etapa.presupuesto.map(presupuesto =>({...presupuesto, idEtapa: etapa.id})));
         await Presupuesto.bulkCreate(presupuestoData,{transaction});
 
-        const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
+       /* const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
         await Participacion.bulkCreate(participacionData ,{transaction});
 
         const bloqueoData = bloqueados.map(bloqueo =>({...bloqueo, idCampania: id}));
-        await Bloqueados.bulkCreate(bloqueoData,{transaction});
+        await Bloqueados.bulkCreate(bloqueoData,{transaction});*/
 
         await transaction.commit();
         res.json({code: 'ok', message: 'Campaña creada con exito'});
@@ -265,7 +283,13 @@ const GetcampanasActivas = async (req, res) => {
                 estado: [1, 2, 3, 4]
             }
         });
+<<<<<<< HEAD
         res.json(trx)   
+=======
+
+        res.json(trx)
+
+>>>>>>> 27dfa5f9998086e16efd56c6ace6313491efce9d
     } catch (error) {
         console.error(error)
         res.status(403)
@@ -1015,13 +1039,14 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         console.error(error);
         return [];
     }
-}
+} 
 
 
 
 
 
-module.exports = {
+
+module.exports = {  
     AddCampania,
     GetcampanasActivas,
     TestearTransaccion,

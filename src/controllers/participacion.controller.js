@@ -1,4 +1,5 @@
-const { Participacion } = require("../models/Participacion")
+const {Participacion} = require("../models/Participacion");
+const { TransaccionPremio } = require("../models/transaccionPremio");
 
 
 
@@ -57,10 +58,47 @@ const addParticipacion = async (req, res) => {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Participacion.' });
     }
+};
+
+const getcountCustomerName = async (req,res) =>{
+
+    try {
+     
+        const countParticipacions = await Participacion.count();
+        res.json({ totalParticipacions: countParticipacions });
+        
+        
+        
+    } catch (error) {
+        
+      
+        console.error("Error al obtener las participaciones:", error);
+        res.status(500).json({ error: 'Ha ocurrido un error al obtener las participaciones.' });
+    }
+
+};
+
+
+const getSumarValor = async (req,res) => {
+    try {
+        const sumaValor = await Participacion.sum('valor');
+
+        console.log('\n\n\n\n\n total ' + sumaValor);
+        res.json({ total: sumaValor});
+        // Sumar el campo 'monto'
+        console.log("La suma del valor es:", sumaValor);
+    } catch (error) {
+        console.error("\n\n\n\nError al calcular la suma de valor:", error);
+    }
 }
+ 
+
+
 
 
 module.exports = {
     addParticipacion,
-    getParticipaciones 
+    getParticipaciones,
+    getcountCustomerName,
+    getSumarValor 
 }

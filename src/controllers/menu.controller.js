@@ -12,9 +12,9 @@ const GetMenus = async (req, res) => {
             }
         })
 
-        // const result = await pronet.query('SELECT * FROM pronet.tbl_customer', { type: pronet.QueryTypes.SELECT });
+         const result = await pronet.query('SELECT * FROM pronet.tbl_customer', { type: pronet.QueryTypes.SELECT });
 
-        // console.log(result);
+         console.log(result);
 
         res.json(trx)
     } catch (error) {

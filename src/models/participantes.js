@@ -3,6 +3,7 @@ const { sequelize } = require('../database/database');
 
 const Participantes = sequelize.define('participantes', {
 
+
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -11,13 +12,18 @@ const Participantes = sequelize.define('participantes', {
     numero: {
         type: DataTypes.STRING(150),
         allowNull: false
-    }, 
+    },
+
+    campaniaId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false
     }
-}, {timestamps: false});
+}, { timestamps: false });
 
 
 
@@ -27,4 +33,4 @@ const Participantes = sequelize.define('participantes', {
 //     // Code here
 //})();
 
-module.exports = {Participantes}
+module.exports = { Participantes }
