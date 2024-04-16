@@ -1,11 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-<<<<<<< HEAD
-const { Campania } = require('./campanias');
-=======
 const { TablaDB } = require('./tabladb');
 const { Columna } = require('./columna');
->>>>>>> 27dfa5f9998086e16efd56c6ace6313491efce9d
+const { Campania } = require('./campanias');
 
 const Proyectos = sequelize.define('proyectos', {
     id: {
@@ -32,6 +29,16 @@ const Proyectos = sequelize.define('proyectos', {
 
 
 }, { timestamps: false });
+
+Proyectos.hasMany(Campania,{
+    foreignKey: 'idProyecto',
+    sourceKey:'id'
+});
+
+Campania.belongsTo(Proyectos,{
+    foreignKey: 'idProyecto',
+    sourceKey: 'id'
+});
 
 Proyectos.hasMany(TablaDB,{
     foreignKey: 'idProyectos',
