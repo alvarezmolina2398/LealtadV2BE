@@ -283,13 +283,9 @@ const GetcampanasActivas = async (req, res) => {
                 estado: [1, 2, 3, 4]
             }
         });
-<<<<<<< HEAD
-        res.json(trx)   
-=======
 
         res.json(trx)
 
->>>>>>> 27dfa5f9998086e16efd56c6ace6313491efce9d
     } catch (error) {
         console.error(error)
         res.status(403)
