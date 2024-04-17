@@ -79,7 +79,7 @@ const GetcampanasActivasById = async (id) => {
 
 const transaccionesValidasCampanasFusion = async(idCampania) => {
     try {
-        const transaccionesValidas = await DetCampanaParticipacion.findAll({
+        const transaccionesValidas = await Participacion.findAll({
             attributes: [
                 'valorMinimo',
                 'valorMaximo',
@@ -478,36 +478,33 @@ const campanasUsuariosEmulador_get = async (req, res) => {
     }
 };
 
-async function regionesValidasCampana(idCampania) {
+const RegionesValidasCampana = async (req, res) => {
     try {
-      const regiones = await DetCampanaRegiones.findAll({
+      const idCampana = req.params.idCampana;
+  
+      const regiones = await Campania.findAll({
         where: {
-          idCampania: idCampania,
+          idCampana,
           estado: 1,
         },
         include: [
           {
-            model: Departamento ,
+            model: Departamento,
             as: 'departamento',
-            attributes: ['idLocald'],
-            include: [
-              {
-                model: Municipio,
-                as: 'municipio',
-                attributes: ['idLocalm'],
-              },
-            ],
+          },
+          {
+            model: Municipio,
+            as: 'municipio',
           },
         ],
       });
-      res.json(regiones);
   
-      return regiones;
+      res.json(regiones);
     } catch (error) {
       console.error("Error en regionesValidasCampana:", error);
-      throw error;
+      res.status(500).json({ message: 'Internal server error' });
     }
-  }
+  };
 
 
 // esto es para mostrar en caso de que pidan avanzes
