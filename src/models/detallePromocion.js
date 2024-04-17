@@ -36,9 +36,9 @@ CangePromocion.belongsTo(DetallePromocion, {
 });
 
 
-(async () => {
- await sequelize.sync({ force: false });
-    // Code here
- })();
+// (async () => {
+//  await sequelize.sync({ force: false });
+//     // Code here
+//  })();
 
 module.exports = { DetallePromocion }
