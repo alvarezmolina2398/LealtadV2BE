@@ -17,9 +17,5 @@ const Permitidos = sequelize.define('permitidos',{
         allowNull: false
     }
 }, {timestamps: false});
-/*
-(async () => {
-    await Permitidos.sync({ alter: true });
- })();
-*/
+
 module.exports = {Permitidos}
