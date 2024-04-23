@@ -8,11 +8,11 @@ const { Participantes } = require('../models/participantes');
 const { PremioCampania } = require('../models/premioCampania');
 const { Presupuesto } = require('../models/presupuesto');
 const { Transaccion } = require('../models/transaccion');
-const { Bloqueados} = require('../models/bloqueados');
+const { Bloqueados } = require('../models/bloqueados');
 
 //accion para insertar una nueva trnasaccion
-const AddCampania = async (req, res) => {
-    
+const AddCampania = async(req, res) => {
+
 
     const {
         fechaRegistro,
@@ -93,7 +93,7 @@ const AddCampania = async (req, res) => {
 }
 
 
-const AddEtapas = async (etapa) => {
+const AddEtapas = async(etapa) => {
     const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos, intervalo, periodo, valorAcumulado } = etapa;
     const periodoValue = periodo ? parseInt(periodo) : null;
     const intervaloValue = intervalo ? parseInt(intervalo) : null;
@@ -120,7 +120,7 @@ const AddEtapas = async (etapa) => {
     await AddPresupuesto(presupuestos, id)
 }
 
-const addParticipantes = async (Participacion) => {
+const addParticipantes = async(Participacion) => {
 
     console.log(Participacion)
     const { numero, idCampania, estado } = Participacion;
@@ -132,7 +132,7 @@ const addParticipantes = async (Participacion) => {
     })
 }
 
-const addParticipantesBloqueados = async (participacionBloqueados) => {
+const addParticipantesBloqueados = async(participacionBloqueados) => {
 
     //console.log(participacionBloqueados)
     const { numero, idCampania, estado } = participacionBloqueados;
@@ -146,7 +146,7 @@ const addParticipantesBloqueados = async (participacionBloqueados) => {
 }
 
 
-const AddParametros = async (parametros, idEtapa) => {
+const AddParametros = async(parametros, idEtapa) => {
 
     // console.log(parametros)
     parametros.map((element, index) => {
@@ -155,7 +155,7 @@ const AddParametros = async (parametros, idEtapa) => {
     await Parametro.bulkCreate(parametros);
 }
 
-const AddPremios = async (premios, idEtapa) => {
+const AddPremios = async(premios, idEtapa) => {
     premios.map((element, index) => {
         premios[index].idEtapa = idEtapa
     });
@@ -163,7 +163,7 @@ const AddPremios = async (premios, idEtapa) => {
 }
 
 
-const AddPresupuesto = async (presupuestos, idEtapa) => {
+const AddPresupuesto = async(presupuestos, idEtapa) => {
 
     // console.log(presupuestos)
     presupuestos.map((element, index) => {
@@ -173,7 +173,7 @@ const AddPresupuesto = async (presupuestos, idEtapa) => {
 }
 
 
-const GetcampanasActivas = async (req, res) => {
+const GetcampanasActivas = async(req, res) => {
     try {
         const trx = await Campania.findAll({
             where: {
@@ -186,19 +186,55 @@ const GetcampanasActivas = async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las campanias.' });
     }
 
 }
 
-const GetcampanasActivasById = async (req, res) => {
+
+
+
+// const GetcampanasActivas = async(req, res) => {
+//     try {
+//         let whereClause = {
+//             estado: [1, 2, 3]
+//         };
+
+//         // Verificar si se debe incluir campañas archivadas
+//         if (req.query.incluirArchivadas === 'true') {
+//             whereClause = {
+//                 [Op.or]: [
+//                     { estado: [1, 2, 3] }, // Estados activos
+//                     { isArchivada: 1 } // Archivada
+//                 ]
+//             };
+//         }
+
+//         const trx = await Campania.findAll({
+//             where: whereClause
+//         });
+
+//         res.json(trx);
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la consulta de las categorías.' });
+//     }
+// }
+
+
+
+
+
+
+
+const GetcampanasActivasById = async(req, res) => {
     try {
 
         const { id } = req.params;
         // console.log(id)
         const proyect = await Campania.findByPk(id, {
-            include: [
-                {
+            include: [{
                     model: Etapa,
                     include: [
                         { model: Parametro },
@@ -217,7 +253,7 @@ const GetcampanasActivasById = async (req, res) => {
     }
 }
 
-const UpdateCampania = async (req, res) => {
+const UpdateCampania = async(req, res) => {
 
     try {
 
@@ -236,7 +272,7 @@ const UpdateCampania = async (req, res) => {
             imgPush,
             imgAkisi,
             maximoParticipaciones,
-             horaReporte,
+            horaReporte,
             diaReporte,
             emails,
         } = req.body;
@@ -274,25 +310,22 @@ const UpdateCampania = async (req, res) => {
     }
 }
 
-const TestearTransaccion = async (req, res) => {
+const TestearTransaccion = async(req, res) => {
     try {
         const campanias = await Campania.findAll({
-            include: [
-                {
-                    model: Etapa,
-                    include: [
-                        {
-                            model: Parametro
-                        },
-                        {
-                            model: Presupuesto
-                        },
-                        {
-                            model: PremioCampania
-                        }
-                    ]
-                }
-            ],
+            include: [{
+                model: Etapa,
+                include: [{
+                        model: Parametro
+                    },
+                    {
+                        model: Presupuesto
+                    },
+                    {
+                        model: PremioCampania
+                    }
+                ]
+            }],
             where: {
                 estado: 1,
             }
@@ -417,7 +450,7 @@ const TestearTransaccion = async (req, res) => {
             for (const param of tranasccionesX) {
                 const transaccion = await transaccionesValidas(param.idTransaccion);
                 const dataTrx = param.dataValues;
-                let dataNew = { ...dataTrx, transaccion: transaccion.dataValues }
+                let dataNew = {...dataTrx, transaccion: transaccion.dataValues }
                 TransaccionesValidas.push(dataNew)
             }
 
@@ -451,7 +484,7 @@ const TestearTransaccion = async (req, res) => {
 }
 
 //devuelve la lista de transacciones validas
-const transaccionesValidas = async (id) => {
+const transaccionesValidas = async(id) => {
     try {
         const transaccion = await Transaccion.findOne({ where: { id: id } });
         // console.log(transaccion.dataValues);
@@ -482,7 +515,7 @@ const format = (inputDate) => {
 }
 
 //metodo para pausar campanias
-const PausarCampaña = async (req, res) => {
+const PausarCampaña = async(req, res) => {
 
     try {
 
@@ -508,7 +541,7 @@ const PausarCampaña = async (req, res) => {
 }
 
 //metodo para activas campanias
-const ActivarCampaña = async (req, res) => {
+const ActivarCampaña = async(req, res) => {
 
     try {
 
@@ -533,7 +566,7 @@ const ActivarCampaña = async (req, res) => {
     }
 }
 
-const DeleteCampania = async (req, res) => {
+const DeleteCampania = async(req, res) => {
 
     try {
 
@@ -560,7 +593,7 @@ const DeleteCampania = async (req, res) => {
 
 }
 
-const validacionTransaccion = async (transaccionesCampanias, transaccionActual, etapaActual, idCampania, customerId) => {
+const validacionTransaccion = async(transaccionesCampanias, transaccionActual, etapaActual, idCampania, customerId) => {
     let result = null;
     switch (etapaActual.tipoParticipacion) {
         case 1:
@@ -593,7 +626,7 @@ const validacionTransaccion = async (transaccionesCampanias, transaccionActual, 
 }
 
 
-const ParticipacionPorParametro = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+const ParticipacionPorParametro = async(transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
@@ -631,7 +664,7 @@ const ParticipacionPorParametro = async (transaccionesCampanias, transaccion, id
 }
 
 
-const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+const ParticipacionPorAcumular = async(transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
@@ -673,7 +706,7 @@ const ParticipacionPorAcumular = async (transaccionesCampanias, transaccion, idC
 }
 
 
-const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCampania, etapaActual) => {
+const ParticipacionRecurente = async(transaccionesCampanias, transaccion, idCampania, etapaActual) => {
     // console.log(transaccionesCampanias)
     console.log(transaccion)
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
@@ -687,7 +720,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
     //const { limiteParticipacion, idTransaccion, tipoTransaccion, nombre, ValorMinimo, ValorMaximo, periodo, intervalo } = filterTransaccion[0];
 
 
-    
+
 
 
     console.log(etapaActual.periodo)
@@ -695,7 +728,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
     switch (etapaActual.periodo) {
         case 1:
             console.log('a')
-            await GetParticipacionsXdias(3,  new Date(2023,0,1), new Date(2023,3,1))
+            await GetParticipacionsXdias(3, new Date(2023, 0, 1), new Date(2023, 3, 1))
             break;
 
         default:
@@ -730,7 +763,7 @@ const ParticipacionRecurente = async (transaccionesCampanias, transaccion, idCam
 }
 
 
-const ParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
+const ParticipacionValorAcumulado = async(transaccionesCampanias, transaccion, idCampania, etapaActual, customerId) => {
     let filterTransaccion = transaccionesCampanias.filter(x => x.transaccion.descripcion.includes(transaccion.descripcion));
 
 
@@ -764,7 +797,7 @@ const ParticipacionValorAcumulado = async (transaccionesCampanias, transaccion, 
 
 }
 
-const GetParticipacionsXdias = async (dias, startDate, endDate) => {
+const GetParticipacionsXdias = async(dias, startDate, endDate) => {
     try {
 
 
@@ -796,14 +829,17 @@ const GetParticipacionsXdias = async (dias, startDate, endDate) => {
 
         // return 0;
 
-        
+
         const registros = await Participacion.findAll({
             where: {
                 fecha: {
                     [Op.between]: [startDate, endDate]
                 }
             },
-            attributes: [[Sequelize.fn('date', Sequelize.col('fecha')), 'fecha'], [Sequelize.fn('count', Sequelize.col('*')), 'count']],
+            attributes: [
+                [Sequelize.fn('date', Sequelize.col('fecha')), 'fecha'],
+                [Sequelize.fn('count', Sequelize.col('*')), 'count']
+            ],
             group: [Sequelize.fn('date', Sequelize.col('fecha'))]
         });
 
@@ -826,15 +862,15 @@ const GetParticipacionsXdias = async (dias, startDate, endDate) => {
 
             if (diasSeguidos >= dias) {
                 console.log('El registro se hizo en tres días seguidos');
-                return  { premiado: true, guardaParticipacion: true, result: true}
+                return { premiado: true, guardaParticipacion: true, result: true }
             } else {
-                console.log('El registro no se hizo en '+ dias +'  días seguidos ' + diasSeguidos + ' de ' + dias);
+                console.log('El registro no se hizo en ' + dias + '  días seguidos ' + diasSeguidos + ' de ' + dias);
 
-                return  { premiado: false, guardaParticipacion: true, result: false, message: 'El Registro no se hizo por tres dias seguidos. 1ra Transaccion Agregada' }
+                return { premiado: false, guardaParticipacion: true, result: false, message: 'El Registro no se hizo por tres dias seguidos. 1ra Transaccion Agregada' }
             }
         } else {
-           // console.log('no hay registro')
-           return  { premiado: false, guardaParticipacion: true, result: false, message: '1ra Transaccion Agregada' }
+            // console.log('no hay registro')
+            return { premiado: false, guardaParticipacion: true, result: false, message: '1ra Transaccion Agregada' }
         }
 
     } catch (error) {
@@ -843,33 +879,31 @@ const GetParticipacionsXdias = async (dias, startDate, endDate) => {
     }
 }
 
-const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) => {
+const GetValorAcumulado = async(idCampania, etapa, ValorAnterior, customerId) => {
     try {
 
 
 
 
         if (ValorAnterior == 1) {
-            const cantidad = await Participacion.sum('valor',
-                {
-                    where: {
-                        customerId: customerId,
-                        idCampania: idCampania,
+            const cantidad = await Participacion.sum('valor', {
+                where: {
+                    customerId: customerId,
+                    idCampania: idCampania,
 
-                    }
-                });
+                }
+            });
 
             return cantidad;
 
         } else {
-            const cantidad = await Participacion.sum('valor',
-                {
-                    where: {
-                        customerId: customerId,
-                        idCampania: idCampania,
-                        etapa: etapa
-                    }
-                });
+            const cantidad = await Participacion.sum('valor', {
+                where: {
+                    customerId: customerId,
+                    idCampania: idCampania,
+                    etapa: etapa
+                }
+            });
 
 
             console.log(cantidad)
@@ -887,7 +921,7 @@ const GetValorAcumulado = async (idCampania, etapa, ValorAnterior, customerId) =
     }
 }
 
-const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania) => {
+const cantidadParticipacionCampaniaEtapa = async(idTrx, tipo, etapa, idCampania) => {
     try {
 
         let cantidad = await Participacion.count({
@@ -909,15 +943,13 @@ const cantidadParticipacionCampaniaEtapa = async (idTrx, tipo, etapa, idCampania
 }
 
 
-const GetTransaccionesXCategoria = async (idCategoria) => {
+const GetTransaccionesXCategoria = async(idCategoria) => {
     try {
         const result = await asignarCategoria.findAll({
-            include: [
-                {
-                    model: Transaccion,
+            include: [{
+                model: Transaccion,
 
-                }
-            ],
+            }],
             where: {
                 idCategoria: idCategoria
             }
@@ -930,14 +962,14 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
         console.error(error);
         return [];
     }
-} 
+}
 
 
 
 
 
 
-module.exports = {  
+module.exports = {
     AddCampania,
     GetcampanasActivas,
     TestearTransaccion,

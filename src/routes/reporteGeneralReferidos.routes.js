@@ -1,26 +1,15 @@
 const { Router } = require('express');
-const { postParticipacionesFechasGeneral } = require('../controllers/reporteGeneral.controller');
 const router = Router();
+
+const {
+    getParticipacionesFechasGeneral
+} = require('../controllers/reporteGeneral.controller.js');
+const authUser = require('../middlewares/auth.js');
+
 
 const path = 'reporteGeneralReferido';
 
-router.post(`/${path}`, postParticipacionesFechasGeneral);
-//router.get(`/${path}`, getParticipacionesFechasGeneral);
+router.get(`/${path}/:fecha1/:fecha2`, getParticipacionesFechasGeneral);
+
 
 module.exports = router;
-
-
-// const express = require('express');
-// const router = express.Router();
-
-// const {
-//     getParticipacionesFechasGeneral,
-//     getParticipacionesFechasGeneral,
-// } = require('../controllers/reporteGeneral.controller');
-
-// const path = 'reporteGeneralReferido';
-
-// router.get(`/${path}`, getParticipacionesFechasGeneral);
-// router.get(`/${path}`, getParticipacionesFechasGeneral);
-
-// module.exports = router;
