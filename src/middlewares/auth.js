@@ -6,19 +6,27 @@ const authUser = (req, res, next) => {
     // Renovar el token si es necesario
     if (req.headers.authorization != "undefined") {
       try {
+        console.log("Token Renewed", req.headers.authorization);
 
         const tokenDecoded = jwt.verify(req.headers.authorization, env.jwt.secret);
         
         const currentTimestamp = Math.floor(Date.now() / 1000);
         const expirationTimestamp = tokenDecoded.exp;
         const fiveMinutesBeforeExpiration = expirationTimestamp - 300;
+        
 
         if (currentTimestamp >= fiveMinutesBeforeExpiration) {
           // Generar un nuevo token y enviarlo en la respuesta
           const newToken = jwt.sign({ username: tokenDecoded.username }, env.jwt.secret, { expiresIn: env.jwt.exp });
           res.setHeader('Authorization', newToken);
+
         }
       } catch (err) {
+
+        if(err.name === 'TokenExpiredError') {
+          res.status(401).send({message: "El token ha expirado"})
+        }
+        
         res.status(401).send({message: "El token no es valido"})
         console.error(err);
       }
@@ -40,7 +48,7 @@ const authUser = (req, res, next) => {
         }
       }
 
-      console.log(req.headers.authorization);
+      console.log("New Token", req.headers.authorization);
 
       if (tokenDecoded) {
         req.headers.authorization = tokenDecoded;
