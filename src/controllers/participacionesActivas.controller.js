@@ -2,25 +2,21 @@ const { pronet, genesis } = require('../database/database');
 const { Campania } = require('../models/campanias');
 const { Etapa } = require('../models/etapa');
 const { Participacion } = require('../models/Participacion');
-
 const { PremioCampania } = require('../models/premioCampania');
 const { Premio } = require('../models/premio');
 
 
 const { Op } = require('sequelize');
 
-
-const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
+const getParticipacionesActivas = async(req, res) => {
     try {
-        const { idCampanas, fecha1, fecha2, archivadas } = req.body;
-        let whereConditions = {}; // Inicializamos whereConditions fuera del bloque if
+        const { fecha1, fecha2, } = req.body;
 
-        console.log("campaña archivada ", archivadas)
+        
 
         // Realizamos la consulta a la base de datos
         const envio = await Campania.findAll({
             where: {
-                id: idCampanas,
                 [Op.or]: [{ estado: [1, 2, 3] }],
                 fechaInicio: {
                     [Op.gte]: fecha1
@@ -29,54 +25,14 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                     [Op.lte]: fecha2
                 },
                 estado: 1,
-                esArchivada: 0,
             },
             include: [{
                 model: Participacion,
                 as: 'participaciones',
                 attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
-                include: [{
-                    model: Campania,
-                    attributes: ['nombre', 'fechaCreacion']
-                }],
-                include: [{
-                    model: Premio, // Cambia el modelo a Premio
-                    attributes: ['descripcion'] // Incluye solo la descripción del premio
-                }]
             }]
         });
 
-        if (archivadas == 1) {
-            const camapnasArchivadas = await Campania.findAll({
-                where: {
-                    fechaInicio: {
-                        [Op.gte]: fecha1
-                    },
-                    fechaFin: {
-                        [Op.lte]: fecha2
-                    },
-                    estado: 1,
-                    esArchivada: 1
-                },
-                include: [{
-                    model: Participacion,
-                    as: 'participaciones',
-                    attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
-                    include: [{
-                        model: Campania,
-                        attributes: ['nombre', 'fechaCreacion']
-                    }],
-                    include: [{
-                        model: Premio, // Cambia el modelo a Premio
-                        attributes: ['descripcion'] // Incluye solo la descripción del premio
-                    }]
-                }]
-            })
-
-            if (camapnasArchivadas) {
-                camapnasArchivadas.map((campania) => envio.push(campania))
-            }
-        }
 
         console.log(envio)
 
@@ -90,7 +46,7 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                     ...p.toJSON(),
                     campanium: {
                         "nombre": c.nombre,
-                        "fechaCreacion": c.fechaCreacion
+                       
                     },
                     premioDescripcion: p.premio ? p.premio.descripcion : "Sin premio", // Obtén la descripción del premio
                     customerInfo
@@ -100,7 +56,6 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                 "id": c.id,
                 "nombre": c.nombre,
                 "descripcion": c.descripcion,
-                "fechaCreacion": c.fechaCreacion,
                 "fechaRegistro": c.fechaRegistro,
                 "fechaInicio": c.fechaInicio,
                 "fechaFin": c.fechaFin,
@@ -128,17 +83,16 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
     }
 };
 
-
-
 const getCustomerInfoById = async(customerId) => {
     try {
         const customerInfo = await pronet.query(`
             SELECT 
                 cu.customer_id,
-                cu.customer_reference,
                 cu.telno,
                 ui.lname,
-                ui.fname
+                ui.fname,
+                ui.mname, 
+                ui.slname
             FROM 
                 pronet.tbl_customer cu
             JOIN 
@@ -156,7 +110,4 @@ const getCustomerInfoById = async(customerId) => {
     }
 };
 
-
-
-
-module.exports = { getUsuariosNotificacionesOfferCraftSel };
+module.exports = { getParticipacionesActivas };
