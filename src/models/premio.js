@@ -28,26 +28,26 @@ const Premio = sequelize.define('premio', {
     },
     link: {
         type: DataTypes.STRING(500),
-        allowNull:true
+        allowNull: true
     },
     claveSecreta: {
         type: DataTypes.STRING(500),
-        allowNull:true
+        allowNull: true
     },
-    estado : {
+    estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
-        allowNull:false
+        allowNull: false
     },
     idTransaccion: {
         type: DataTypes.INTEGER,
         allowNull: true
     }
 
-},{timestamps: false});
+}, { timestamps: false });
 
 
-Premio.hasMany(PremioCampania,{
+Premio.hasMany(PremioCampania, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
 });
@@ -55,23 +55,23 @@ Premio.hasMany(PremioCampania,{
 PremioCampania.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
 
-Premio.hasMany(Participacion,{
+Premio.hasMany(Participacion, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
 });
 Participacion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
 
 
-Premio.hasMany(PremioPromocion,{
+Premio.hasMany(PremioPromocion, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
 });
@@ -79,20 +79,26 @@ Premio.hasMany(PremioPromocion,{
 PremioPromocion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
-Premio.hasMany(Premiacion,{
+Premio.hasMany(Premiacion, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
+
 });
 
 Premiacion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
+// 
+
+// Participacion.sync({ alter: true }).then(() => {
+//     console.log('tabla Participacion creada');
+// });
 
 
 //  (async () => {
@@ -100,4 +106,4 @@ Premiacion.belongsTo(Premio, {
 //     // Code here
 //  })();
 
-module.exports = {Premio, sequelize}
+module.exports = { Premio, sequelize }
