@@ -173,54 +173,54 @@ const AddPresupuesto = async(presupuestos, idEtapa) => {
 }
 
 
-// const GetcampanasActivas = async(req, res) => {
-//     try {
-//         const trx = await Campania.findAll({
-//             where: {
-//                 estado: [1, 2, 3]
-//             }
-//         });
-
-//         res.json(trx)
-
-//     } catch (error) {
-//         console.error(error)
-//         res.status(403)
-//         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
-//     }
-
-// }
-
-
-
-
 const GetcampanasActivas = async(req, res) => {
     try {
-        let whereClause = {
-            estado: [1, 2, 3]
-        };
-
-        // Verificar si se debe incluir campañas archivadas
-        if (req.query.incluirArchivadas === 'true') {
-            whereClause = {
-                [Op.or]: [
-                    { estado: [1, 2, 3] }, // Estados activos
-                    { isArchivada: 1 } // Archivada
-                ]
-            };
-        }
-
         const trx = await Campania.findAll({
-            where: whereClause
+            where: {
+                estado: [1, 2, 3]
+            }
         });
 
-        res.json(trx);
+        res.json(trx)
 
     } catch (error) {
-        console.error(error);
-        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la consulta de las categorías.' });
+        console.error(error)
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las campanias.' });
     }
+
 }
+
+
+
+
+// const GetcampanasActivas = async(req, res) => {
+//     try {
+//         let whereClause = {
+//             estado: [1, 2, 3]
+//         };
+
+//         // Verificar si se debe incluir campañas archivadas
+//         if (req.query.incluirArchivadas === 'true') {
+//             whereClause = {
+//                 [Op.or]: [
+//                     { estado: [1, 2, 3] }, // Estados activos
+//                     { isArchivada: 1 } // Archivada
+//                 ]
+//             };
+//         }
+
+//         const trx = await Campania.findAll({
+//             where: whereClause
+//         });
+
+//         res.json(trx);
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la consulta de las categorías.' });
+//     }
+// }
 
 
 
