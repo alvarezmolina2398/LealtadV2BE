@@ -1,8 +1,9 @@
 const { Sequelize } = require("sequelize");
 
+
 const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
   //host: '192.168.1.100',
-  host: "34.136.130.198",
+  host: "34.28.190.181",
   dialect: "mysql",
 });
 
@@ -11,6 +12,7 @@ const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
 //   host: "localhost",
 //   dialect: "mysql",
 // });
+
 
 const pronet = new Sequelize(
     "pronet",

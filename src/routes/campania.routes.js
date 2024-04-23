@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { AddCampania, 
         GetcampanasActivas, 
+        GetCampania,
         TestearTransaccion, 
         GetcampanasActivasById, 
         UpdateCampania, 
@@ -18,6 +19,7 @@ const path = 'Campania';
 
 //rutas del proyecto
 router.get(`/${path}`,authUser, GetcampanasActivas);
+router.get(`/${path}/all`,authUser, GetCampania);
 router.get(`/${path}/TestearSimple`,authUser, TestearTransaccion);
 router.post(`/${path}`,authUser, AddCampania);
 router.put(`/${path}/:id`,authUser, UpdateCampania);

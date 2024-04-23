@@ -45,6 +45,7 @@ const AddCampania = async(req, res) =>{
             esArchivada,
             idProyecto,
             etapas,
+            bloqueados
         } = req.body;
     
         const newCampains = await Campania.create({
@@ -105,8 +106,10 @@ const AddCampania = async(req, res) =>{
         //const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
         //await Participacion.bulkCreate(participacionData ,{transaction});
 
-        //const bloqueoData = bloqueados.map(bloqueo =>({...bloqueo, idCampania: id}));
-        //await Bloqueados.bulkCreate(bloqueoData,{transaction});
+        if (bloqueados) {
+            const bloqueoData = bloqueados.map(bloqueo => ({ ...bloqueo, idCampania: id }));
+            await Bloqueados.bulkCreate(bloqueoData, { transaction });
+        }
 
 
         await transaction.commit();
@@ -117,7 +120,147 @@ const AddCampania = async(req, res) =>{
         res.status(500).json({ error: 'Ha sucedido un error al intentar crear la campaña', details: error.message });
     }
     
+} 
+
+const GetCampania = async (req, res) => {
+    try {
+      const campanias = await Campania.findAll({
+        where: {
+          estado: [1, 2, 3]
+        },
+        include: [
+          {
+            model: Etapa,
+            include: [
+              { model: Parametro, attributes: { exclude: ['idCampania'] } },
+              { model: Presupuesto },
+              { model: PremioCampania }
+            ]
+          }
+        ]
+      });
+  
+      res.json(campanias);
+    } catch (error) {
+      res.status(500).json({ error: 'Ha sucedido un error al intentar ver la campaña', details: error.message });
+    }
+};
+
+const UpdateCampania = async (req, res) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const { id } = req.params;
+        const {
+            nombre,
+            descripcion,
+            fechaCreacion,
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            diaReporte,
+            horaReporte,
+            emails,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            estado,
+            maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto,
+            etapas,
+            bloqueados
+        } = req.body;
+
+        // Actualizar los datos de la campaña
+        await Campania.update({
+            nombre,
+            descripcion,
+            fechaCreacion,
+            fechaRegistro,
+            fechaInicio,
+            fechaFin,
+            diaReporte,
+            horaReporte,
+            emails,
+            edadInicial,
+            edadFinal,
+            sexo,
+            tipoUsuario,
+            tituloNotificacion,
+            descripcionNotificacion,
+            imgPush,
+            imgAkisi,
+            estado,
+            maximoParticipaciones,
+            campaniaTerceros,
+            allDay,
+            repetir,
+            fechaRecordatorioIni,
+            fechaRecordatorioFin,
+            terminosCondiciones,
+            observaciones,
+            esArchivada,
+            idProyecto
+        }, { where: { id }, transaction });
+
+        // Eliminar las etapas, parámetros, presupuestos y premios existentes de la campaña
+        await Etapa.destroy({ where: { idCampania: id }, transaction });
+        await Parametro.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
+        await Presupuesto.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
+        await PremioCampania.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
+        await Bloqueados.destroy({ where: { idCampania: id }, transaction });
+
+        // Crear las nuevas etapas, parámetros, presupuestos y premios
+        const etapaData = etapas.map(etapa => ({
+            ...etapa,
+            idCampania: id,
+            periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+            intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+            valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+        }));
+        const nuevaEtapa = await Etapa.bulkCreate(etapaData, { transaction });
+
+        const etapasConId = nuevaEtapa.map((etapa, index) => ({
+            ...etapas[index],
+            id: etapa.id,
+        }));
+
+        const parametrosData = etapasConId.flatMap(etapa => etapa.parametros.map(parametros => ({ ...parametros, idEtapa: etapa.id })));
+        await Parametro.bulkCreate(parametrosData, { transaction });
+
+        const presupuestoData = etapasConId.flatMap(etapa => etapa.presupuesto.map(presupuesto => ({ ...presupuesto, idEtapa: etapa.id })));
+        await Presupuesto.bulkCreate(presupuestoData, { transaction });
+
+        const premioData = etapasConId.flatMap(etapa => etapa.premio.map(premio => ({ ...premio, idEtapa: etapa.id })));
+        await PremioCampania.bulkCreate(premioData, { transaction });
+
+        if (bloqueados) {
+            const bloqueoData = bloqueados.map(bloqueo => ({ ...bloqueo, idCampania: id }));
+            await Bloqueados.bulkCreate(bloqueoData, { transaction });
+        }
+
+        await transaction.commit();
+        res.json({ code: 'ok', message: 'Campaña actualizada con éxito' });
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error al actualizar la campaña:', error);
+        res.status(500).json({ error: 'Ha sucedido un error al intentar actualizar la campaña', details: error.message });
+    }
 }
+
+
 
 /*
 //accion para insertar una nueva trnasaccion
@@ -320,7 +463,7 @@ const GetcampanasActivasById = async (req, res) => {
     }
 }
 
-
+/*
 //update verificar para la edicion 
 const UpdateCampania = async (req, res) => {
 
@@ -377,7 +520,7 @@ const UpdateCampania = async (req, res) => {
         res.status(403);
         res.send({ errors: 'Ha ocurrido un error al intentar actualizar la etapa.' });
     }
-}
+}*/
 
 const TestearTransaccion = async (req, res) => {
     try {
@@ -1044,6 +1187,7 @@ const GetTransaccionesXCategoria = async (idCategoria) => {
 
 module.exports = {  
     AddCampania,
+    GetCampania,
     GetcampanasActivas,
     TestearTransaccion,
     GetcampanasActivasById,
