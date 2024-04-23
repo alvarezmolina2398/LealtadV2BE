@@ -61,4 +61,5 @@ Columna.belongsTo(Proyectos,{
     targetId: 'id',
 });
 
+
 module.exports = { Proyectos }

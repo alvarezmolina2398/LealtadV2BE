@@ -139,6 +139,11 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
+    },
+    restriccionUser:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
 
 },{timestamps: false});
@@ -196,12 +201,12 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
-//(async () => {
-    //await sequelize.sync({ force: true });
+// (async () => {
+//     await sequelize.sync({ alter: true });
 //     // Code here
-//})();
+// })();
 
-// Campania.sync({ force: false }).then(() => {
+// Campania.sync({ alter: true }).then(() => {
 //     console.log('tabla campania creada');
 // });
 
