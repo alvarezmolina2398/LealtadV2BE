@@ -62,4 +62,5 @@ Columna.belongsTo(Proyectos,{
 });
 
 
+
 module.exports = { Proyectos }

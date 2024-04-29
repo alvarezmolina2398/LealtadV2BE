@@ -129,14 +129,15 @@ const GetCampania = async (req, res) => {
           estado: [1, 2, 3]
         },
         include: [
-          {
-            model: Etapa,
-            include: [
-              { model: Parametro, attributes: { exclude: ['idCampania'] } },
-              { model: Presupuesto },
-              { model: PremioCampania }
-            ]
-          }
+            {
+                model: Etapa,
+                include: [
+                    { model: Parametro , attributes: { exclude: ['idCampania'] }},
+                    { model: Presupuesto },
+                    { model: PremioCampania }
+                ]
+            },
+            { model: Bloqueados }
         ]
       });
   
@@ -183,8 +184,14 @@ const UpdateCampania = async (req, res) => {
             bloqueados
         } = req.body;
 
+        // Verificar si la campaña existe
+        const campania = await Campania.findByPk(id);
+        if (!campania) {
+            throw new Error('La campaña no existe');
+        }
+
         // Actualizar los datos de la campaña
-        await Campania.update({
+        await campania.update({
             nombre,
             descripcion,
             fechaCreacion,
@@ -213,52 +220,71 @@ const UpdateCampania = async (req, res) => {
             observaciones,
             esArchivada,
             idProyecto
-        }, { where: { id }, transaction });
+        }, { transaction });
 
-        // Eliminar las etapas, parámetros, presupuestos y premios existentes de la campaña
-        await Etapa.destroy({ where: { idCampania: id }, transaction });
-        await Parametro.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
-        await Presupuesto.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
-        await PremioCampania.destroy({ where: { idEtapa: { [Op.in]: etapas.map(etapa => etapa.id) } }, transaction });
-        await Bloqueados.destroy({ where: { idCampania: id }, transaction });
+        // Actualizar las etapas existentes
+        for (const etapa of etapas) {
+            await Etapa.update({
+                ...etapa,
+                periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+                intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+            }, { where: { id: etapa.id }, transaction });
 
-        // Crear las nuevas etapas, parámetros, presupuestos y premios
-        const etapaData = etapas.map(etapa => ({
-            ...etapa,
-            idCampania: id,
-            periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
-            intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
-            valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
-        }));
-        const nuevaEtapa = await Etapa.bulkCreate(etapaData, { transaction });
+            // Actualizar los parámetros existentes de la etapa
+            if (Array.isArray(etapa.parametros)) {
+                for (const parametro of etapa.parametros) {
+                    await Parametro.update(parametro, { where: { id: parametro.id }, transaction });
+                }
+            }
 
-        const etapasConId = nuevaEtapa.map((etapa, index) => ({
-            ...etapas[index],
-            id: etapa.id,
-        }));
+            // Actualizar los presupuestos existentes de la etapa
+            if (Array.isArray(etapa.presupuesto)) {
+                for (const presupuesto of etapa.presupuesto) {
+                    await Presupuesto.update(presupuesto, { where: { id: presupuesto.id }, transaction });
+                }
+            }
 
-        const parametrosData = etapasConId.flatMap(etapa => etapa.parametros.map(parametros => ({ ...parametros, idEtapa: etapa.id })));
-        await Parametro.bulkCreate(parametrosData, { transaction });
+            // Actualizar los premios existentes de la etapa
+            if (Array.isArray(etapa.premio)) {
+                for (const premio of etapa.premio) {
+                    await PremioCampania.update(premio, { where: { id: premio.id }, transaction });
+                }
+            }
+        }
 
-        const presupuestoData = etapasConId.flatMap(etapa => etapa.presupuesto.map(presupuesto => ({ ...presupuesto, idEtapa: etapa.id })));
-        await Presupuesto.bulkCreate(presupuestoData, { transaction });
-
-        const premioData = etapasConId.flatMap(etapa => etapa.premio.map(premio => ({ ...premio, idEtapa: etapa.id })));
-        await PremioCampania.bulkCreate(premioData, { transaction });
-
+        // Actualizar los bloqueados existentes de la campaña
         if (bloqueados) {
-            const bloqueoData = bloqueados.map(bloqueo => ({ ...bloqueo, idCampania: id }));
-            await Bloqueados.bulkCreate(bloqueoData, { transaction });
+            for (const bloqueo of bloqueados) {
+                await Bloqueados.update(bloqueo, { where: { id: bloqueo.id }, transaction });
+            }
         }
 
         await transaction.commit();
-        res.json({ code: 'ok', message: 'Campaña actualizada con éxito' });
+
+        // Obtener la campaña actualizada con las relaciones
+        const campaniaActualizada = await Campania.findByPk(id, {
+            include: [
+                {
+                    model: Etapa,
+                    include: [
+                        { model: Parametro , attributes: { exclude: ['idCampania'] }},
+                        { model: Presupuesto },
+                        { model: PremioCampania }
+                    ]
+                },
+                { model: Bloqueados }
+            ]
+        });
+
+        res.json({ code: 'ok', message: 'Campaña actualizada con éxito', data: campaniaActualizada });
+    
     } catch (error) {
         await transaction.rollback();
         console.error('Error al actualizar la campaña:', error);
         res.status(500).json({ error: 'Ha sucedido un error al intentar actualizar la campaña', details: error.message });
     }
-}
+};
 
 
 
@@ -336,7 +362,7 @@ const AddCampania = async (req, res) => {
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
     }
 
-}*/
+}
 
 
 const AddEtapas = async (etapa) => {
@@ -416,14 +442,39 @@ const AddPresupuesto = async (presupuestos, idEtapa) => {
         presupuestos[index].idEtapa = idEtapa
     });
     await Presupuesto.bulkCreate(presupuestos);
-}
+}*/
 
+
+const GetcampanasActivasById = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        const etapa = await Campania.findByPk(id, {
+            include: [
+                {
+                    model: Etapa,
+                    include: [
+                        { model: Parametro , attributes: { exclude: ['idCampania'] }},
+                        { model: PremioCampania },
+                        { model: Presupuesto }
+                    ]
+                },
+
+            ]
+        })
+        res.json(etapa);
+
+    } catch (error) {
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar consultar la Campaña.', details: error.message });
+    }
+}
 
 const GetcampanasActivas = async (req, res) => {
     try {
         const trx = await Campania.findAll({
             where: {
-                estado: [1, 2, 3, 4]
+                estado: [1, 2, 3]
             }
         });
 
@@ -437,31 +488,6 @@ const GetcampanasActivas = async (req, res) => {
 
 }
 
-const GetcampanasActivasById = async (req, res) => {
-    try {
-
-        const { id } = req.params;
-        // console.log(id)
-        const proyect = await Campania.findByPk(id, {
-            include: [
-                {
-                    model: Etapa,
-                    include: [
-                        { model: Parametro },
-                        { model: PremioCampania },
-                        { model: Presupuesto }
-                    ]
-                },
-
-            ]
-        })
-        res.json(proyect);
-
-    } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar consultar la Campaña.' });
-    }
-}
 
 /*
 //update verificar para la edicion 

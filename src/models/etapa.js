@@ -66,8 +66,6 @@ Parametro.belongsTo(Etapa, {
     targetId: 'id',
 });
 
-
-
 Etapa.hasMany(PremioCampania,{
     foreignKey: 'idEtapa',
     sourceKey: 'id'
@@ -78,13 +76,5 @@ PremioCampania.belongsTo(Etapa, {
     targetId: 'id',
 });
 
-
-
-
-
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     // Code here
-//  })();
 
 module.exports = {Etapa}
