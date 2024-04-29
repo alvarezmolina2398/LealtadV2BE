@@ -29,25 +29,27 @@ const Proyectos = sequelize.define('proyectos', {
 
 }, { timestamps: false });
 
-Proyectos.hasMany(TablaDB,{
+Proyectos.hasMany(TablaDB, {
     foreignKey: 'idProyectos',
     sourceKey: 'id'
 });
 
-
-TablaDB.belongsTo(Proyectos,{
-    foreignKey: 'idProyectos',
-    sourceKey: 'id'
+TablaDB.belongsTo(Proyectos, {
+    foreignKey: 'idProyectos', 
+    targetId: 'id'
 });
 
 Proyectos.hasMany(Columna, {
-    foreignKey: 'idProyectos',
-    targetId: 'id',
+    foreignKey: 'idProyectos', 
+    sourceKey: 'id' 
 });
 
-Columna.belongsTo(Proyectos,{
-    foreignKey: 'idProyectos',
-    targetId: 'id',
+Columna.belongsTo(Proyectos, {
+    foreignKey: 'idProyectos', 
+    targetId: 'id' 
 });
+
+
+
 
 module.exports = { Proyectos }

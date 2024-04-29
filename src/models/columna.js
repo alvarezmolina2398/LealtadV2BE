@@ -41,5 +41,4 @@ Transaccion.belongsTo(Columna, {
 });
 
 
-
 module.exports = {Columna}
