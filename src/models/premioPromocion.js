@@ -44,4 +44,4 @@ DetallePromocion.belongsTo(PremioPromocion,{
 // //     // Code here
 // })();
 
-module.exports = {PremioPromocion}
+module.exports = {PremioPromocion, sequelize}

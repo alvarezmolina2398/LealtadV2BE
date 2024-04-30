@@ -13,6 +13,14 @@ const PremioCampania = sequelize.define('premiocampania', {
         type: DataTypes.DECIMAL(18,2),
         allowNull: false
     }, 
+    idPremio: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
+    },
+    idEtapa: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -25,4 +33,4 @@ const PremioCampania = sequelize.define('premiocampania', {
 //     // Code here
 //  })();
 
-module.exports = {PremioCampania}
+module.exports = {PremioCampania, sequelize}

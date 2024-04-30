@@ -27,4 +27,4 @@ const CangePromocion = sequelize.define('cangepromocions', {
       //Code here
 //})();
 
-module.exports = {CangePromocion}
+module.exports = {CangePromocion, sequelize}

@@ -2,18 +2,23 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
 
-const Participacion = sequelize.define('participacion', {
+const { sumaTotal } = require('sequelize');
+
+const Participacion = sequelize.define('participacions', {
 
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     fecha: {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
+    // fecha: {
+    //     type: DataTypes.DATEONLY,
+    //     allowNull: false
+    // },
     customerId: {
         type: DataTypes.STRING(100),
         allowNull: false
@@ -34,26 +39,57 @@ const Participacion = sequelize.define('participacion', {
         type: DataTypes.DECIMAL(),
         allowNull: false
     },
+    urlPremio: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+
     etapa: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-},{timestamps: false})
+    // idPremio: {
+    //     type: DataTypes.INTEGER,
+    //     allowNull: false
+    // },
+    idTransaccion: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
+    idCampania: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
 
 
-Participacion.hasMany(TransaccionPremio,{
+
+}, { timestamps: false })
+
+
+Participacion.hasMany(TransaccionPremio, {
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
 
+
 TransaccionPremio.belongsTo(Participacion, {
     foreignKey: 'idParticipacion',
-    targetId: 'id',
+    targetKey: 'id',
 });
+
 
 // (async () => {
 //     await sequelize.sync({ force: false });
 //     //Code here
 // })();
 
-module.exports = {Participacion}
+// TransaccionPremio.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
+
+// Participacion.sync({ alter: true }).then(() => {
+//     console.log('tabla Participacion creada');
+// });
+
+module.exports = { Participacion }

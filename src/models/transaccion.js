@@ -33,7 +33,13 @@ const Transaccion = sequelize.define('transaccion', {
         type: DataTypes.INTEGER,
         defaultValue:0,
         allowNull:false
+    },
+    idColumna: {
+        type: DataTypes.INTEGER,
+        defaultValue:0,
+        allowNull:false
     }
+    
 
 },{timestamps: false});
 
