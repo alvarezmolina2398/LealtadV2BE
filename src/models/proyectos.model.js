@@ -37,7 +37,7 @@ Proyectos.hasMany(Campania,{
 
 Campania.belongsTo(Proyectos,{
     foreignKey: 'idProyecto',
-    sourceKey: 'id'
+    targetId: 'id'
 });
 
 Proyectos.hasMany(TablaDB,{
@@ -48,12 +48,12 @@ Proyectos.hasMany(TablaDB,{
 
 TablaDB.belongsTo(Proyectos,{
     foreignKey: 'idProyectos',
-    sourceKey: 'id'
+    targetId: 'id'
 });
 
 Proyectos.hasMany(Columna, {
     foreignKey: 'idProyectos',
-    targetId: 'id',
+    sourceKey: 'id',
 });
 
 Columna.belongsTo(Proyectos,{

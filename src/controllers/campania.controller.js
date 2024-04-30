@@ -43,9 +43,11 @@ const AddCampania = async(req, res) =>{
             terminosCondiciones,
             observaciones,
             esArchivada,
+            restriccionUser,
             idProyecto,
             etapas,
-            bloqueados
+            bloqueados,
+            participacion
         } = req.body;
     
         const newCampains = await Campania.create({
@@ -76,6 +78,7 @@ const AddCampania = async(req, res) =>{
             terminosCondiciones,
             observaciones,
             esArchivada,
+            restriccionUser,
             idProyecto,
         },{transaction});
         const { id } = newCampains.dataValues;
@@ -103,12 +106,14 @@ const AddCampania = async(req, res) =>{
         const premioData = etapasConId.flatMap(etapa => etapa.premio.map(premio =>({...premio, idEtapa: etapa.id})));
         await PremioCampania.bulkCreate(premioData,{transaction});
 
-        //const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
-        //await Participacion.bulkCreate(participacionData ,{transaction});
-
         if (bloqueados) {
             const bloqueoData = bloqueados.map(bloqueo => ({ ...bloqueo, idCampania: id }));
             await Bloqueados.bulkCreate(bloqueoData, { transaction });
+        }
+
+        if(participacion){
+            const participacionData = participacion.map(participacion =>({...participacion, idCampania: id}));
+            await Participantes.bulkCreate(participacionData ,{transaction});                
         }
 
 
@@ -137,7 +142,8 @@ const GetCampania = async (req, res) => {
                     { model: PremioCampania }
                 ]
             },
-            { model: Bloqueados }
+            { model: Bloqueados },
+            { model: Participantes }
         ]
       });
   
@@ -459,6 +465,8 @@ const GetcampanasActivasById = async (req, res) => {
                         { model: Presupuesto }
                     ]
                 },
+                { model: Participantes},
+                {model: Bloqueados}
 
             ]
         })

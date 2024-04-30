@@ -201,6 +201,16 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
+
+Campania.hasMany(Participantes,{
+    foreignKey:'idCampania',
+    sourceKey:'id'
+});
+
+Participantes.belongsTo(Campania,{
+    foreignKey:'idCampania',
+    targetId: 'id'
+})
 // (async () => {
 //     await sequelize.sync({ alter: true });
 //     // Code here

@@ -1,11 +1,11 @@
 const { Sequelize } = require("sequelize");
 
 
-const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
-  //host: '192.168.1.100',
-  host: "34.30.196.159",
-  dialect: "mysql", 
-});
+// const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
+//   //host: '192.168.1.100',
+//   host: "34.30.196.159",
+//   dialect: "mysql", 
+// });
 
 // const sequelize = new Sequelize("lealtadV2", "root", "B@rilhas2003", {
 //   //host: '192.168.1.100',
@@ -13,7 +13,11 @@ const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
 //   dialect: "mysql",
 // });
 
-
+const sequelize = new Sequelize("lealtadv2", "asofi", "Pruebas2024", {
+  //host: '192.168.1.100',
+  host: "127.0.0.1",
+  dialect: "mysql",
+});
 
 
 const pronet = new Sequelize(
