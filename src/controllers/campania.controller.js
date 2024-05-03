@@ -185,9 +185,11 @@ const UpdateCampania = async (req, res) => {
             terminosCondiciones,
             observaciones,
             esArchivada,
+            restriccionUser,
             idProyecto,
             etapas,
-            bloqueados
+            bloqueados,
+            participacion
         } = req.body;
 
         // Verificar si la campaña existe
@@ -225,44 +227,55 @@ const UpdateCampania = async (req, res) => {
             terminosCondiciones,
             observaciones,
             esArchivada,
+            restriccionUser,
             idProyecto
         }, { transaction });
 
-        // Actualizar las etapas existentes
-        for (const etapa of etapas) {
-            await Etapa.update({
-                ...etapa,
-                periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
-                intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
-                valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
-            }, { where: { id: etapa.id }, transaction });
+        // Actualizar o crear etapas
+        if (Array.isArray(etapas)) {
+            for (const etapa of etapas) {
+                await Etapa.upsert({
+                    ...etapa,
+                    idCampania: id,
+                    periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+                    intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                    valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+                }, { transaction });
 
-            // Actualizar los parámetros existentes de la etapa
-            if (Array.isArray(etapa.parametros)) {
-                for (const parametro of etapa.parametros) {
-                    await Parametro.update(parametro, { where: { id: parametro.id }, transaction });
+                // Actualizar o crear parámetros de la etapa
+                if (Array.isArray(etapa.parametros)) {
+                    for (const parametro of etapa.parametros) {
+                        await Parametro.upsert({ ...parametro, idEtapa: etapa.id }, { transaction });
+                    }
                 }
-            }
 
-            // Actualizar los presupuestos existentes de la etapa
-            if (Array.isArray(etapa.presupuesto)) {
-                for (const presupuesto of etapa.presupuesto) {
-                    await Presupuesto.update(presupuesto, { where: { id: presupuesto.id }, transaction });
+                // Actualizar o crear presupuestos de la etapa
+                if (Array.isArray(etapa.presupuesto)) {
+                    for (const presupuesto of etapa.presupuesto) {
+                        await Presupuesto.upsert({ ...presupuesto, idEtapa: etapa.id }, { transaction });
+                    }
                 }
-            }
 
-            // Actualizar los premios existentes de la etapa
-            if (Array.isArray(etapa.premio)) {
-                for (const premio of etapa.premio) {
-                    await PremioCampania.update(premio, { where: { id: premio.id }, transaction });
+                // Actualizar o crear premios de la etapa
+                if (Array.isArray(etapa.premio)) {
+                    for (const premio of etapa.premio) {
+                        await PremioCampania.upsert({ ...premio, idEtapa: etapa.id }, { transaction });
+                    }
                 }
             }
         }
 
-        // Actualizar los bloqueados existentes de la campaña
-        if (bloqueados) {
+        // Actualizar o crear bloqueados de la campaña
+        if (Array.isArray(bloqueados)) {
             for (const bloqueo of bloqueados) {
-                await Bloqueados.update(bloqueo, { where: { id: bloqueo.id }, transaction });
+                await Bloqueados.upsert({ ...bloqueo, idCampania: id }, { transaction });
+            }
+        }
+
+        // Actualizar o crear participantes de la campaña
+        if (Array.isArray(participacion)) {
+            for (const participante of participacion) {
+                await Participantes.upsert({ ...participante, idCampania: id }, { transaction });
             }
         }
 
@@ -274,24 +287,23 @@ const UpdateCampania = async (req, res) => {
                 {
                     model: Etapa,
                     include: [
-                        { model: Parametro , attributes: { exclude: ['idCampania'] }},
+                        { model: Parametro, attributes: { exclude: ['idCampania'] } },
                         { model: Presupuesto },
                         { model: PremioCampania }
                     ]
                 },
-                { model: Bloqueados }
+                { model: Bloqueados },
+                { model: Participantes }
             ]
         });
 
         res.json({ code: 'ok', message: 'Campaña actualizada con éxito', data: campaniaActualizada });
-    
     } catch (error) {
         await transaction.rollback();
         console.error('Error al actualizar la campaña:', error);
         res.status(500).json({ error: 'Ha sucedido un error al intentar actualizar la campaña', details: error.message });
     }
 };
-
 
 
 /*
@@ -456,6 +468,7 @@ const GetcampanasActivasById = async (req, res) => {
 
         const { id } = req.params;
         const etapa = await Campania.findByPk(id, {
+            where: { estado: 1 },
             include: [
                 {
                     model: Etapa,
@@ -478,23 +491,87 @@ const GetcampanasActivasById = async (req, res) => {
     }
 }
 
-const GetcampanasActivas = async (req, res) => {
+
+//metodo para pausar campanias (La uso)
+const PausarCampaña = async (req, res) => {
+
     try {
-        const trx = await Campania.findAll({
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 2
+        }, {
+
             where: {
-                estado: [1, 2, 3]
+                id: id
             }
         });
 
-        res.json(trx)
+        res.json({ code: 'ok', message: 'Promocion pausada con exito' })
 
     } catch (error) {
-        console.error(error)
+
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar pausar la Campaña.' });
+
+    }
+}
+
+//metodo para activas campanias (La uso)
+const ActivarCampaña = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 1
+        }, {
+
+            where: {
+                id: id
+            }
+        });
+
+        res.json({ code: 'ok', message: 'Campania activada con exito' })
+
+    } catch (error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar activar la Campaña.' });
+
+    }
+}
+
+//metodo para deshabilitar campanias (La uso)
+const DeleteCampania = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        await Campania.update({
+            estado: 0
+        }, {
+
+            where: {
+                id: id
+            }
+
+        })
+
+        res.json({ code: 'ok', message: 'Campinia deshabilitada con exito' });
+
+    } catch (error) {
+
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la campaña.' });
+
     }
 
 }
+
 
 
 /*
@@ -555,6 +632,24 @@ const UpdateCampania = async (req, res) => {
         res.send({ errors: 'Ha ocurrido un error al intentar actualizar la etapa.' });
     }
 }*/
+
+const GetcampanasActivas = async (req, res) => {
+    try {
+        const trx = await Campania.findAll({
+            where: {
+                estado: [1, 2, 3]
+            }
+        });
+
+        res.json(trx)
+
+    } catch (error) {
+        console.error(error)
+        res.status(403)
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de las categorias.' });
+    }
+
+}
 
 const TestearTransaccion = async (req, res) => {
     try {
@@ -763,84 +858,6 @@ const format = (inputDate) => {
     return `${date}/${month}/${year}`;
 }
 
-//metodo para pausar campanias
-const PausarCampaña = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        await Campania.update({
-            estado: 2
-        }, {
-
-            where: {
-                id: id
-            }
-        });
-
-        res.json({ code: 'ok', message: 'Promocion pausada con exito' })
-
-    } catch (error) {
-
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar pausar la Campaña.' });
-
-    }
-}
-
-//metodo para activas campanias
-const ActivarCampaña = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        await Campania.update({
-            estado: 1
-        }, {
-
-            where: {
-                id: id
-            }
-        });
-
-        res.json({ code: 'ok', message: 'Promocion activada con exito' })
-
-    } catch (error) {
-
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar activar la Campaña.' });
-
-    }
-}
-
-const DeleteCampania = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        await Campania.update({
-            estado: 0
-        }, {
-
-            where: {
-                id: id
-            }
-
-        })
-
-        res.json({ code: 'ok', message: 'Promocion deshabilitada con exito' });
-
-    } catch (error) {
-
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la campaña.' });
-
-    }
-
-}
 
 const validacionTransaccion = async (transaccionesCampanias, transaccionActual, etapaActual, idCampania, customerId) => {
     let result = null;
