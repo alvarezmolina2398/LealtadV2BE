@@ -3,15 +3,7 @@ const { validateResult } = require('../helpers/validationHelpers');
 
 
 const validateCreate = [
-    check('nombre')
-        .exists()
-        .not()
-        .isEmpty(),
     check('descripcion')
-        .exists()
-        .not()
-        .isEmpty(),
-    check('botton')
         .exists()
         .not()
         .isEmpty(),
@@ -19,10 +11,10 @@ const validateCreate = [
         .exists()
         .not()
         .isEmpty(),
-    check('puntos')
-        .exists()
-        .not()
-        .isEmpty(),
+    // check('puntos')
+    //     .exists()
+    //     .not()
+    //     .isEmpty(),
     (req, res, next) => {
         validateResult(req, res, next);
     }
