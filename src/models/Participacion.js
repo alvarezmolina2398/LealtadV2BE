@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
+const { codigoReferido} = require('./codigoReferidos');
+const {referidosIngresos} = require('./ReferidosIngresos');
+
 
 const { sumaTotal } = require('sequelize');
 
@@ -78,6 +81,16 @@ TransaccionPremio.belongsTo(Participacion, {
     targetKey: 'id',
 });
 
+Participacion.hasMany(codigoReferido,{
+    foreignKey: 'customerId',
+    sourceKey: 'customerId' 
+});
+Participacion.belongsTo(codigoReferido, {
+    foreignKey: 'customerId', // Columna en este modelo
+    targetKey: 'customerId',
+    as: 'codigoReferidoAssociation'
+});
+Participacion.belongsTo(referidosIngresos, { foreignKey: 'idRefIngresos' });
 
 // (async () => {
 //     await sequelize.sync({ force: false });
