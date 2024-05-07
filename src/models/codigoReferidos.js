@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const { participacionReferidos } = require('./participacionReferidos');
+//const { participacionReferidos } = require('./participacionReferidos');*/
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
 const codigoReferido = sequelize.define('codigoReferido', {
@@ -27,9 +27,9 @@ const codigoReferido = sequelize.define('codigoReferido', {
     }
 },{timestamps: false});
 
-codigoReferido.hasMany(participacionReferidos,{
+/**codigoReferido.hasMany(participacionReferidos,{
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
-});
+}); */
 
 module.exports = {codigoReferido}

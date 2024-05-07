@@ -80,16 +80,14 @@ TransaccionPremio.belongsTo(Participacion, {
 
 
 // (async () => {
-//     await sequelize.sync({ force: false });
-//     //Code here
+//     await Participacion.sync({ alter: true });
+    
 // })();
 
 // TransaccionPremio.sync({ alter: true }).then(() => {
 //     console.log('tabla TransaccionPremio creada');
 // });
 
-// Participacion.sync({ alter: true }).then(() => {
-//     console.log('tabla Participacion creada');
-// });
+
 
 module.exports = { Participacion }
