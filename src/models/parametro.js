@@ -32,7 +32,10 @@ const Parametro = sequelize.define('parametro', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
-    
+    limiteDiario:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1

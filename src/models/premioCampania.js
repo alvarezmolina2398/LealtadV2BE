@@ -17,6 +17,14 @@ const PremioCampania = sequelize.define('premiocampania', {
         allowNull: true,
         defaultValue: 0
     },
+    tipoPremio:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    porcentajePremio:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1

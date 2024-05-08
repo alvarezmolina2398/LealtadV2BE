@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const {  Bloqueados } = require('./bloqueados');
+const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
@@ -11,7 +11,6 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     nombre: {
         type: DataTypes.STRING(150),
@@ -35,18 +34,6 @@ const Campania = sequelize.define('campania', {
     },
     fechaFin: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    diaReporte: { // Nuevo campo: Entero para el día
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    horaReporte: { // Nuevo campo: Tipo Time que guarda únicamente la hora
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    emails: { // Nuevo campo: String de correos electrónicos separados por coma
-        type: DataTypes.STRING(1000),
         allowNull: false
     },
     edadInicial: {
@@ -89,43 +76,10 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    diaReporte: {
-        type:  DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 1
-    },
-    horaReporte: {
-        type:  DataTypes.TIME,
-        allowNull: true,
-        defaultValue: '09:00:00'
-    },
-    emails: {
-        type:  DataTypes.STRING(1000),
-        allowNull: true,
-        defaultValue: 'estiven6647@gmail.com'
-    },
     campaniaTerceros:{
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
-    },
-    allDay:{
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    repetir:{
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    fechaRecordatorioIni:{
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    fechaRecordatorioFin:{
-        type: DataTypes.DATE,
-        allowNull: true
     },
     terminosCondiciones:{
         type: DataTypes.TEXT,
