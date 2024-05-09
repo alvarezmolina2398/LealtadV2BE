@@ -21,9 +21,13 @@ const Presupuesto = sequelize.define('presupuesto', {
         type: DataTypes.INTEGER,
         allowNull:false
     },
-    valor: {
+    valor:{
         type: DataTypes.DECIMAL(18,2),
         allowNull:false
+    },
+    presupuestoDiario:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: false
     },
     estado : {
         type: DataTypes.INTEGER,

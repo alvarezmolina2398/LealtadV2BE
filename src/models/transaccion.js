@@ -73,7 +73,7 @@ Participacion.belongsTo(Transaccion,{
 
 // (async () => {
 //     await Transaccion.sync({ alter: true });
-//     Code here
+//     // Code here
 // })();
 
 module.exports = {Transaccion}

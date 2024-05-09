@@ -25,10 +25,8 @@ const Participantes = sequelize.define('participantes', {
 }, { timestamps: false });
 
 
-
-
-// (async () => {
-//     await Participantes.sync({ alter: true });
+//(async () => {
+//     await sequelize.sync({ force: true });
 //     // Code here
 // })();
 

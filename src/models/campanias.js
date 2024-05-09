@@ -4,14 +4,15 @@ const {  Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
-const { Parametro } = require('./parametro');
+const {Usuario} = require('./usuario');
+const {Parametro} = require('./parametro');
+// const { Configuraciones } = require('./configuraciones');
 
 const Campania = sequelize.define('campania', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     nombre: {
         type: DataTypes.STRING(150),

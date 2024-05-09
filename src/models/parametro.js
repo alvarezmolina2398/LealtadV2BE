@@ -41,7 +41,11 @@ const Parametro = sequelize.define('parametros', {
     idTipoParticipacion: {
         type: DataTypes.INTEGER
     },
-    estado: {
+    limiteDiario:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },

@@ -166,7 +166,7 @@ const generaCampanasUsuarios = async (req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones' ],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones'],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -214,7 +214,7 @@ const generaCampanasUsuarios = async (req, res) => {
                         where: {
                             estado: 1,
                         },
-                        attributes: ['numero', 'idCampania'],
+                        attributes: ['id', 'numero', 'idCampania'],
                     });
 
                     // console.log("Participantes:", Participante);

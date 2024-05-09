@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TablaDB } = require('./tabladb');
 const { Columna } = require('./columna');
+const { Campania } = require('./campanias');
 const {Departamento_Proyectos} = require('./departamento_proyectos');
 
 const Proyectos = sequelize.define('proyectos', {
@@ -30,6 +31,16 @@ const Proyectos = sequelize.define('proyectos', {
 
 }, { timestamps: false });
 
+Proyectos.hasMany(Campania,{
+    foreignKey: 'idProyecto',
+    sourceKey:'id'
+});
+
+Campania.belongsTo(Proyectos,{
+    foreignKey: 'idProyecto',
+    targetId: 'id'
+});
+
 Proyectos.hasMany(TablaDB,{
     foreignKey: 'idProyectos',
     sourceKey: 'id'
@@ -38,12 +49,12 @@ Proyectos.hasMany(TablaDB,{
 
 TablaDB.belongsTo(Proyectos,{
     foreignKey: 'idProyectos',
-    sourceKey: 'id'
+    targetId: 'id'
 });
 
 Proyectos.hasMany(Columna, {
     foreignKey: 'idProyectos',
-    targetId: 'id',
+    sourceKey: 'id',
 });
 
 Columna.belongsTo(Proyectos,{
