@@ -9,12 +9,12 @@ const TransaccionPremio = sequelize.define('transaccionpremios', {
         autoIncrement: true,
 
     }
+    
 }, { timestamps: false });
 
 // (async () => {
-//     await sequelize.sync({ force: false });
-//     // Code here
+//     await TransaccionPremio.sync({ alter: true });
+   
 // })();
-
 
 module.exports = { TransaccionPremio, sequelize }

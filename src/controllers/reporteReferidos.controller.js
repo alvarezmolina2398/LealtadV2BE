@@ -4,91 +4,84 @@ const { Campania } = require('../models/campanias');
 const { participacionReferidos } = require('../models/participacionReferidos');
 const { Participacion } = require('../models/Participacion');
 const { codigoReferido } = require('../models/codigoReferidos');
-const { referidosIngresos } = require('../models/ReferidosIngresos'); // Aquí se agregó la importación faltante
+// const { referidosIngresos } = require('../models/ReferidosIngresos'); // Aquí se agregó la importación faltante
 const { ConfigReferido } = require('../models/configReferidos');
+const { Usuario } = require('../models/usuario');
 const { Op } = require('sequelize');
 
-const GetParticipacionReferidos = async (req, res) => {
+const getParticipaciones = async (req, res) => {
   try {
-    const {  fechaInicio, fechaFin } = req.body;
-    
-    console.log("Fechainicio",fechaInicio);
-    // console.log("IDcamapanias", id);
+    const { fechaInicio, fechaFin, campanas} = req.body;
+    let campanias = "";
 
-
-    console.log("fechafin",fechaFin);
-    // console.log("customerId",customerId);
-
-    const obtenerRef = await Campania.findAll({
-      where: {
-        // id:id,
-        fechaInicio: { [Op.gte]: fechaInicio },
-        fechaFin: { [Op.lte]: fechaFin },
-        estado: 1,
-      },
-      include: [{
-        model: Participacion,
-        as: 'participaciones',
-        attributes: ['fecha', 'descripcionTrx', 'valor', 'customerId', 'idTransaccion', 'idCampania'],  
-        include: [{
-            model: codigoReferido,
-            // as: 'codigosreferidos', 
-            attributes: ['codigo'],
-            include: [{
-                model: ConfigReferido,
-                attributes: ['opcion'],
-            }, {
-                model: participacionReferidos,  
-                attributes: ['refiriente', 'referido'],
-            }]    
-        }]
-      }]
+    campanas.forEach((c, index) => {
+      campanias += index > 0 ? `, '${c}'`: `'${c}'`;
     });
 
-    const NuevoArray = [];
-    for (const c of obtenerRef) {
-      for (const p of c.participaciones) {
-        NuevoArray.push({
-          opcion: p.ConfigReferido,
-          nombre: c.nombre,
-          descripcionNotificacion: c.descripcionNotificacion,
-          codigo: p.codigosReferido,
-          telefonoUsuario: p.usuario,
-          nombreUsuario: p.usuario,
-          fecha: p.fecha,
-          descripcionTrx: p.descripcionTrx,
-          montoPremio: p.valor, 
-          refiriente: p.participacionReferidos,
-          referido: p.participacionReferidos ,
-        });
-      } 
-    }
+    const participaciones = await sequelize.query(`
+      SELECT 
+        c.id AS campania_id,
+        c.nombre AS nombre_campania,
+        c.descripcionNotificacion,
+        p.fecha,
+        p.descripcionTrx,
+        p.valor,
+        p.customerId,
+        p.idTransaccion,
+        cr.codigo AS codigo_referido,
+        p2.refiriente,
+        p2.referido,
+        crf.opcion AS opcion_referido,
+        u.nombre AS nombre_usuario,
+        u.telefono AS telefono_usuario
+      FROM 
+        Campania c
+      LEFT JOIN 
+        Participacions p ON c.id = p.idCampania 
+      LEFT JOIN 
+        CodigosReferidos cr ON cr.customerId = p.customerId 
+      LEFT JOIN 
+        ConfigReferidos crf ON cr.codigo = crf.id
+      LEFT JOIN 
+        Usuarios u ON u.nombre = u.username 
+      LEFT JOIN 
+        participacionreferidos p2 ON p2.referido = cr.codigo
+      WHERE p.fecha BETWEEN '${fechaInicio}' AND '${fechaFin}'
+      AND c.nombre in (${campanias});		
+    `, { type: sequelize.QueryTypes.SELECT });
 
-    res.status(200).json(NuevoArray);
+    res.status(200).json(participaciones);
   } catch (error) {
-    console.error('Error al obtener las campañas:', error);
-    res.status(403).send({ errors: 'Ha ocurrido un error al obtener los datos .' });
+    console.error('Error al obtener las participaciones:', error);
+    res.status(500).json({ error: 'Error al obtener las participaciones' });
   }
 };
 
 const getCustomerById = async (req, res) => {
   try {
-    const {customerId, fechaInicio,fechaFin}= req.body
+    const { customerid, fechaInicio, fechaFin } = req.body;
     const customerInfo = await pronet.query(`
-    select tur.mname ,
-    CONCAT(tur.fname, ' ', tur.lname) nombreref, tur.userno telref, tur.userid 
-    from genesis.participante_campana pc 
-    LEFT JOIN 
-    pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante 
-     LEFT JOIN 
+      SELECT 
+        tur.mname,
+        CONCAT(tur.fname, ' ', tur.lname) nombreref, 
+        tur.userno telref, 
+        tur.userid 
+      FROM 
+        genesis.participante_campana pc 
+      LEFT JOIN 
+        pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante 
+      LEFT JOIN 
         genesis.referidos_ingresos rin ON rin.idreferidos_ingresos = pc.idTransaccion 
-     LEFT JOIN 
+      LEFT JOIN 
         pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario 
-     LEFT JOIN 
+      LEFT JOIN 
         pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
-    WHERE 
-      pc.fechaParticipacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
-      AND pc.idCampana = '${Campania}';
+      WHERE 
+        pc.fechaParticipacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
+        AND pc.idCampania in (${customerid})
+        ORDER BY 
+    tur.userid DESC LIMIT 5;
+        
     `, {
       type: pronet.QueryTypes.SELECT
     });
@@ -96,9 +89,8 @@ const getCustomerById = async (req, res) => {
     res.status(200).json(customerInfo);
   } catch (error) {
     console.error('Error al obtener la información del cliente:', error);
-    throw new Error('Error al obtener la información del cliente');
+    res.status(500).json({ error: 'Error al obtener la información del cliente' });
   }
-  
 };
 
-module.exports = { GetParticipacionReferidos, getCustomerById };
+module.exports = { getParticipaciones, getCustomerById };

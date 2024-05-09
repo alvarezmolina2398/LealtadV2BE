@@ -4,6 +4,7 @@ const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
+const {Usuario} = require('./usuario');
 // const { Configuraciones } = require('./configuraciones');
 
 
@@ -147,7 +148,7 @@ Participacion.belongsTo(Campania, {
     targetId: 'id',
     allowNull: false
 });
-
+Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
 // Campania.hasMany(Configuraciones, {
 //     foreignKey: 'idCampania',

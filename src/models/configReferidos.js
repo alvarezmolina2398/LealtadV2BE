@@ -48,7 +48,7 @@ const ConfigReferido = sequelize.define('configReferido', {
 },{timestamps: false});
 
 
-// ConfigReferido.hasMany(participacionReferidos, {
+// ConfigReferido.bel(participacionReferidos, {
 //     foreignKey: 'configReferidoId', // Clave foránea en participacionReferidos
 //     sourceKey: 'id' // Clave primaria en ConfigReferido
 // });
