@@ -227,7 +227,7 @@ const UpdateCampania = async (req, res) => {
                         await Presupuesto.upsert({ ...presupuesto, idEtapa: etapa.id }, { transaction });
                     }
                 }
-
+     
                 // Actualizar o crear premios de la etapa
                 if (Array.isArray(etapa.premio)) {
                     for (const premio of etapa.premio) {
