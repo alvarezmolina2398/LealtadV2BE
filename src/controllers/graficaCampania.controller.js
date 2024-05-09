@@ -7,13 +7,13 @@ const ObtenerParticipacionesByFecha = async (req, res) => {
     console.log(req.body);
 
     const participantes = await sequelize.query(
-      `SELECT p.idCampania,c.nombre, 
+      ` SELECT p.idCampania,c.nombre, c.fechaRegistro,
       COUNT(p.idCampania) as participantes 
       FROM participacions p
       JOIN campania c ON c.id  = p.idCampania  
       WHERE YEAR(p.fecha) = :anio
       AND  MONTH(p.fecha) = :mes
-      GROUP BY p.idCampania,c.nombre;
+      GROUP BY p.idCampania,c.nombre, c.fechaRegistro;
       `,
       {
         replacements: { anio: anio, mes: mes },

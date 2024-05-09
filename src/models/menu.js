@@ -3,7 +3,7 @@ const { sequelize } = require('../database/database');
 const { Pagina } = require('./pagina');
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
-const Menu = sequelize.define('menu', {
+const Menu = sequelize.define('menus', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -33,12 +33,21 @@ Menu.hasMany(Pagina,{
 //relacion entre tablas, pagina tiene pertenece a un menu
 Pagina.belongsTo(Menu, {
     foreignKey: 'idMenu',
-    targetId: 'id',
+    targetKey: 'id',
 });
 
 
 /*(async () => {
     await sequelize.sync({ force: false });
  })();*/
+
+
+
+
+//  Menu.sync({ alter: true }).then(() => {
+//     console.log('tabla Menu creada');
+// });
+
+
 
 module.exports = {Menu}

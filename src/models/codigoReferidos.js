@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { participacionReferidos } = require('./participacionReferidos');
+const {ConfigReferido}= require('../models/configReferidos');
+
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
 const codigoReferido = sequelize.define('codigosreferidos', {
@@ -25,11 +27,20 @@ const codigoReferido = sequelize.define('codigosreferidos', {
         type: DataTypes.DATE,
         allowNull: false
     }
-},{timestamps: false});
+},{timestamps: false,
+    tableName: 'codigosreferidos'
+});
 
 codigoReferido.hasMany(participacionReferidos,{
-    foreignKey: 'idParticipacion',
+    foreignKey: 'id',
     sourceKey: 'id'
+});
+participacionReferidos.belongsTo(codigoReferido, {
+    foreignKey: 'id',
+    targetKey: 'id',
+});
+codigoReferido.belongsTo(ConfigReferido, {
+    foreignKey: 'id'
 });
 
 // (async () => {

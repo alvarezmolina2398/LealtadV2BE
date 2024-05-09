@@ -57,7 +57,7 @@ const transaccionesValidasCampanasFusionL = async (id) => {
 }
 
 
-const transaccionesValidasCampanasFusionLf = async (idCampanias) => {
+const transaccionesValidasCampanasFusionLf = async (idCampania) => {
     // const { idCampania } = req.params;
 
     try {
@@ -166,7 +166,7 @@ const generaCampanasUsuarios = async (req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'emails', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones' ],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones' ],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -240,21 +240,21 @@ const generaCampanasUsuarios = async (req, res) => {
                         }
                     }
 
-                    // const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
-                    //     try {
-                    //         const regionesValidas = await regionesValidasCampania(campania.id);
-                    //         // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
-                    //         console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
-                    //         return regionesValidas.length > 0 ? campania : null;
-                    //     } catch (error) {
-                    //         console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
-                    //         return null; // Maneja el error como prefieras
-                    //     }
+                    const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
+                        try {
+                            const regionesValidas = await regionesValidasCampania(campania.id);
+                            // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
+                            console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
+                            return regionesValidas.length > 0 ? campania : null;
+                        } catch (error) {
+                            console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
+                            return null; // Maneja el error como prefieras
+                        }
     
-                    // }));
+                    }));
 
 
-                    // res.json(campaniasFiltradas.filter(campania => campania !== null));
+                    res.json(campaniasFiltradas.filter(campania => campania !== null));
 
 
                     for (const campania of campanasActivasEnc) {
@@ -413,7 +413,7 @@ const generaCampanasUsuarios = async (req, res) => {
 
 
 
-                res.json(campanasActivasEnc);
+                // res.json(campanasActivasEnc);
                 // res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // return res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // res.json(retorno);
@@ -656,39 +656,39 @@ const validarParticipacionesRestantes = async (idCampania, idDepto, idMuni) => {
 
 
 
-const campanasRevisionGeneral = async (req, res) => {
+// const campanasRevisionGeneral = async (req, res) => {
 
-    try {
-        const campaniasTipo1y3 = await Campania.findAll({
-            attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
-            where: {
-                tipoUsuario: {
-                    [Op.in]: [1, 3]
-                },
-                estado: '1',
-                fechaFin: {
-                    [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
-                }
-            }
-        });
+//     try {
+//         const campaniasTipo1y3 = await Campania.findAll({
+//             attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
+//             where: {
+//                 tipoUsuario: {
+//                     [Op.in]: [1, 3]
+//                 },
+//                 estado: '1',
+//                 fechaFin: {
+//                     [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
+//                 }
+//             }
+//         });
 
-        const campaniasTipo2y4y5 = await Campania.findAll({
-            attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
-            where: {
-                tipoUsuario: { [Op.in]: [2, 4, 5] },
-                estado: '3',
-                fechaFin: {
-                    [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
-                }
-            }
-        });
+//         const campaniasTipo2y4y5 = await Campania.findAll({
+//             attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
+//             where: {
+//                 tipoUsuario: { [Op.in]: [2, 4, 5] },
+//                 estado: '3',
+//                 fechaFin: {
+//                     [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
+//                 }
+//             }
+//         });
 
-        const resultados = campaniasTipo1y3.concat(campaniasTipo2y4y5);
-        return res.status(200).json(resultados);
-    } catch (error) {
-        return res.status(500).json({ error: 'Error al obtener las campañas' });
-    }
-}
+//         const resultados = campaniasTipo1y3.concat(campaniasTipo2y4y5);
+//         return res.status(200).json(resultados);
+//     } catch (error) {
+//         return res.status(500).json({ error: 'Error al obtener las campañas' });
+//     }
+// }
 
 const validarLimiteParticipacionesPorUsuario = async (idUsuarioParticipante, idCampania) => {
     // const idUsuarioParticipante = req.params.idUsuarioParticipante; // Asegúrate de que este parámetro está correctamente definido en la ruta

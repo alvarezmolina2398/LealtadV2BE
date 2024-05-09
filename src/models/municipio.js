@@ -2,8 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
 
-
-const Municipio = sequelize.define('municipios', {
+const Municipio = sequelize.define('municipio', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

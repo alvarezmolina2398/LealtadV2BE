@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { Columna } = require('./columna');
+const { Transaccion } = require('./transaccion');
 
 const TablaDB = sequelize.define('tabladb',{
     id:{
@@ -28,8 +29,10 @@ Columna.belongsTo(TablaDB,{
     sourceKey: 'id'
 });
 
-// (async () => {
-//     await Campania.sync({ alter: true });
-//  })();
+
+
+//  (async ()=> {
+//    await Transaccion.sync({alter:true})
+// })()
 
 module.exports = {TablaDB}

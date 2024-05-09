@@ -1,13 +1,15 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../database/database');
-const {Municipio} = require('./municipio')
-const Departamento = sequelize.define('departamentos', {
+
+const {Municipio} = require('./municipio');
+const {Departamento_Proyectos} = require('./departamento_proyectos');
+
+const Departamento = sequelize.define('departamento', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-
     nombre: {
         type: DataTypes.STRING(150),
         allowNull: false
@@ -15,9 +17,12 @@ const Departamento = sequelize.define('departamentos', {
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
+    },
+    IdLocal: {
+        type: DataTypes.INTEGER,
+        autoIncrement: false,
     }
 }, {timestamps: false}); 
-
 
 Departamento.hasMany(Municipio,{
     foreignKey: 'idDepartamento',
@@ -27,12 +32,28 @@ Departamento.hasMany(Municipio,{
 Municipio.belongsTo(Departamento, {
     foreignKey: 'idDepartamento',
     targetId: 'id',
-    
 });
 
+Departamento.hasMany(Departamento_Proyectos,{
+    foreignKey: 'idDepartamento',
+    sourceKey: 'id'
+});
 
-//(async () => {
-//   await sequelize.sync({forse:true});
-//})();
+Departamento_Proyectos.belongsTo(Departamento, {
+    foreignKey: 'idDepartamento',
+    targetKey: 'id',
+});
+//  (async () => {
+//      await Departamento.sync({ alter: true });
+   
+//  })();
 
+// (async () => {
+//     await Departamento.sync({ alter: true });
+//     Code here
+// })();
+
+// Departamento_Proyectos.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
 module.exports = {Departamento}
