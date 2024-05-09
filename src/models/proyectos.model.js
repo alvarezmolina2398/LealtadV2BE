@@ -50,4 +50,13 @@ Columna.belongsTo(Proyectos,{
     targetId: 'id',
 });
 
+// TablaDB.sync( {alter:true} ).then(() => {
+//     console.log('TablaDB was synchronized successfully.');
+// });
+
+// Columna.sync( {alter:true} ).then(() => {
+//     console.log('Columna was synchronized successfully.');
+// });
+
+
 module.exports = { Proyectos }
