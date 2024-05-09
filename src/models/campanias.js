@@ -13,7 +13,6 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     nombre: {
         type: DataTypes.STRING(150),
@@ -27,7 +26,7 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
-    fechaRegistro: {
+    fechaRegistro:{
         type: DataTypes.DATEONLY,
         allowNull: true
     },
@@ -40,43 +39,43 @@ const Campania = sequelize.define('campania', {
         allowNull: false
     },
     edadInicial: {
-        type: DataTypes.INTEGER,
+        type:  DataTypes.INTEGER,
         allowNull: false
     },
     edadFinal: {
-        type: DataTypes.INTEGER,
+        type:  DataTypes.INTEGER,
         allowNull: false
     },
     sexo: {
-        type: DataTypes.INTEGER,
+        type:  DataTypes.INTEGER,
         allowNull: false
     },
     tipoUsuario: {
-        type: DataTypes.INTEGER,
+        type:  DataTypes.INTEGER,
         allowNull: false
     },
     tituloNotificacion: {
-        type: DataTypes.STRING(1000),
+        type:  DataTypes.STRING(1000),
         allowNull: false
     },
     descripcionNotificacion: {
-        type: DataTypes.STRING(1000),
+        type:  DataTypes.STRING(1000),
         allowNull: false
     },
     imgPush: {
-        type: DataTypes.TEXT('long'),
+        type:  DataTypes.TEXT('long'),
         allowNull: false
     },
     imgAkisi: {
-        type: DataTypes.TEXT('long'),
+        type:  DataTypes.TEXT('long'),
         allowNull: false
     },
-    estado: {
+    estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
     maximoParticipaciones: {
-        type: DataTypes.INTEGER,
+        type:  DataTypes.INTEGER,
         allowNull: false
     },
     campaniaTerceros: {
@@ -88,21 +87,25 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    observaciones: {
+    observaciones:{
         type: DataTypes.STRING(1000),
         allowNull: true
     },
-    esArchivada: {
+    esArchivada:{
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
+    },
+    restriccionUser:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
 
-}, { timestamps: false });
+},{timestamps: false});
 
 
-
-Campania.hasMany(Etapa, {
+Campania.hasMany(Etapa,{
     foreignKey: 'idCampania',
     sourceKey: 'id'
 });
@@ -112,7 +115,7 @@ Etapa.belongsTo(Campania, {
     targetId: 'id',
 });
 
-Campania.hasMany(Participantes, {
+Campania.hasMany(Participantes,{
     foreignKey: 'idCampania',
     sourceKey: 'id'
 });
@@ -122,7 +125,7 @@ Participantes.belongsTo(Campania, {
     targetId: 'id',
 });
 
-Campania.hasMany(Bloqueados, {
+Campania.hasMany(Bloqueados,{
     foreignKey: 'idCampania',
     sourceKey: 'id'
 });
@@ -131,7 +134,6 @@ Bloqueados.belongsTo(Campania, {
     foreignKey: 'idCampania',
     targetId: 'id',
 });
-
 
 Campania.hasMany(Participacion, {
     as: 'participaciones',
@@ -143,7 +145,13 @@ Campania.hasMany(Participacion, {
     allowNull: false
 });
 
-Participacion.belongsTo(Campania, {
+Participacion.belongsTo(Campania,{
+    foreignKey: 'idCampania',
+    targetId: 'id',
+    allowNull: false
+});
+
+Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
     allowNull: false
