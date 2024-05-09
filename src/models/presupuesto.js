@@ -10,7 +10,7 @@ const Presupuesto = sequelize.define('presupuesto', {
 
     },
     idDepartamento: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     idMunicipio: {
@@ -28,12 +28,16 @@ const Presupuesto = sequelize.define('presupuesto', {
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
+    },
+    idEtapa: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 },{timestamps: false});
 
 
 // (async () => {
-//     await sequelize.sync({ force: true });
+//     await Presupuesto.sync({ alter: true });
 //     // Code here
 //  })();
 

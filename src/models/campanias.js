@@ -65,6 +65,10 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
+    tipoParticipacion: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     tituloNotificacion: {
         type:  DataTypes.STRING(1000),
         allowNull: false
@@ -89,20 +93,30 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    diaReporte: {
+    minimoAcumular: {
         type:  DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 1
+        allowNull: false
     },
-    horaReporte: {
-        type:  DataTypes.TIME,
-        allowNull: true,
-        defaultValue: '09:00:00'
+    minimoTransacciones: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
+    },
+    tipoPremio: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
     },
     emails: {
         type:  DataTypes.STRING(1000),
         allowNull: true,
         defaultValue: 'estiven6647@gmail.com'
+    },
+    transacciones: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
+    },
+    mistransacciones: {
+        type:  DataTypes.INTEGER,
+        allowNull: false
     },
 },{timestamps: false});
 
@@ -159,6 +173,7 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
+
 //(async () => {
     //await sequelize.sync({ force: true });
 //     // Code here

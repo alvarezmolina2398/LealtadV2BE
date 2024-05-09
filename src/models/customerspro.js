@@ -70,4 +70,8 @@ const Customer = sequelize.define('Customer', {
   timestamps: false // Indica que la tabla no tiene timestamps created_at y updated_at
 });
 
-module.exports = Customer;
+// (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
+
+module.exports = {Customer};

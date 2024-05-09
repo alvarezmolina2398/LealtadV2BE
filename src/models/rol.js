@@ -52,4 +52,8 @@ permisoUsuario.belongsTo(Rol, {
     targetId: 'id',
 });
 
+// (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
+
 module.exports = {Rol}

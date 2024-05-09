@@ -23,9 +23,9 @@ const Bloqueados = sequelize.define('bloqueados', {
     }
 }, { timestamps: false });
 
-//(async () => {
-//await sequelize.sync({ force: true });
-//Code here
-//})();
+// (async () => {
+// await Bloqueados.sync({ alter: true });
+// //Code here
+// })();
 
 module.exports = { Bloqueados }

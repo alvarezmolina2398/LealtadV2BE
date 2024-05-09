@@ -13,24 +13,23 @@ const Participantes = sequelize.define('participantes', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
-
-    campaniaId: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
     estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false
-    }
+    },
+    idCampania: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
 }, { timestamps: false });
 
 
 
 
-//(async () => {
-//     await sequelize.sync({ force: true });
+// (async () => {
+//     await Participantes.sync({ alter: true });
 //     // Code here
-//})();
+// })();
 
 module.exports = { Participantes }

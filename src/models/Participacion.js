@@ -11,6 +11,15 @@ const Participacion = sequelize.define('participacions', {
         primaryKey: true,
         autoIncrement: true,
     },
+    idProyecto: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    idUsuarioParticipante: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
     fecha: {
         type: DataTypes.DATEONLY,
         allowNull: false
@@ -36,31 +45,34 @@ const Participacion = sequelize.define('participacions', {
         allowNull: false
     },
     urlPremio: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(255),
         allowNull: false
     },
-    
+
     etapa: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    idPremio: {
-        type:  DataTypes.INTEGER,
+    jugado: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     idTransaccion: {
-        type:  DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
+
     idCampania: {
         type: DataTypes.INTEGER,
         allowNull: false
-    }
-  
-},{timestamps: false})
+    },
 
 
-Participacion.hasMany(TransaccionPremio,{
+
+}, { timestamps: false })
+
+
+Participacion.hasMany(TransaccionPremio, {
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
@@ -68,14 +80,21 @@ Participacion.hasMany(TransaccionPremio,{
 
 TransaccionPremio.belongsTo(Participacion, {
     foreignKey: 'idParticipacion',
-    targetId: 'id',
+    targetKey: 'id',
 });
 
 
-
 // (async () => {
-//     await Participacion.sync({ alter: false });
+//     await Participacion.sync({ alter: true });
 //     //Code here
 // })();
 
-module.exports = {Participacion}
+// TransaccionPremio.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
+
+// Participacion.sync({ alter: true }).then(() => {
+//     console.log('tabla Participacion creada');
+// });
+
+module.exports = { Participacion }

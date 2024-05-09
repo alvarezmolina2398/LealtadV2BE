@@ -50,4 +50,8 @@ Columna.belongsTo(Proyectos,{
     targetId: 'id',
 });
 
+// (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
+
 module.exports = { Proyectos }

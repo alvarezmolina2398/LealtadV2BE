@@ -3,7 +3,7 @@ const { sequelize } = require('../database/database');
 const { participacionReferidos } = require('./participacionReferidos');
 
 //Creacion de tabla y declaracion de sus atributos correspondientes
-const codigoReferido = sequelize.define('codigoReferido', {
+const codigoReferido = sequelize.define('codigosreferidos', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -31,5 +31,9 @@ codigoReferido.hasMany(participacionReferidos,{
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
+
+// (async () => {
+//     await codigoReferido.sync({ alter: true });
+//  })();
 
 module.exports = {codigoReferido}

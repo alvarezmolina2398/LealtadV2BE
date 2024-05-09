@@ -57,4 +57,9 @@ const ConfiReferidos = sequelize.define('confi_referidos', {
   opcion: {
     type: DataTypes.STRING
   }
+
+  // (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
+
 });
