@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const {CodigoReferido} = require('../models/codigoReferidos');
+// const {CodigoReferido} = require('../models/codigoReferidos');
+const { ConfigReferido } = require('./configReferidos');
+
 
 const participacionReferidos = sequelize.define('participacionreferidos', {
 
@@ -28,6 +30,11 @@ const participacionReferidos = sequelize.define('participacionreferidos', {
         allowNull: false
     }
 }, {timestamps: false});
+
+participacionReferidos.belongsTo(ConfigReferido, {
+    foreignKey: 'configReferidoId', 
+    targetKey: 'id' 
+});
 
 // (async () => {
 //     await sequelize.sync({ force: true});
