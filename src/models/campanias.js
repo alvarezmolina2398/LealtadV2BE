@@ -5,6 +5,7 @@ const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
 const {Usuario} = require('./usuario');
+const {Parametro}= require('./parametro');
 // const { Configuraciones } = require('./configuraciones');
 
 
