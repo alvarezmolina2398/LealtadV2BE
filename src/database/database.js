@@ -7,12 +7,18 @@ const sequelize = new Sequelize(
     //   "root",
     // "admin",
     {
-        host: "34.30.196.159",
+        host: "35.226.177.160",
 
         // host: 'localhost',
         dialect: "mysql",
     }
 );
+
+// const sequelize = new Sequelize("lealtadv2", "asofi", "Pruebas2024", {
+//     //host: '192.168.1.100',
+//     host: "127.0.0.1",
+//     dialect: "mysql",
+//   });
 
 const pronet = new Sequelize("pronet", "devusr", "efHBxdcV", {
     host: "172.16.50.27",

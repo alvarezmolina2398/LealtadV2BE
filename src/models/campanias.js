@@ -99,13 +99,9 @@ const Campania = sequelize.define('campania', {
         allowNull: false,
         defaultValue: 0
     }
-<<<<<<< HEAD
 
 },{timestamps: false});
-=======
->>>>>>> a21068c101421b8c8c561cb3a5c9adfcd1730162
 
-},{timestamps: false});
 
 
 Campania.hasMany(Etapa,{

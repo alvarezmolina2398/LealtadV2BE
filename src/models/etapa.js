@@ -38,6 +38,14 @@ const Etapa = sequelize.define('etapa', {
     valorAcumulado: {
         type: DataTypes.DECIMAL(18,2)
     },
+    minimoTransaccion:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
+    },
+    totalMinimo:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -75,6 +83,5 @@ PremioCampania.belongsTo(Etapa, {
     foreignKey: 'idEtapa',
     targetId: 'id',
 });
-
 
 module.exports = {Etapa}
