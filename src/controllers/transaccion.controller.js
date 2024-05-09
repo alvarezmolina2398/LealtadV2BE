@@ -1,3 +1,4 @@
+const { Columna } = require('../models/columna')
 const { Transaccion } = require('../models/transaccion')
 
 
@@ -22,17 +23,18 @@ const GetTransaccions = async (req, res) => {
 const AddTransaccion = async (req, res) => {
 
     try {
-        const { nombre, descripcion, botton, columna,puntos } = req.body;
+        const { descripcion, columna,puntos } = req.body;
         await Transaccion.create({
-            nombre,
             descripcion,
-            idBotton: botton,
             idColumna: columna,
             puntos
         })
         res.json({ code: 'ok', message: 'Transaccion creada con exito' });
 
     } catch (error) {
+        console.log(
+            "error", error
+        )
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar realizar la Transaccion.' });
     }
@@ -96,7 +98,10 @@ const DeleteTransaccion = async (req, res) => {
 const GetTransaccionById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Transaccion.findByPk(id);
+        const project = await Transaccion.findByPk(
+            id,
+            {include : Columna}
+        );
         res.json(project)
     } catch (error) {
         console.log(error)

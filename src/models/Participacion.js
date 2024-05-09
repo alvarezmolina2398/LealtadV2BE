@@ -1,8 +1,13 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
+const { codigoReferido} = require('./codigoReferidos');
+const {referidosIngresos} = require('./ReferidosIngresos');
+const {participacionReferidos}= require('./participacionReferidos');
+const {ConfigReferido}= require('./configReferidos');
 
-const { sumaTotal } = require('sequelize');
+
+// const { sumaTotal } = require('sequelize');
 
 const Participacion = sequelize.define('participacions', {
 
@@ -78,18 +83,37 @@ TransaccionPremio.belongsTo(Participacion, {
     targetKey: 'id',
 });
 
+Participacion.hasMany(codigoReferido,{
+    foreignKey: 'customerId',
+    sourceKey: 'customerId' 
+});
+Participacion.belongsTo(codigoReferido, {
+    foreignKey: 'customerId', // Columna en este modelo
+    targetKey: 'customerId',
+    as: 'codigoReferidoAssociation'
+}); 
+Participacion.belongsTo(referidosIngresos, { 
+    foreignKey: 'idRefIngresos' 
+});
+
+Participacion.hasMany(participacionReferidos, {
+     as: 'p2', 
+     foreignKey: 'id' 
+    });
+
+    Participacion.belongsTo(ConfigReferido, { 
+        foreignKey: 'id'
+     });
 
 // (async () => {
-//     await sequelize.sync({ force: false });
-//     //Code here
+//     await Participacion.sync({ alter: true });
+    
 // })();
 
 // TransaccionPremio.sync({ alter: true }).then(() => {
 //     console.log('tabla TransaccionPremio creada');
 // });
 
-// Participacion.sync({ alter: true }).then(() => {
-//     console.log('tabla Participacion creada');
-// });
+
 
 module.exports = { Participacion }
