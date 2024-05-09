@@ -38,6 +38,14 @@ const Etapa = sequelize.define('etapa', {
     valorAcumulado: {
         type: DataTypes.DECIMAL(18,2)
     },
+    minimoTransaccion:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
+    },
+    totalMinimo:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -66,8 +74,6 @@ Parametro.belongsTo(Etapa, {
     targetId: 'id',
 });
 
-
-
 Etapa.hasMany(PremioCampania,{
     foreignKey: 'idEtapa',
     sourceKey: 'id'
@@ -77,14 +83,5 @@ PremioCampania.belongsTo(Etapa, {
     foreignKey: 'idEtapa',
     targetId: 'id',
 });
-
-
-
-
-
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     // Code here
-//  })();
 
 module.exports = {Etapa}

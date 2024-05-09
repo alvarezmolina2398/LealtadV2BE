@@ -53,7 +53,7 @@ Departamento_Proyectos.belongsTo(Departamento, {
 
 // (async () => {
 //     await Departamento.sync({ alter: true });
-//     Code here
+//     // Code here
 // })();
 
 // Departamento_Proyectos.sync({ alter: true }).then(() => {

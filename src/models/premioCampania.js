@@ -7,18 +7,22 @@ const PremioCampania = sequelize.define('premiocampania', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     valor: {
         type: DataTypes.DECIMAL(18,2),
         allowNull: false
     }, 
-    idPremio: {
-        type:  DataTypes.INTEGER,
-        allowNull: false
+    linkPremio:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
     },
-    idEtapa: {
-        type:  DataTypes.INTEGER,
+    tipoPremio:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    porcentajePremio:{
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     estado : {
