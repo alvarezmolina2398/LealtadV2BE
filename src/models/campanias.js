@@ -105,6 +105,7 @@ const Campania = sequelize.define('campania', {
 },{timestamps: false});
 
 
+
 Campania.hasMany(Etapa,{
     foreignKey: 'idCampania',
     sourceKey: 'id'
