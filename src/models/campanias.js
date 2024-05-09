@@ -4,7 +4,9 @@ const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
-const { Parametro } = require('./parametro');
+const {Usuario} = require('./usuario');
+// const { Configuraciones } = require('./configuraciones');
+
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -76,12 +78,12 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    campaniaTerceros:{
+    campaniaTerceros: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
     },
-    terminosCondiciones:{
+    terminosCondiciones: {
         type: DataTypes.TEXT,
         allowNull: false
     },
@@ -155,23 +157,27 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
+Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-Campania.hasMany(Participantes,{
-    foreignKey:'idCampania',
-    sourceKey:'id'
-});
+// Campania.hasMany(Configuraciones, {
+//     foreignKey: 'idCampania',
+//     sourceKey: 'id'
+// });
 
-Participantes.belongsTo(Campania,{
-    foreignKey:'idCampania',
-    targetId: 'id'
-})
-// (async () => {
-//     await sequelize.sync({ alter: true });
-//     // Code here
-// })();
+// Configuraciones.belongsTo(Campania, {
+//     foreignKey: 'idCampania',
+//     targetId: 'id',
+// });
+
 
 // Campania.sync({ alter: true }).then(() => {
 //     console.log('tabla campania creada');
 // });
 
-module.exports = {Campania}
+
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// });
+
+
+module.exports={Campania}
