@@ -46,8 +46,12 @@ TransaccionPremio.belongsTo(Premiacion, {
 });
 
 // (async () => {
-//     await sequelize.sync({ force: false });
+//     await Premiacion.sync({ alter: true });
 //     // Code here
 // })();
+
+// TransaccionPremio.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
 
 module.exports = {Premiacion, sequelize}

@@ -3,6 +3,7 @@ const { sequelize } = require('../database/database');
 const { TablaDB } = require('./tabladb');
 const { Columna } = require('./columna');
 const { Campania } = require('./campanias');
+const {Departamento_Proyectos} = require('./departamento_proyectos');
 
 const Proyectos = sequelize.define('proyectos', {
     id: {
@@ -61,6 +62,26 @@ Columna.belongsTo(Proyectos,{
     targetId: 'id',
 });
 
+Proyectos.hasMany(Departamento_Proyectos,{
+    foreignKey: 'idProyecto',
+    sourceKey: 'id'
+});
+
+Departamento_Proyectos.belongsTo(Proyectos, {
+    foreignKey: 'idProyecto',
+    targetKey: 'id',
+});
+
+
+// (async () => {
+//     await Proyectos.sync({ alter: true });
+   
+// })();
+
+
+// Departamento_Proyectos.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
 
 
 module.exports = { Proyectos }
