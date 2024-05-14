@@ -22,6 +22,11 @@ const Municipio = sequelize.define('municipio', {
         defaultValue: 1,
         allowNull:false
     },
+    
+    IdLocal: {
+        type: DataTypes.INTEGER,
+        autoIncrement: false,
+    }
 
 
 },{timestamps: false});

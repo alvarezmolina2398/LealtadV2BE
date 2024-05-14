@@ -26,9 +26,10 @@ const AddMunicipio = async (req, res) => {
 
     try {
         console.log(req.body);
-        const { nombre, departamento } = req.body;
+        const { nombre, departamento,IdLocal } = req.body;
         await Municipio.create({
             nombre,
+            IdLocal,
             idDepartamento: departamento,
         })
         res.json({ code: 'ok', message: 'Municipio creado con exito' });
@@ -45,10 +46,11 @@ const AddMunicipio = async (req, res) => {
 const UpdateMunicipio = async (req, res) => {
 
     try {
-        const { nombre, departamento, } = req.body;
+        const { nombre,IdLocal, departamento, } = req.body;
         const { id } = req.params
         await Municipio.update({
             nombre,
+            IdLocal,
             idDepartamento: departamento,
 
         }, {
