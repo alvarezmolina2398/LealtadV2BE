@@ -11,6 +11,8 @@ const sequelize = new Sequelize(
 
       // host: 'localhost',
       dialect: "mysql",
+      // host: 'localhost',
+      dialect: "mysql",
     }
 );
 
