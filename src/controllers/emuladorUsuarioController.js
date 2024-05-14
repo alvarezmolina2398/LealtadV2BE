@@ -107,7 +107,7 @@ const generaCampanasUsuarios = async(req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'diaReporte', 'horaReporte', 'emails', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones'],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones'],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -162,7 +162,7 @@ const generaCampanasUsuarios = async(req, res) => {
                         where: {
                             estado: 1,
                         },
-                        attributes: ['id', 'numero', 'campaniaId'],
+                        attributes: ['id', 'numero', 'idCampania'],
                     });
 
 
@@ -170,7 +170,7 @@ const generaCampanasUsuarios = async(req, res) => {
 
                     const validaBloqueado = (bloqueado, participantes) => {
                         const participanteCoincidente = participantes.find(participante =>
-                            participante.numero === bloqueado.numero && participante.campaniaId === bloqueado.idCampania
+                            participante.numero === bloqueado.numero && participante.idCampania === bloqueado.idCampania
                         );
     
                         return participanteCoincidente ? 'Restrinjido' : 'permitido';
