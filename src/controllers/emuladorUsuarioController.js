@@ -19,7 +19,7 @@ const { CampaniaRegiones } = require('../models/campaniaregions');
 const { CampaniasNumeros } = require('../models/campanianumero');
 const { Columna } = require('../models/columna');
 
-const transaccionesValidasCampanasFusionL = async (id) => {
+const transaccionesValidasCampanasFusionLl = async (id) => {
     try {
         const transaccionesValidas = await Campania.findByPk(id, {
             include: [
@@ -57,50 +57,42 @@ const transaccionesValidasCampanasFusionL = async (id) => {
 }
 
 
-const transaccionesValidasCampanasFusionLf = async (idCampania) => {
+const transaccionesValidasCampanasFusionL = async (idCampania) => {
     // const { idCampania } = req.params;
 
     try {
         const query = `
-            SELECT 
-                dcp.valorMinimo, 
-                dcp.valorMaximo, 
-                dcp.idTipoParticipacion, 
-                dcp.limiteParticipacion, 
-                dcp.tipoTransaccion, 
-                t.descripcion, 
-                ctdb.nombre, 
-                dcp.id, 
-                dcp.idCampania 
-            FROM 
-                lealtadv2.parametros dcp 
-            INNER JOIN 
-                lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
-            INNER JOIN 
-                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
-            WHERE 
-                idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
-            UNION ALL 
-            SELECT 
-                dcp.valorMinimo, 
-                dcp.valorMaximo, 
-                dcp.idTipoParticipacion, 
-                dcp.limiteParticipacion, 
-                dcp.tipoTransaccion, 
-                t.descripcion, 
-                ctdb.nombre, 
-                dcp.id, 
-                dcp.idCampania 
-            FROM 
-                lealtadv2.parametros dcp 
-            INNER JOIN 
-                lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion 
-            INNER JOIN 
-                lealtadv2.transaccions AS t ON t.id = dc.idTransaccion 
-            INNER JOIN 
-                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
-            WHERE 
-                dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1 and dc.estado = 1
+        SELECT 
+        dcp.tipoTransaccion, 
+        t.descripcion, 
+        ctdb.nombre, 
+        dcp.id, 
+        dcp.idCampania 
+    FROM 
+        lealtadv2.participacions dcp 
+    INNER JOIN 
+        lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
+    INNER JOIN 
+        lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+    WHERE 
+        idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
+    UNION ALL 
+    SELECT 
+        dcp.tipoTransaccion, 
+        t.descripcion, 
+        ctdb.nombre, 
+        dcp.id, 
+        dcp.idCampania 
+    FROM 
+        lealtadv2.participacions dcp 
+    INNER JOIN 
+        lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion 
+    INNER JOIN 
+        lealtadv2.transaccions AS t ON t.id = dc.idTransaccion 
+    INNER JOIN 
+        lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+    WHERE 
+        dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1 and dc.estado = 1
         `;
 
         const transacciones = await sequelize.query(query, {
@@ -109,13 +101,13 @@ const transaccionesValidasCampanasFusionLf = async (idCampania) => {
         });
 
         return transacciones;
+        // return res.status(200).json(transacciones);
     } catch (error) {
         throw error;
         // console.error("Error al obtener transacciones válidas de la campaña:", error);
         // return res.status(500).json({ message: 'Error al obtener transacciones válidas de la campaña' });
     }
 };
-
 
 
 const GetcampanasActivasById = async (id) => {
@@ -166,7 +158,7 @@ const generaCampanasUsuarios = async (req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones'],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -240,22 +232,22 @@ const generaCampanasUsuarios = async (req, res) => {
                         }
                     }
 
-                    const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
-                        try {
-                            const regionesValidas = await regionesValidasCampania(campania.id);
-                            // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
-                            console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
-                            return regionesValidas.length > 0 ? campania : null;
-                        } catch (error) {
-                            console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
-                            return null; // Maneja el error como prefieras
-                        }
-    
-                    }));
+                    // const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
+                    //     try {
+                    //         const regionesValidas = await regionesValidasCampania(campania.id);
+                    //         // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
+                    //         console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
+                    //         return regionesValidas.length > 0 ? campania : null;
+                    //     } catch (error) {
+                    //         console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
+                    //         return null; // Maneja el error como prefieras
+                    //     }
+
+                    // }));
 
 
-                    res.json(campaniasFiltradas.filter(campania => campania !== null));
-
+                    // res.json(campaniasFiltradas.filter(campania => campania !== null));
+                    
 
                     for (const campania of campanasActivasEnc) {
                         // Obtener las etapas de la campaña
@@ -362,52 +354,52 @@ const generaCampanasUsuarios = async (req, res) => {
 
                 // const idUsuarioParticipante = req.res.idUsuarioParticipante || req.params.idUsuarioParticipante;
 
-                // for (const campania of campanasActivasEnc) {
-                //     console.log(`Procesando campaña: ${campania.id}`);
-                //     try {
-                //         const notificacionData = await tienePremiosPendientesCampanas(campania.id, idUsuarioParticipante);
-                //         console.log(`Datos de notificación para la campaña ${campania.id}:`, notificacionData);
+                for (const campania of campanasActivasEnc) {
+                    console.log(`Procesando campaña: ${campania.id}`);
+                    try {
+                        const notificacionData = await tienePremiosPendientesCampanas(campania.id, idUsuarioParticipante);
+                        console.log(`Datos de notificación para la campaña ${campania.id}:`, notificacionData);
 
-                //         let notificacion = 0;
-                //         // let urlnotificacion = '';
-                //         let descripcionCampania = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
-                
-                //         if (notificacionData) {
-                //             notificacion = 1;
-                //             // urlnotificacion = notificacionData.link;
-                //         }
-                
-                //         let contadorYaLlevo = 0;
-                //         let contadorParametros = 0;
-                //         if (minimoTransacciones > 0 && segundoFiltroTransacciones.length === minimoTransacciones) {
-                //             contadorYaLlevo = minimoTransacciones;
-                //             contadorParametros = minimoTransacciones;
-                //         }
-                
-                //         const dataAgregar = {
-                //             idCampania: campania.id,
-                //             nombreCampana: campania.nombre,
-                //             descripcion: descripcionCampania,
-                //             tipoParticipacion: campania.tipoParticipacion,
-                //             notificacion: notificacion,
-                //             urlNotificacion: urlnotificacion,
-                //             tituloNotificacion: campania.tituloNotificacion,
-                //             descripcionNotificacion: campania.descripcionNotificacion,
-                //             infoAdd: -1, // Asumiendo que infoAdd se ajusta en otra parte
-                //             mistransacciones: contadorYaLlevo,
-                //             transacciones: contadorParametros,
-                //             imgAkisi: campania.imgAkisi,
-                //             imgPush: campania.imgPush,
-                //             // botones: [] // Asumiendo que botones se manejan en otra parte
-                //         };
-                
-                //         retorno.push(dataAgregar);
-                //     } catch (error) {
-                //         // console.error(`Error processing campaign ${campania.id}: ${error.message}`);
-                //         // Considerar si continuar con el siguiente o detener el proceso
-                //     }
-                // }
-                
+                        let notificacion = 0;
+                        // let urlnotificacion = '';
+                        let descripcionCampania = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
+
+                        if (notificacionData) {
+                            notificacion = 1;
+                            // urlnotificacion = notificacionData.link;
+                        }
+
+                        let contadorYaLlevo = 0;
+                        let contadorParametros = 0;
+                        if (minimoTransacciones > 0 && segundoFiltroTransacciones.length === minimoTransacciones) {
+                            contadorYaLlevo = minimoTransacciones;
+                            contadorParametros = minimoTransacciones;
+                        }
+
+                        const dataAgregar = {
+                            idCampania: campania.id,
+                            nombreCampana: campania.nombre,
+                            descripcion: descripcionCampania,
+                            tipoParticipacion: campania.tipoParticipacion,
+                            notificacion: notificacion,
+                            urlNotificacion: urlnotificacion,
+                            tituloNotificacion: campania.tituloNotificacion,
+                            descripcionNotificacion: campania.descripcionNotificacion,
+                            infoAdd: -1, // Asumiendo que infoAdd se ajusta en otra parte
+                            mistransacciones: contadorYaLlevo,
+                            transacciones: contadorParametros,
+                            imgAkisi: campania.imgAkisi,
+                            imgPush: campania.imgPush,
+                            // botones: [] // Asumiendo que botones se manejan en otra parte
+                        };
+
+                        retorno.push(dataAgregar);
+                    } catch (error) {
+                        // console.error(`Error processing campaign ${campania.id}: ${error.message}`);
+                        // Considerar si continuar con el siguiente o detener el proceso
+                    }
+                }
+
 
 
 
@@ -989,7 +981,7 @@ const GetNumeroById = async (req, res) => {
 module.exports = {
 
     // generaCampanasUsuarios,
-    campanasUsuariosEmulador_get,
+    // campanasUsuariosEmulador_get,
     // tienePremiosPenditesCampanas,
     // validarLimiteParticipacionesPorUsuario,
     // validarParticipacionesRestantes,
@@ -1005,7 +997,7 @@ module.exports = {
     // actualizarParticipantesRestantes,
     // campanasActualesActivas,
     // transaccionesValidasCampanasFusion, 
-    // transaccionesValidasCampanasFusionL,
+    transaccionesValidasCampanasFusionL,
     // DeleteEnvio,
     // GetNumeroById,
 

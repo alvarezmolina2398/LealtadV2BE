@@ -66,6 +66,15 @@ const Participacion = sequelize.define('participacions', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    tipoTransaccion: {
+        type: DataTypes.CHAR(1),
+        allowNull: false
+    },
+    estado : {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+    },
+
 
 
 

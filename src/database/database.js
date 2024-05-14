@@ -1,16 +1,16 @@
 const { Sequelize } = require("sequelize");
 
-// const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
-//     //host: '192.168.1.100',
-//     host: "35.226.177.160",
-//     dialect: "mysql",
-// });
-
-const sequelize = new Sequelize("lealtadv2", "root", "B@rilhas2003", {
-  //host: '192.168.1.100',
-  host: "localhost",
-  dialect: "mysql",
+const sequelize = new Sequelize("lealtadV2", "DesaSolUn", "SolUn123", {
+    //host: '192.168.1.100',
+    host: "34.173.144.215",
+    dialect: "mysql",
 });
+
+// const sequelize = new Sequelize("lealtadv2", "root", "B@rilhas2003", {
+//   //host: '192.168.1.100',
+//   host: "localhost",
+//   dialect: "mysql",
+// });
 
 const genesis = new Sequelize(
   "genesis",
@@ -31,4 +31,6 @@ const pronet = new Sequelize(
         dialect: "mysql",
     }
 )
+
+
 module.exports = { sequelize, pronet, genesis };

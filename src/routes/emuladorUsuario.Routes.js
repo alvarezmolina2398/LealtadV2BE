@@ -9,7 +9,7 @@ const {
     // generaCampanasUsuarios,
     campanasUsuariosEmulador_get,
     // tienePremiosPenditesCampanas,
-    campaniaNumerosRestringidos,
+    // campaniaNumerosRestringidos,
     // transaccionesValidasCampania,
     // transaccionesValidasCampanasFusion,
     // transaccionesValidasCampanasFusionL,
