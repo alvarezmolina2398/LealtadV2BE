@@ -4,15 +4,11 @@ const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
-<<<<<<< HEAD
-const { Parametro } = require('./parametro');
-// const {Usuario} = require('./usuario');
-=======
+
 const {Usuario} = require('./usuario');
 const {Parametro} = require('./parametro');
 // const { Configuraciones } = require('./configuraciones');
 
->>>>>>> 85f30aebd3211b38996ff48b383ba0bbe9a7653b
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -180,8 +176,6 @@ Participantes.belongsTo(Campania,{
 //     // Code here
 // })();
 
-Campania.sync({ alter: true }).then(() => {
-    console.log('tabla campania creada');
-});
+
 
 module.exports = {Campania}
