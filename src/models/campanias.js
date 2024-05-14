@@ -157,7 +157,7 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
-Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
+// Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
 // Campania.hasMany(Configuraciones, {
 //     foreignKey: 'idCampania',
