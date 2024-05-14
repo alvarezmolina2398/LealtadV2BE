@@ -4,7 +4,7 @@ const {Campania} = require('../models/campanias');
 const {generarReporteCampaniaContraClientes, generarReporteClientesParticipando} = require('./generarReportes.js');
 
 
-const taskSendEmail = cron.schedule('0 * * * *', async () => {
+const taskSendEmail = cron.schedule('0 1 * * *', async () => {
     
     console.log('running a task every minute');
 

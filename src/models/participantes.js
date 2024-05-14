@@ -13,19 +13,12 @@ const Participantes = sequelize.define('participantes', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
-
-    campaniaId: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
     estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false
     }
 }, { timestamps: false });
-
-
 
 
 //(async () => {

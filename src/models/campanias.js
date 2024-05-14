@@ -5,7 +5,7 @@ const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
 const {Usuario} = require('./usuario');
-const {Parametro}= require('./parametro');
+const {Parametro} = require('./parametro');
 // const { Configuraciones } = require('./configuraciones');
 
 
@@ -104,6 +104,7 @@ const Campania = sequelize.define('campania', {
     }
 
 },{timestamps: false});
+
 
 
 Campania.hasMany(Etapa,{
