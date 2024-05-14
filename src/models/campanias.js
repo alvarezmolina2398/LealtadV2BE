@@ -162,26 +162,27 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
-
-Campania.hasMany(Participantes,{
-    foreignKey:'idCampania',
-    sourceKey:'id'
-});
-
-Participantes.belongsTo(Campania,{
-    foreignKey:'idCampania',
-    targetId: 'id'
-})
-
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-// (async () => {
-//     await sequelize.sync({ alter: true });
-//     // Code here
-// })();
+// Campania.hasMany(Configuraciones, {
+//     foreignKey: 'idCampania',
+//     sourceKey: 'id'
+// });
 
-Campania.sync({ alter: true }).then(() => {
-    console.log('tabla campania creada');
-});
+// Configuraciones.belongsTo(Campania, {
+//     foreignKey: 'idCampania',
+//     targetId: 'id',
+// });
 
-module.exports = {Campania}
+
+// Campania.sync({ alter: true }).then(() => {
+//     console.log('tabla campania creada');
+// });
+
+
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// });
+
+
+module.exports={Campania}
