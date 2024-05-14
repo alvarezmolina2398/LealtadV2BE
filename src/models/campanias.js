@@ -4,9 +4,8 @@ const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
-const {Usuario} = require('./usuario');
-// const { Configuraciones } = require('./configuraciones');
-
+const { Parametro } = require('./parametro');
+// const {Usuario} = require('./usuario');
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -78,12 +77,12 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    campaniaTerceros: {
+    campaniaTerceros:{
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
     },
-    terminosCondiciones: {
+    terminosCondiciones:{
         type: DataTypes.TEXT,
         allowNull: false
     },
@@ -103,7 +102,6 @@ const Campania = sequelize.define('campania', {
     }
 
 },{timestamps: false});
-
 
 
 Campania.hasMany(Etapa,{
@@ -157,27 +155,26 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
-Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-// Campania.hasMany(Configuraciones, {
-//     foreignKey: 'idCampania',
-//     sourceKey: 'id'
-// });
+Campania.hasMany(Participantes,{
+    foreignKey:'idCampania',
+    sourceKey:'id'
+});
 
-// Configuraciones.belongsTo(Campania, {
-//     foreignKey: 'idCampania',
-//     targetId: 'id',
-// });
+Participantes.belongsTo(Campania,{
+    foreignKey:'idCampania',
+    targetId: 'id'
+})
 
+// Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-// Campania.sync({ alter: true }).then(() => {
-//     console.log('tabla campania creada');
-// });
+// (async () => {
+//     await sequelize.sync({ alter: true });
+//     // Code here
+// })();
 
+Campania.sync({ alter: true }).then(() => {
+    console.log('tabla campania creada');
+});
 
-// Configuraciones.sync({ alter: true }).then(() => {
-//     console.log('Tabla Configuraciones creada o actualizada correctamente');
-// });
-
-
-module.exports={Campania}
+module.exports = {Campania}
