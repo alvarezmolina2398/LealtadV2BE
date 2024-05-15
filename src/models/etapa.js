@@ -30,6 +30,17 @@ const Etapa = sequelize.define('etapa', {
     },
     intervalo : {
         type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+
+    intervaloSemanal : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+
+    intervaloMensual : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     },
     periodo : {
         type: DataTypes.INTEGER,
@@ -84,4 +95,10 @@ PremioCampania.belongsTo(Etapa, {
     targetId: 'id',
 });
 
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
+//  });
+
 module.exports = {Etapa}
+
+
