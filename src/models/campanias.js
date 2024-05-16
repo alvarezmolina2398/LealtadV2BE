@@ -6,6 +6,7 @@ const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
 const { Parametro } = require('./parametro');
 // const {Usuario} = require('./usuario');
+const { Configuraciones } = require('./configuraciones');
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -155,6 +156,23 @@ Parametro.belongsTo(Campania,{
     targetId: 'id',
     allowNull: false
 });
+
+
+Campania.hasMany(Configuraciones, {
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
+
+Configuraciones.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
+
+
+
+
+
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
 // Campania.hasMany(Configuraciones, {
