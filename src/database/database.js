@@ -8,10 +8,9 @@ const sequelize = new Sequelize(
     // "admin",
     {
         host: "35.232.144.153",
-      host: "35.232.144.153",
 
-      // host: 'localhost',
-      dialect: "mysql",
+        // host: 'localhost',
+        dialect: "mysql",
     }
 );
 

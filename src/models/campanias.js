@@ -170,6 +170,9 @@ Configuraciones.belongsTo(Campania, {
 
 
 
+
+
+
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
 // Campania.hasMany(Configuraciones, {
