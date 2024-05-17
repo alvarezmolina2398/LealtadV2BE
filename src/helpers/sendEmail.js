@@ -26,7 +26,7 @@ const sendEmail = async (to, subject, text, files) => {
       subject: "Reporte de campañas",
       //text: text,
       html: `
-            <h1>Reporte Mensual</h1>
+            <h1>Reporte campañas</h1>
             <p>Hemos generado el siguiente reporte de la campaña: </p> 
             `,
       attachments: files, 

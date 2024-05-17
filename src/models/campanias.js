@@ -6,6 +6,7 @@ const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
 const { Parametro } = require('./parametro');
 // const {Usuario} = require('./usuario');
+const { Configuraciones } = require('./configuraciones');
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -135,26 +136,36 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    as: 'participaciones',
-    foreignKey: {
-        name: 'idCampania',
-        allowNull: false,
-    },
-    sourceKey: 'id',
-    allowNull: false
-});
-
-Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
-    allowNull: false
 });
 
+Participacion.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
     allowNull: false
 });
+
+
+Campania.hasMany(Configuraciones, {
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
+
+Configuraciones.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
+
+
+
+
+
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
 // Campania.hasMany(Configuraciones, {
@@ -173,8 +184,8 @@ Parametro.belongsTo(Campania,{
 // });
 
 
-// Configuraciones.sync({ alter: true }).then(() => {
-//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
 // });
 
 

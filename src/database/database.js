@@ -7,11 +7,10 @@ const sequelize = new Sequelize(
     //   "root",
     // "admin",
     {
-        host: "34.136.191.16",
-      host: "34.136.191.16",
+        host: "35.239.111.16",
 
-      // host: 'localhost',
-      dialect: "mysql",
+        // host: 'localhost',
+        dialect: "mysql",
     }
 );
 
