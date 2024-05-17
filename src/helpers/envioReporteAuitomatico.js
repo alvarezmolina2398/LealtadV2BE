@@ -172,7 +172,7 @@ const {generarReportereReferidos, generarReporteClientesParticipando,generarRepo
 
 // '0 * * * *'
 
-const taskSendEmail = cron.schedule('*/15 * * * * *', async () => {
+const taskSendEmail = cron.schedule('0 * * * *', async () => {
     console.log('Ejecutando una tarea cada minuto');
 
     try {
@@ -229,6 +229,10 @@ const taskSendEmail = cron.schedule('*/15 * * * * *', async () => {
                 const reportes = [];
                 const idCampanas = campania.id;
 
+                const campanas = campania.nombre;
+
+                
+
                 if (config.configreporte.frecuencia === 'dia') {
                     console.log("La frecuencia de la campaña es 'dia'. Enviando correo electrónico...");
 
@@ -243,7 +247,7 @@ const taskSendEmail = cron.schedule('*/15 * * * * *', async () => {
                         console.log("Generando reporte de Referidos...");
                         reportes.push({
                             filename: 'ReporteReferidos.xlsx',
-                            content: await generarReportereReferidos(fecha1, fecha2)
+                            content: await generarReportereReferidos(campanas,fecha1, fecha2)
                         });
                     } else if (config.configreporte.tiporeporte === 'Pomociones') {
                         console.log("Generando reporte de Pomociones...");

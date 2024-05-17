@@ -136,21 +136,14 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    as: 'participaciones',
-    foreignKey: {
-        name: 'idCampania',
-        allowNull: false,
-    },
-    sourceKey: 'id',
-    allowNull: false
-});
-
-Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
-    allowNull: false
 });
 
+Participacion.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
@@ -191,8 +184,8 @@ Configuraciones.belongsTo(Campania, {
 // });
 
 
-// Configuraciones.sync({ alter: true }).then(() => {
-//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
 // });
 
 

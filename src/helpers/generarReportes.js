@@ -5,7 +5,7 @@ const {Campania} = require('../models/campanias');
 const { Configuraciones } = require('../models/configuraciones');
 const { ConfigReport } = require('../models/configReport');
 const { getUsuariosNotificacionesOfferCraftSel } = require('../helpers/OferCraftReport.js')
-const { getParticipacionesFechasGeneral } = require('../helpers/GeneralReport.js')
+const { getParticipaciones } = require('../helpers/referidos.js')
 
 
 const generarReporteClientesParticipando = async () => {
@@ -96,12 +96,11 @@ const generarReporteClientesParticipando = async () => {
 }
 
 
-const generarReportereReferidos = async (fecha1, fecha2) =>{
-
-    const datas = await getParticipacionesFechasGeneral(fecha1, fecha2);
-    console.log('esto biene en referidos general',datas)
-    console.log(datas.map(array => array.length > 0 ? array : "Array vacío"));
+const generarReportereReferidos = async (campanas, fecha1, fecha2) =>{
     
+     const datas = await getParticipaciones(campanas, fecha1, fecha2);
+     console.log('esto biene en referidos',datas)
+
     const wb = XLSX.utils.book_new();
     let row1 = [
         { v: '', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
