@@ -113,7 +113,9 @@ const getMunicipalitiesByDepartment = async (req, res) => {
         const trx = await Municipio.findAll({
             include: { model: Departamento },
             where: {
-                idDepartamento: id
+                idDepartamento: id,
+                estado: 1
+                
             }
         })
         res.json(trx)

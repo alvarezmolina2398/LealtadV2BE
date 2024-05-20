@@ -1,6 +1,7 @@
 const {Departamento} = require('../models/departamento');
 const {Departamento_Proyectos} = require('../models/departamento_proyectos');
-const {Proyectos} = require ('../models/proyectos.model')
+const {Proyectos} = require ('../models/proyectos.model');
+const {Municipio} = require ('../models/municipio')
 
 
 const GetDepartamentos = async(req, res) => {
@@ -31,15 +32,7 @@ const AddDepartamentos = async (req, res) => {
             IdLocal
         });
 
-        // Obtener el ID del departamento recién creado
-        const departamentoId = departamento.id;
-
-        // Crear entrada en la tabla departamento_proyectos
-        await Departamento_Proyectos.create({
-            idDepartamento: departamentoId,
-            idProyecto: req.body.idProyecto 
-        });
-
+         
         res.json({ code: 'ok', message: 'Departamento creado con exito.' });
 
     } catch (e) {
@@ -67,14 +60,7 @@ const UpdateDepartamento = async (req, res) => {
         });
 
       
-         // Obtener el ID del departamento recién creado
          
-
-         // Crear entrada en la tabla departamento_proyectos
-         await Departamento_Proyectos.create({
-             idDepartamento: id,
-             idProyecto: req.body.idProyecto 
-         });
  
 
         res.json({code: 'ok', message: 'Departamento Actualizado con exito.'});
@@ -125,28 +111,25 @@ const GetDepartamentosByProyectoId = async (req, res) => {
     try {
         const { idProyecto } = req.params;
 
-        // Verificar si se proporciona el ID de proyecto
         if (!idProyecto) {
             return res.status(400).json({ error: 'Se requiere proporcionar un ID de proyecto.' });
         }
 
-        // Buscar los departamentos asociados al ID de proyecto proporcionado
-        const departamentos = await Departamento.findAll({
-            where: {
-                estado: 1 // Considerando solo los departamentos activos
-            },
-            include: [{
-                model: Departamento_Proyectos,
-                where: {
-                    idProyecto: idProyecto
+        const departamentos = await Departamento_Proyectos.findAll({
+            where: { idProyecto },
+            include: [
+                {
+                    model: Departamento,
+                    where: { estado: 1 }
                 },
-                required: true // Garantizar que solo se devuelvan los departamentos asociados al proyecto
-            }]
+                {
+                    model: Municipio,
+                    where: { estado: 1 }
+                }
+            ]
         });
 
-        // Devolver los departamentos encontrados
         res.json(departamentos);
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Ha ocurrido un error al intentar obtener los departamentos por el ID de proyecto.' });
