@@ -23,6 +23,8 @@
     "nodemailer": "^6.9.12",
     "nodemon": "^2.0.22",
     "sequelize": "^6.27.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0",
+    "xlsx-style": "^0.8.13"
   }
 }
