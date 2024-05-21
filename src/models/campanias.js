@@ -4,9 +4,9 @@ const {  Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
-const {Usuario} = require('./usuario');
-const {Parametro} = require('./parametro');
-// const { Configuraciones } = require('./configuraciones');
+const { Parametro } = require('./parametro');
+// const {Usuario} = require('./usuario');
+const { Configuraciones } = require('./configuraciones');
 
 const Campania = sequelize.define('campania', {
     id: {
@@ -86,8 +86,13 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    minimoAcumular: {
-        type:  DataTypes.INTEGER,
+    campaniaTerceros:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    terminosCondiciones:{
+        type: DataTypes.TEXT,
         allowNull: false
     },
     minimoTransacciones: {
@@ -112,7 +117,6 @@ const Campania = sequelize.define('campania', {
         allowNull: false
     },
 },{timestamps: false});
-
 
 
 Campania.hasMany(Etapa,{
@@ -146,26 +150,31 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    as: 'participaciones',
-    foreignKey: {
-        name: 'idCampania',
-        allowNull: false,
-    },
-    sourceKey: 'id',
-    allowNull: false
-});
-
-Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
-    allowNull: false
 });
 
+Participacion.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
     allowNull: false
 });
+
+
+Campania.hasMany(Configuraciones, {
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
+
+Configuraciones.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
 
 //(async () => {
     //await sequelize.sync({ force: true });
@@ -179,4 +188,11 @@ Parametro.belongsTo(Campania,{
 //     console.log('tabla campania creada');
 // });
 
-module.exports = {Campania}
+
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
+// });
+
+
+module.exports={Campania}
+

@@ -61,7 +61,6 @@ const Participacion = sequelize.define('participacions', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-
     idCampania: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -74,9 +73,6 @@ const Participacion = sequelize.define('participacions', {
         type: DataTypes.INTEGER,
         defaultValue: 1
     },
-
-
-
 
 }, { timestamps: false })
 

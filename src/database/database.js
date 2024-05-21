@@ -32,5 +32,4 @@ const pronet = new Sequelize(
     }
 )
 
-
 module.exports = { sequelize, pronet, genesis };

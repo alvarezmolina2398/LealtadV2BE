@@ -74,6 +74,8 @@ const AddCampania = async(req, res) =>{
             idCampania: id,
             periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
             intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+            intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+            intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
             valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
         }));
         const nuevaEtapa = await Etapa.bulkCreate(etapaData,{transaction});
@@ -203,43 +205,51 @@ const UpdateCampania = async (req, res) => {
             idProyecto
         }, { transaction });
 
-        // Actualizar o crear etapas
+     // Actualizar o crear etapas
         if (Array.isArray(etapas)) {
             for (const etapa of etapas) {
-                await Etapa.upsert({
-                    ...etapa,
-                    idCampania: id,
-                    periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
-                    intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
-                    valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
-                }, { transaction });
+                const [etapaInstancia, etapaCreada] = await Etapa.findOrCreate({
+                    where: { id: etapa.id },
+                    defaults: {
+                        idCampania: id,
+                        periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+                        intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                        intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+                        intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
+                        valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+                    },
+                    transaction
+                });
+
+                if (!etapaCreada) {
+                    await etapaInstancia.update({
+                        idCampania: id,
+                        periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
+                        intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                        intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+                        intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
+                        valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
+                    }, { transaction });
+                }
 
                 // Actualizar o crear parámetros de la etapa
                 if (Array.isArray(etapa.parametros)) {
                     for (const parametro of etapa.parametros) {
-                        await Parametro.upsert({ ...parametro, idEtapa: etapa.id }, { transaction });
+                        await Parametro.upsert({ ...parametro, idEtapa: etapaInstancia.id }, { transaction });
                     }
                 }
 
                 // Actualizar o crear presupuestos de la etapa
-                if (Array.isArray(etapa.presupuesto)) {
-                    for (const presupuesto of etapa.presupuesto) {
-                        await Presupuesto.upsert({ ...presupuesto, idEtapa: etapa.id }, { transaction });
+                if (Array.isArray(etapa.presupuestos)) {
+                    for (const presupuesto of etapa.presupuestos) {
+                        await Presupuesto.upsert({ ...presupuesto, idEtapa: etapaInstancia.id }, { transaction });
                     }
                 }
-     
+
                 // Actualizar o crear premios de la etapa
-                if (Array.isArray(etapa.premio)) {
-                    for (const premio of etapa.premio) {
-                        const [premioCampania, created] = await PremioCampania.findOrCreate({
-                            where: { id: premio.id },
-                            defaults: { ...premio, idEtapa: etapa.id },
-                            transaction
-                        });
-                        
-                        if (!created) {
-                            await premioCampania.update({ ...premio, idEtapa: etapa.id }, { transaction });
-                        }
+                if (Array.isArray(etapa.premiocampania)) {
+                    for (const premio of etapa.premiocampania) {
+                        await PremioCampania.upsert({ ...premio, idEtapa: etapaInstancia.id }, { transaction });
                     }
                 }
             }

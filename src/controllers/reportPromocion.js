@@ -35,15 +35,15 @@ const postDatosCupon = async (req, res) => {
                model: PremioCampania,
               include: {
                 model: Etapa,
-                include: {
-                  model: Campania,
-                  // include: {
-                  //   model: Participacion,
-                  //   // include: {
-                  //   //   model: Transaccion
-                  //   // }
-                  // }
-                }
+                // include: {
+                //   model: Campania,
+                //   // include: {
+                //   //   model: Participacion,
+                //   //   // include: {
+                //   //   //   model: Transaccion
+                //   //   // }
+                //   // }
+                // }
               },
              },
           },

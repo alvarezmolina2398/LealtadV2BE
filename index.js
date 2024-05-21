@@ -58,6 +58,10 @@ app.use(require('./src/routes/graficaCampanias.routes.js'))
 app.use(require('./src/routes/reporteOfercraft.routes.js'))
 app.use(require('./src/routes/participacionesActivas.routes.js'))
 app.use(require('./src/routes/ReferidosIngresos.routes.js'))
+app.use(require('./src/routes/ReporteParticipantesCampania.routes.js'));
+app.use(require('./src/routes/authomaticReport.routes.js'));
+app.use(require('./src/routes/reporteClientesContraCampanias.routes.js'));
+
 
 
 
