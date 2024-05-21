@@ -168,20 +168,12 @@ Configuraciones.belongsTo(Campania, {
 
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-// Campania.hasMany(Configuraciones, {
-//     foreignKey: 'idCampania',
-//     sourceKey: 'id'
-// });
-
-// Configuraciones.belongsTo(Campania, {
-//     foreignKey: 'idCampania',
-//     targetId: 'id',
-// });
+// (async () => {
+//     await sequelize.sync({ alter: true });
+//     // Code here
+// })();
 
 
-// Campania.sync({ alter: true }).then(() => {
-//     console.log('tabla campania creada');
-// });
 
 
 // Etapa.sync({ alter: true }).then(() => {
