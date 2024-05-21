@@ -1,11 +1,102 @@
 const { QueryTypes } = require('sequelize');
-const XLSX = require("xlsx");
+const XLSX = require('xlsx');
 const { reporteClientesParticipando } = require('../controllers/reports.controller.js')
 const {Campania} = require('../models/campanias');
 const { Configuraciones } = require('../models/configuraciones');
 const { ConfigReport } = require('../models/configReport');
 const { getUsuariosNotificacionesOfferCraftSel } = require('../helpers/OferCraftReport.js')
 const { getParticipaciones } = require('../helpers/referidos.js')
+const { getParticipacionesFechasGeneral } = require('../helpers/GeneralReport.js')
+const { postDatosCupon } = require('../helpers/promocionReport.js')
+
+
+
+
+const generarReportereGeneralReferidos = async (fecha1, fecha2) =>{
+    
+    const datas = await getParticipacionesFechasGeneral(fecha1, fecha2);
+    console.log('esto biene en referidos',datas)
+
+   const wb = XLSX.utils.book_new();
+
+   
+   let row1 = [
+       { v: '', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
+       { v: 'REPORTE GENERAL DE ', t: 's', s: { font: { sz: 16 }, alignment: { horizontal: 'center' } } },
+   ];
+   let row2 = [
+       { v: '', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
+       { v: 'REFERIDOS', t: 's', s: { font: { sz: 16 }, alignment: { horizontal: 'center' } } },
+   ];
+   let row3 = [''];
+   let row4 = [
+       '',
+       { v: '#', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'CÓDIGO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'REFERIDOR', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'NUMERO TEL.REFERIDOR', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'NUMERO TEL.REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+       { v: 'FECHA', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+   ];
+   let infoFinal = [row1, row2, row3, row4];
+   var contador = 1;
+   var longitud1 = 0;
+   var longitud2 = 0;
+   var longitud3 = 0;
+   var longitud4 = 0;
+
+   datas.forEach((dataArray) => {
+    dataArray.forEach(data => {
+        let rowInfo = [
+            '',
+            { v: contador, t: 's' },
+            { v: data["codigo"], t: 's' },
+            { v: data["nombreReferidor"], t: 's' },
+            { v: data["userno"], t: 's' },
+            { v: data["nombreReferido"], t: 's' },
+            { v: data["noReferido"], t: 's' },
+            { v: data["fecha"], t: 's' }, // Asegúrate de que la propiedad "fecha" tenga el formato adecuado
+        ];
+        infoFinal.push(rowInfo);
+        contador += 1;
+    });
+});
+
+
+
+   const ws = XLSX.utils.aoa_to_sheet(infoFinal);
+
+   ws['!cols'] = [
+       { wch: 15 },
+       { wch: 15 },
+       { wch: 12 },
+       { wch: 25 },
+       { wch: 25 }, // Ajuste de ancho para 'Campaña' y 'Fecha Participacion'
+       { wch: 20 },
+       { wch: 20 },
+   ];
+
+   if (!ws['!merges']) ws['!merges'] = [];
+   ws['!merges'].push({ s: { r: 0, c: 4 }, e: { r: 0, c: 6 } });
+
+   const ws2 = XLSX.utils.aoa_to_sheet([row4]);
+   XLSX.utils.book_append_sheet(wb, ws, 'Usuario notificados');
+
+   const file = await XLSX.write(wb, { bookType: "xlsx", bookSST: false, type: "buffer" });
+
+   return file;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 const generarReporteClientesParticipando = async () => {
@@ -104,7 +195,7 @@ const generarReportereReferidos = async (campanas, fecha1, fecha2) =>{
     const wb = XLSX.utils.book_new();
     let row1 = [
         { v: '', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
-        { v: 'REPORTE GENERAL DE ', t: 's', s: { font: { sz: 16 }, alignment: { horizontal: 'center' } } },
+        { v: 'REPORTE  DE ', t: 's', s: { font: { sz: 16 }, alignment: { horizontal: 'center' } } },
     ];
     let row2 = [
         { v: '', t: 's', s: { font: { name: 'Courier', sz: 24 } } },
@@ -114,12 +205,15 @@ const generarReportereReferidos = async (campanas, fecha1, fecha2) =>{
     let row4 = [
         '',
         { v: '#', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'CÓDIGO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'REFERIDOR', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'NUMERO TEL.REFERIDOR', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'NUMERO TEL.REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
-        { v: 'FECHA', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'MEDIO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'CAMPAÑA', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'TELEFONO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'NOMBRE USUARIO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'FECHA y HORA', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'TRANSACCION', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'MONTO PREMIO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'TELEFONO REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
+        { v: 'NOMBRE REFERIDO', t: 's', s: { font: { bold: true, color: { rgb: 'FFFFFF' } }, alignment: { horizontal: 'center' }, fill: { fgColor: { rgb: '808080' } } } },
     ];
     let infoFinal = [row1, row2, row3, row4];
     var contador = 1;
@@ -132,12 +226,15 @@ const generarReportereReferidos = async (campanas, fecha1, fecha2) =>{
         let rowInfo = [
             '',
             { v: contador, t: 's' },
-            { v: data["codigo"], t: 's' },
-            { v: data["nombreReferidor"], t: 's' },
-            { v: data["noReferido"], t: 's' },
-            { v: data["nombreReferido"], t: 's' },
-            { v: data["NUMERO TEL.REFERIDO"], t: 's' },
-            { v: data["fecha"], t: 'n' }, // Asegúrate de que la propiedad "fecha" tenga el formato adecuado
+            { v: data["descripcionTrx"], t: 's' },
+            { v: data["nombre_campania"], t: 's' },
+            { v: data["telefono_usuario"], t: 's' },
+            { v: data["nombre_usuario"], t: 's' },
+            { v: data["fecha"], t: 's' },
+            { v: data["idTransaccion"], t: 's' },
+            { v: data["valor"], t: 's' },
+            { v: data["telefono_usuario"], t: 's' },
+            { v: data["nombre_usuario"], t: 'n' }, // Asegúrate de que la propiedad "fecha" tenga el formato adecuado
         ];
         infoFinal.push(rowInfo);
         contador += 1;
@@ -174,6 +271,16 @@ const generarReportereReferidos = async (campanas, fecha1, fecha2) =>{
 
 const generarReporteOferCraft = async (idCampanas, fecha1, fecha2) => {
     const datas = await getUsuariosNotificacionesOfferCraftSel(idCampanas, fecha1, fecha2);
+
+    datas.forEach(data => {
+        data.participaciones.forEach(participacion => {
+            console.log('Participación:', participacion); // Nuevo console.log agregado
+
+            // Resto del código...
+        });
+    });
+
+    console.log('esto trae ',datas)
 
     const wb = XLSX.utils.book_new();
 
@@ -260,39 +367,16 @@ const generarReporteOferCraft = async (idCampanas, fecha1, fecha2) => {
 
 
 
-const generarReportePromociones = async (idCampania) => {
+const generarReportePromociones = async (promocion,fecha1,fecha2) => {
 
  
-    // const datas = await NotificacionesOfferCraftSel(idCampania);
-    
-    
-    // const datas = [
-    //     {
-    //         "Nombre": "Juan Perez",
-    //         "Telefono": "50230349688",
-    //         "Campaña": "Refiere y Gana",
-    //         "Premio": "Premio 2",
-    //         "Monto Premio": 150,
-    //         "Transaccion": "Transaccion 2",
-    //         "Codigo": "Codigo 2",
-    //         "Monto Transaccion": 75,
-    //         "Fecha Acreditacion": "2024-05-10",
-    //         "Fecha Participacion": "2024-04-20"
-    //     },
-    //     {
-    //         "Nombre": "Juan Perez",
-    //         "Telefono": "50230349688",
-    //         "Campaña": "Refiere y Gana",
-    //         "Premio": "Premio 2",
-    //         "Monto Premio": 150,
-    //         "Transaccion": "Transaccion 2",
-    //         "Codigo": "Codigo 2",
-    //         "Monto Transaccion": 75,
-    //         "Fecha Acreditacion": "2024-05-10",
-    //         "Fecha Participacion": "2024-04-20"
-    //     }
-    // ];
+    const datas = await postDatosCupon(promocion,fecha1,fecha2);
 
+    
+    console.log('esto biene en datas datas',datas)
+    
+    
+   
     const wb = XLSX.utils.book_new();
 
     let row1 = [
@@ -378,6 +462,7 @@ const generarReportePromociones = async (idCampania) => {
 
 module.exports = {
     generarReportereReferidos,
+    generarReportereGeneralReferidos,
     generarReporteClientesParticipando,
     generarReporteOferCraft,
     generarReportePromociones

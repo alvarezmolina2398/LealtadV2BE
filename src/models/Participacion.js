@@ -85,9 +85,9 @@ Participacion.belongsTo(codigoReferido, {
     targetKey: 'customerId',
     as: 'codigoReferidoAssociation'
 }); 
-Participacion.belongsTo(referidosIngresos, { 
-    foreignKey: 'idRefIngresos' 
-});
+// Participacion.belongsTo(referidosIngresos, { 
+//     foreignKey: 'idRefIngresos' 
+// });
 
 Participacion.hasMany(participacionReferidos, {
      as: 'p2', 

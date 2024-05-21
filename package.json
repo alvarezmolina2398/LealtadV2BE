@@ -23,6 +23,6 @@
     "nodemailer": "^6.9.12",
     "nodemon": "^2.0.22",
     "sequelize": "^6.27.0",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.16.9/xlsx-0.16.9.tgz"
+    "xlsx": "^0.18.5"
   }
 }
