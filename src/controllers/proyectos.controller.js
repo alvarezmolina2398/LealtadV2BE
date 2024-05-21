@@ -1,5 +1,7 @@
 const { Proyectos } = require('../models/proyectos.model.js');
 const { Departamento_Proyectos } = require('../models/departamento_proyectos');
+const { Departamento } = require('../models/departamento');
+const { Municipio } = require('../models/municipio');
 
 const GetProjects = async (req, res) => {
     try {
@@ -96,7 +98,19 @@ const DeleteProject = async (req, res) => {
 const GetProjectByID = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Proyectos.findByPk(id);
+        const project = await Proyectos.findByPk(id, {
+            include: {
+                model: Departamento_Proyectos,
+                include: [
+                    {
+                        model: Departamento
+                    },
+                    {
+                        model: Municipio
+                    }
+                ]
+            }
+        });
         res.json(project);
     } catch (error) {
         console.log(error);
