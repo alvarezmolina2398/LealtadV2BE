@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const router = Router();
-const{GetDepartamentos, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId} = require('../controllers/departamento.controller');
+const{GetDepartamentos, GetDepartamentosByProyectoId, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId} = require('../controllers/departamento.controller');
 const {validateCreate} = require('../validators/departamento')
 const authUser = require('../middlewares/auth.js');
 
@@ -13,5 +13,5 @@ router.post(`/${path}`,authUser,AddDepartamentos);
 router.put(`/${path}/:id`,validateCreate,authUser,UpdateDepartamento);
 router.delete(`/${path}/:id`,authUser,DeleteDepartamento);
 router.get(`/${path}/:id`,authUser,GetDepartamentobyId);
-
+router.get(`/${path}byproyecto/:idProyecto`, authUser, GetDepartamentosByProyectoId);
 module.exports = router;

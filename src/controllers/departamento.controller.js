@@ -1,6 +1,9 @@
 const {Departamento} = require('../models/departamento');
+const {Departamento_Proyectos} = require('../models/departamento_proyectos');
+const {Proyectos} = require ('../models/proyectos.model');
+const {Municipio} = require ('../models/municipio')
 
-//Obtener lista de departamentos
+
 const GetDepartamentos = async(req, res) => {
     try{
 
@@ -19,37 +22,46 @@ const GetDepartamentos = async(req, res) => {
     }
 }
 
-//Agregar departamentos
 const AddDepartamentos = async (req, res) => {
-    try{
+    try {
+        const { nombre, IdLocal } = req.body;
 
-        const {nombre} =req.body;
-        await Departamento.create({
-            nombre
+      
+        const departamento = await Departamento.create({
+            nombre,
+            IdLocal
         });
 
-        res.json({code: 'ok', message: 'Departamento creado con exito.'});
+         
+        res.json({ code: 'ok', message: 'Departamento creado con exito.' });
 
-    } catch(e){
+    } catch (e) {
         res.status(403);
-        res.send({errors: 'Ha ocurrido un error al intetar ingresar el departamento.'})
+        res.send({ errors: 'Ha ocurrido un error al intentar ingresar el departamento.' });
     }
 }
-
 //Acutaliza categoria
 const UpdateDepartamento = async (req, res) => {
     try{
 
-        const {nombre} = req.body;
+        const {nombre,IdLocal} = req.body;
+        
         const {id} = req.params;
 
         await Departamento.update({
-            nombre
-        }, {
+            nombre,
+            IdLocal
+        },
+        
+        {
             where: {
                 id: id
             }
         });
+
+      
+         
+ 
 
         res.json({code: 'ok', message: 'Departamento Actualizado con exito.'});
 
@@ -95,5 +107,34 @@ const GetDepartamentobyId = async (req, res) => {
         res.send({errors: 'ha sucedido un error al intentar obtener el departamento.'})
     }
 }
+const GetDepartamentosByProyectoId = async (req, res) => {
+    try {
+        const { idProyecto } = req.params;
 
-module.exports = {GetDepartamentos, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId}
+        if (!idProyecto) {
+            return res.status(400).json({ error: 'Se requiere proporcionar un ID de proyecto.' });
+        }
+
+        const departamentos = await Departamento_Proyectos.findAll({
+            where: { idProyecto },
+            include: [
+                {
+                    model: Departamento,
+                    where: { estado: 1 }
+                },
+                {
+                    model: Municipio,
+                    where: { estado: 1 }
+                }
+            ]
+        });
+
+        res.json(departamentos);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Ha ocurrido un error al intentar obtener los departamentos por el ID de proyecto.' });
+    }
+};
+
+
+module.exports = {GetDepartamentos,GetDepartamentosByProyectoId, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId}
