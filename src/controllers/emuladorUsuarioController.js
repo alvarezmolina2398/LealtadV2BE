@@ -7,8 +7,6 @@ const { Etapa } = require('../models/etapa');
 const { Parametro } = require('../models/parametro');
 const { Participacion } = require('../models/Participacion');
 const { Transaccion } = require('../models/transaccion');
-const { Categoria } = require('../models/categoria');
-const { TablaDB } = require('../models/tabladb');
 const { Departamento } = require('../models/departamento');
 const { Municipio } = require("../models/municipio");
 
@@ -17,9 +15,8 @@ const { pronet, sequelize, genesis, Op } = require('../database/database');
 const { Sequelize, where } = require('sequelize');
 const { CampaniaRegiones } = require('../models/campaniaregions');
 const { CampaniasNumeros } = require('../models/campanianumero');
-const { Columna } = require('../models/columna');
 
-const transaccionesValidasCampanasFusionLl = async (id) => {
+const transaccionesValidasCampanasFusionL = async (id) => {
     try {
         const transaccionesValidas = await Campania.findByPk(id, {
             include: [
@@ -57,42 +54,50 @@ const transaccionesValidasCampanasFusionLl = async (id) => {
 }
 
 
-const transaccionesValidasCampanasFusionL = async (idCampania) => {
+const transaccionesValidasCampanasFusionLg = async (idCampanias) => {
     // const { idCampania } = req.params;
 
     try {
         const query = `
-        SELECT 
-        dcp.tipoTransaccion, 
-        t.descripcion, 
-        ctdb.nombre, 
-        dcp.id, 
-        dcp.idCampania 
-    FROM 
-        lealtadv2.participacions dcp 
-    INNER JOIN 
-        lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
-    INNER JOIN 
-        lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
-    WHERE 
-        idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
-    UNION ALL 
-    SELECT 
-        dcp.tipoTransaccion, 
-        t.descripcion, 
-        ctdb.nombre, 
-        dcp.id, 
-        dcp.idCampania 
-    FROM 
-        lealtadv2.participacions dcp 
-    INNER JOIN 
-        lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion 
-    INNER JOIN 
-        lealtadv2.transaccions AS t ON t.id = dc.idTransaccion 
-    INNER JOIN 
-        lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
-    WHERE 
-        dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1 and dc.estado = 1
+            SELECT 
+                dcp.valorMinimo, 
+                dcp.valorMaximo, 
+                dcp.idTipoParticipacion, 
+                dcp.limiteParticipacion, 
+                dcp.tipoTransaccion, 
+                t.descripcion, 
+                ctdb.nombre, 
+                dcp.id, 
+                dcp.idCampania 
+            FROM 
+                lealtadv2.parametros dcp 
+            INNER JOIN 
+                lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
+            INNER JOIN 
+                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+            WHERE 
+                idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
+            UNION ALL 
+            SELECT 
+                dcp.valorMinimo, 
+                dcp.valorMaximo, 
+                dcp.idTipoParticipacion, 
+                dcp.limiteParticipacion, 
+                dcp.tipoTransaccion, 
+                t.descripcion, 
+                ctdb.nombre, 
+                dcp.id, 
+                dcp.idCampania 
+            FROM 
+                lealtadv2.parametros dcp 
+            INNER JOIN 
+                lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion 
+            INNER JOIN 
+                lealtadv2.transaccions AS t ON t.id = dc.idTransaccion 
+            INNER JOIN 
+                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+            WHERE 
+                dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1 and dc.estado = 1
         `;
 
         const transacciones = await sequelize.query(query, {
@@ -101,13 +106,13 @@ const transaccionesValidasCampanasFusionL = async (idCampania) => {
         });
 
         return transacciones;
-        // return res.status(200).json(transacciones);
     } catch (error) {
         throw error;
         // console.error("Error al obtener transacciones válidas de la campaña:", error);
         // return res.status(500).json({ message: 'Error al obtener transacciones válidas de la campaña' });
     }
 };
+
 
 
 const GetcampanasActivasById = async (id) => {
@@ -158,7 +163,7 @@ const generaCampanasUsuarios = async (req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'emails', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -206,7 +211,7 @@ const generaCampanasUsuarios = async (req, res) => {
                         where: {
                             estado: 1,
                         },
-                        attributes: ['id', 'numero', 'idCampania'],
+                        attributes: ['numero', 'idCampania'],
                     });
 
                     // console.log("Participantes:", Participante);
@@ -232,22 +237,95 @@ const generaCampanasUsuarios = async (req, res) => {
                         }
                     }
 
-                    // const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
-                    //     try {
-                    //         const regionesValidas = await regionesValidasCampania(campania.id);
-                    //         // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
-                    //         console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
-                    //         return regionesValidas.length > 0 ? campania : null;
-                    //     } catch (error) {
-                    //         console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
-                    //         return null; // Maneja el error como prefieras
+                    const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
+                        try {
+                            const regionesValidas = await regionesValidasCampania(campania.id);
+                            // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
+                            console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
+                            return regionesValidas.length > 0 ? campania : null;
+                        } catch (error) {
+                            console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
+                            return null; // Maneja el error como prefieras
+                        }
+
+                    }));
+
+
+                    res.json(campaniasFiltradas.filter(campania => campania !== null));
+
+                    // for (const region of regionesValidas) {
+                    //     if (region.limites > region.listos &&
+                    //         (region.idDepartamento === 0 || (region.idDepartamento === referencia.depto && (region.idMunicipio === 0 || region.idMunicipio === referencia.muni)))) {
+                    //         permitidoRegionParticipante = 1;
+                    //         break;  // Salir del ciclo una vez que se encuentra una región permitida
                     //     }
+                    // }
 
-                    // }));
+                    // const notificacionData = await tienePremiosPendientesCampanas(idCampania, idRevision);
+                    // let notificacion = 0;
+                    // let urlnotificacion = '';
+                    // let dataAgregar = {};
 
+                    // if (notificacionData) {
+                    //     notificacion = 1;
+                    //     urlnotificacion = notificacionData.link;
+                    //     let descripcion = `${tituloNotificacion}\n${descripcionNotificacion}`;
 
-                    // res.json(campaniasFiltradas.filter(campania => campania !== null));
-                    
+                    //     dataAgregar = {
+                    //         idCampania: idCampania,
+                    //         nombre: nombre,
+                    //         descripcion: descripcionCampana,
+                    //         tipoParticipacion: tipoParticipacion,
+                    //         notificacion: notificacion,
+                    //         urlNotificacion: urlnotificacion,
+                    //         tituloNotificacion: tituloNotificacion,
+                    //         descripcionNotificacion: descripcionNotificacion,
+                    //         infoAdd: -1, // Específico de tu lógica de negocio
+                    //         mistransacciones: 0,
+                    //         transacciones: 0,
+                    //         imagenIcono: imagen, // Asegurar que 'imagen' está definida apropiadamente
+                    //         imagenGrande: imagenPush, // Asegurar que 'imagenPush' está definida apropiadamente
+                    //         botones: [] // Asegurar que esto se define según tus requisitos
+                    //     };
+                    //     retorno.push(dataAgregar);
+                    // } else if (permitidoRegionParticipante === 1) {
+                    //     let revision = '4'; // O cualquier otro valor según la lógica de negocio
+                    //     let contadorParametros = 0;
+                    //     let contadorYaLlevo = 0;
+
+                    //     parametrosParticipacion.forEach((valor) => {
+                    //         contadorParametros += 1;
+                    //     });
+
+                    //     let numeroImagen = Math.floor(Math.random() * 4) + 1;
+                    //     let imagen = iconoAkisi; // Asegurar que 'iconoAkisi' está correctamente definido
+
+                    //     let infoAdd = [];
+                    //     // Aquí agregarías cualquier otra lógica relevante...
+
+                    //     // Luego construyes el objeto dataAgregar como arriba pero con valores que correspondan a este caso
+                    //     // Suponiendo que ya has realizado las comprobaciones necesarias y tienes variables disponibles
+                    //     let dataAgregar = {
+                    //         id: idCampania, // ID de la campaña
+                    //         nombre: "Nombre de la Campaña", // Deberías tener esto de algún lugar en tu flujo
+                    //         descripcion: "Descripción de la campaña aquí", // Descripción basada en tu lógica de negocios
+                    //         tipoParticipacion: "Tipo de Participación", // Detalles del tipo de participación de la campaña
+                    //         notificacion: 0, // No hay notificaciones porque no hay premios pendientes
+                    //         urlNotificacion: "", // URL vacía ya que no hay notificaciones
+                    //         tituloNotificacion: "", // Sin título para notificaciones
+                    //         descripcionNotificacion: "", // Sin descripción para notificaciones
+                    //         infoAdd: -1, // Asumiendo que -1 es un valor estándar para indicar no información adicional
+                    //         mistransacciones: 0, // Suponiendo que no hay transacciones relevantes aún
+                    //         transacciones: 0, // No hay requisitos de transacción cumplidos
+                    //         imagenIcono: "ruta/a/icono.png", // La imagen del icono de la campaña
+                    //         imagenGrande: "ruta/a/imagen_grande.png", // La imagen grande para la campaña
+                    //         botones: [] // Los botones que se deben mostrar, si es aplicable
+                    //     };
+
+                    //     return dataAgregar;
+
+                    // }
+
 
                     for (const campania of campanasActivasEnc) {
                         // Obtener las etapas de la campaña
@@ -354,58 +432,58 @@ const generaCampanasUsuarios = async (req, res) => {
 
                 // const idUsuarioParticipante = req.res.idUsuarioParticipante || req.params.idUsuarioParticipante;
 
-                for (const campania of campanasActivasEnc) {
-                    console.log(`Procesando campaña: ${campania.id}`);
-                    try {
-                        const notificacionData = await tienePremiosPendientesCampanas(campania.id, idUsuarioParticipante);
-                        console.log(`Datos de notificación para la campaña ${campania.id}:`, notificacionData);
+                // for (const campania of campanasActivasEnc) {
+                //     console.log(`Procesando campaña: ${campania.id}`);
+                //     try {
+                //         const notificacionData = await tienePremiosPendientesCampanas(campania.id, idUsuarioParticipante);
+                //         console.log(`Datos de notificación para la campaña ${campania.id}:`, notificacionData);
 
-                        let notificacion = 0;
-                        // let urlnotificacion = '';
-                        let descripcionCampania = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
+                //         let notificacion = 0;
+                //         // let urlnotificacion = '';
+                //         let descripcionCampania = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
 
-                        if (notificacionData) {
-                            notificacion = 1;
-                            // urlnotificacion = notificacionData.link;
-                        }
+                //         if (notificacionData) {
+                //             notificacion = 1;
+                //             // urlnotificacion = notificacionData.link;
+                //         }
 
-                        let contadorYaLlevo = 0;
-                        let contadorParametros = 0;
-                        if (minimoTransacciones > 0 && segundoFiltroTransacciones.length === minimoTransacciones) {
-                            contadorYaLlevo = minimoTransacciones;
-                            contadorParametros = minimoTransacciones;
-                        }
+                //         let contadorYaLlevo = 0;
+                //         let contadorParametros = 0;
+                //         if (minimoTransacciones > 0 && segundoFiltroTransacciones.length === minimoTransacciones) {
+                //             contadorYaLlevo = minimoTransacciones;
+                //             contadorParametros = minimoTransacciones;
+                //         }
 
-                        const dataAgregar = {
-                            idCampania: campania.id,
-                            nombreCampana: campania.nombre,
-                            descripcion: descripcionCampania,
-                            tipoParticipacion: campania.tipoParticipacion,
-                            notificacion: notificacion,
-                            urlNotificacion: urlnotificacion,
-                            tituloNotificacion: campania.tituloNotificacion,
-                            descripcionNotificacion: campania.descripcionNotificacion,
-                            infoAdd: -1, // Asumiendo que infoAdd se ajusta en otra parte
-                            mistransacciones: contadorYaLlevo,
-                            transacciones: contadorParametros,
-                            imgAkisi: campania.imgAkisi,
-                            imgPush: campania.imgPush,
-                            // botones: [] // Asumiendo que botones se manejan en otra parte
-                        };
+                //         const dataAgregar = {
+                //             idCampania: campania.id,
+                //             nombreCampana: campania.nombre,
+                //             descripcion: descripcionCampania,
+                //             tipoParticipacion: campania.tipoParticipacion,
+                //             notificacion: notificacion,
+                //             urlNotificacion: urlnotificacion,
+                //             tituloNotificacion: campania.tituloNotificacion,
+                //             descripcionNotificacion: campania.descripcionNotificacion,
+                //             infoAdd: -1, // Asumiendo que infoAdd se ajusta en otra parte
+                //             mistransacciones: contadorYaLlevo,
+                //             transacciones: contadorParametros,
+                //             imgAkisi: campania.imgAkisi,
+                //             imgPush: campania.imgPush,
+                //             // botones: [] // Asumiendo que botones se manejan en otra parte
+                //         };
 
-                        retorno.push(dataAgregar);
-                    } catch (error) {
-                        // console.error(`Error processing campaign ${campania.id}: ${error.message}`);
-                        // Considerar si continuar con el siguiente o detener el proceso
-                    }
-                }
-
-
+                //         retorno.push(dataAgregar);
+                //     } catch (error) {
+                //         // console.error(`Error processing campaign ${campania.id}: ${error.message}`);
+                //         // Considerar si continuar con el siguiente o detener el proceso
+                //     }
+                // }
 
 
 
 
-                // res.json(campanasActivasEnc);
+
+
+                res.json(campanasActivasEnc);
                 // res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // return res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // res.json(retorno);
@@ -420,9 +498,6 @@ const generaCampanasUsuarios = async (req, res) => {
         res.status(500).json({ message: "Error interno del servidor." });
     }
 };
-
-
-
 
 
 const campanasUsuariosEmulador_get = async (req, res) => {
@@ -477,7 +552,7 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre, 
                 dcp.id
-            FROM lealtadv2.parametros dcp 
+            FROM lealtadv2.participacions dcp 
             INNER JOIN lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
             INNER JOIN lealtadv2.columnas cs ON cs.id = t.idColumna  
             WHERE idCampania = :idCampania AND tipoTransaccion = 't' AND dcp.estado = 1
@@ -491,7 +566,7 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre,
                 dcp.id
-            FROM lealtadv2.parametros dcp 
+            FROM lealtadv2.participacions dcp 
             INNER JOIN lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion
             INNER JOIN lealtadv2.transaccions AS t ON t.id = dcp.idTransaccion 
             INNER JOIN lealtadv2.columnas cs ON cs.id = t.idColumna 
@@ -504,6 +579,7 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
             type: Sequelize.QueryTypes.SELECT
         });
 
+        // return res.status(200).json(transacciones);
         return transacciones;
     } catch (error) {
         console.error("Error al obtener transacciones válidas de la campaña:", error);
@@ -552,7 +628,7 @@ async function campanasActualesActivasTercero(res, req) {
             order: [['fechaCreacion', 'DESC']],
         });
 
-        return campanas;
+        return campanias;
     } catch (error) {
         console.error("Error en campanasActualesActivasTercero:", error);
         throw error;
@@ -648,39 +724,39 @@ const validarParticipacionesRestantes = async (idCampania, idDepto, idMuni) => {
 
 
 
-// const campanasRevisionGeneral = async (req, res) => {
+const campanasRevisionGeneral = async (req, res) => {
 
-//     try {
-//         const campaniasTipo1y3 = await Campania.findAll({
-//             attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
-//             where: {
-//                 tipoUsuario: {
-//                     [Op.in]: [1, 3]
-//                 },
-//                 estado: '1',
-//                 fechaFin: {
-//                     [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
-//                 }
-//             }
-//         });
+    try {
+        const campaniasTipo1y3 = await Campania.findAll({
+            attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
+            where: {
+                tipoUsuario: {
+                    [Op.in]: [1, 3]
+                },
+                estado: '1',
+                fechaFin: {
+                    [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
+                }
+            }
+        });
 
-//         const campaniasTipo2y4y5 = await Campania.findAll({
-//             attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
-//             where: {
-//                 tipoUsuario: { [Op.in]: [2, 4, 5] },
-//                 estado: '3',
-//                 fechaFin: {
-//                     [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
-//                 }
-//             }
-//         });
+        const campaniasTipo2y4y5 = await Campania.findAll({
+            attributes: ['id', 'fechaInicio', 'fechaFin', 'fechaRegistro', 'edadInicial', 'edadFinal', 'tipoUsuario', 'sexo', 'nombre', 'tituloNotificacion', 'descripcionNotificacion'],
+            where: {
+                tipoUsuario: { [Op.in]: [2, 4, 5] },
+                estado: '3',
+                fechaFin: {
+                    [Op.gte]: Sequelize.literal('CAST(NOW() AS DATE)')
+                }
+            }
+        });
 
-//         const resultados = campaniasTipo1y3.concat(campaniasTipo2y4y5);
-//         return res.status(200).json(resultados);
-//     } catch (error) {
-//         return res.status(500).json({ error: 'Error al obtener las campañas' });
-//     }
-// }
+        const resultados = campaniasTipo1y3.concat(campaniasTipo2y4y5);
+        return res.status(200).json(resultados);
+    } catch (error) {
+        return res.status(500).json({ error: 'Error al obtener las campañas' });
+    }
+}
 
 const validarLimiteParticipacionesPorUsuario = async (idUsuarioParticipante, idCampania) => {
     // const idUsuarioParticipante = req.params.idUsuarioParticipante; // Asegúrate de que este parámetro está correctamente definido en la ruta
@@ -921,14 +997,14 @@ async function CampanasBotonesAppMostrar(idCampania) {
     let query = `
         SELECT t.idBotton 
         FROM campania ec 
-        JOIN parametros dcp ON dcp.idCampania = ec.id 
+        JOIN participacions dcp ON dcp.idCampania = ec.id 
         JOIN transaccions t ON t.id = dcp.idTransaccion 
         WHERE ec.id = :idCampania
         GROUP BY t.idBotton 
         UNION ALL 
         SELECT t.idBotton 
         FROM campania ec 
-        JOIN parametros dcp ON dcp.idCampania = ec.id
+        JOIN participacions dcp ON dcp.idCampania = ec.id
         JOIN lealtadv2.categoria dct ON dct.id = dcp.idTransaccion AND dcp.tipoTransaccion = 'c' 
         JOIN transaccions t ON t.id = dct.idTransaccion 
         WHERE ec.id = :idCampania AND dct.estado = 1 
@@ -981,7 +1057,7 @@ const GetNumeroById = async (req, res) => {
 module.exports = {
 
     // generaCampanasUsuarios,
-    // campanasUsuariosEmulador_get,
+    campanasUsuariosEmulador_get,
     // tienePremiosPenditesCampanas,
     // validarLimiteParticipacionesPorUsuario,
     // validarParticipacionesRestantes,
@@ -997,7 +1073,7 @@ module.exports = {
     // actualizarParticipantesRestantes,
     // campanasActualesActivas,
     // transaccionesValidasCampanasFusion, 
-    transaccionesValidasCampanasFusionL,
+    // transaccionesValidasCampanasFusionL,
     // DeleteEnvio,
     // GetNumeroById,
 
