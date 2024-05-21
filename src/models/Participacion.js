@@ -62,13 +62,6 @@ const Participacion = sequelize.define('participacions', {
         allowNull: false
     },
 
-    idCampania: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-
-
 }, { timestamps: false })
 
 

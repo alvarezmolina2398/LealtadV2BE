@@ -74,6 +74,8 @@ const AddCampania = async(req, res) =>{
             idCampania: id,
             periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
             intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+            intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+            intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
             valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
         }));
         const nuevaEtapa = await Etapa.bulkCreate(etapaData,{transaction});
@@ -212,6 +214,8 @@ const UpdateCampania = async (req, res) => {
                         idCampania: id,
                         periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
                         intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                        intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+                        intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
                         valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
                     },
                     transaction
@@ -222,6 +226,8 @@ const UpdateCampania = async (req, res) => {
                         idCampania: id,
                         periodo: etapa.periodo ? parseInt(etapa.periodo) : null,
                         intervalo: etapa.intervalo ? parseInt(etapa.intervalo) : null,
+                        intervaloSemanal: etapa.intervaloSemanal ? parseInt(etapa.intervaloSemanal) : null,
+                        intervaloMensual: etapa.intervaloMensual ? parseInt(etapa.intervaloMensual) : null,
                         valorAcumulado: etapa.valorAcumulado ? parseInt(etapa.valorAcumulado) : null
                     }, { transaction });
                 }

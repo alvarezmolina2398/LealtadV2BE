@@ -8,7 +8,7 @@ const { Participacion } = require('./Participacion');
 
 
 
-const Premio = sequelize.define('premio', {
+const Premio = sequelize.define('premios', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
