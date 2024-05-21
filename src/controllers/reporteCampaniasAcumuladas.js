@@ -316,22 +316,22 @@ async function isEligibleForCampaign(participant, campaign, userInfo, customerIn
     console.log("userInfo para depuración:", userInfo);
 
     // Verificar si el número está restringido para la campaña
-    // console.log(`Número de teléfono recibido: ${userInfo.telno}, tipo: ${typeof userInfo.telno}`);
-    // if (!userInfo.telno || userInfo.telno.trim() === "") {
-    //     console.log("Número de teléfono no proporcionado o vacío.", userInfo);
-    //     return false;
-    // }
+    console.log(`Número de teléfono recibido: ${userInfo.telno}, tipo: ${typeof userInfo.telno}`);
+    if (!userInfo.telno || userInfo.telno.trim() === "") {
+        console.log("Número de teléfono no proporcionado o vacío.", userInfo);
+        return false;
+    }
 
-    // try {
-    //     const numeroPermitido = await campaniaNumerosRestringidos(idCampania, userInfo.telno, campaign.restringe);
-    //     if (!numeroPermitido) {
-    //         console.log(`Número de teléfono ${userInfo.telno} restringido para la campaña ${campaign.nombre}.`);
-    //         return false;
-    //     }
-    // } catch (error) {
-    //     console.error("Error al verificar la restricción del número:", error);
-    //     return false;
-    // }
+    try {
+        const numeroPermitido = await campaniaNumerosRestringidos(idCampania, userInfo.telno, campaign.restringe);
+        if (!numeroPermitido) {
+            console.log(`Número de teléfono ${userInfo.telno} restringido para la campaña ${campaign.nombre}.`);
+            return false;
+        }
+    } catch (error) {
+        console.error("Error al verificar la restricción del número:", error);
+        return false;
+    }
 
     // Verificar rango de edad
     if (userInfo.edad < edadInicial || userInfo.edad > edadFinal) {

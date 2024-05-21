@@ -163,7 +163,7 @@ const generaCampanasUsuarios = async (req, res) => {
                     where: {
                         estado: 1,
                     },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'emails', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
+                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
                     order: [
                         ['fechaCreacion', 'DESC']
                     ]
@@ -483,7 +483,7 @@ const generaCampanasUsuarios = async (req, res) => {
 
 
 
-                res.json(campanasActivasEnc);
+                // res.json(campanasActivasEnc);
                 // res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // return res.json(campaniasFiltradas.filter(campania => campania !== null));
                 // res.json(retorno);
