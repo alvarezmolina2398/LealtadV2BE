@@ -1,6 +1,6 @@
 const cron = require('node-cron');
-const {sendEmail} = require('./sendEmail.js');
-const {Campania} = require('../models/campanias');
+const { sendEmail } = require('./sendEmail.js');
+const { Campania } = require('../models/campanias');
 const { Configuraciones } = require('../models/configuraciones');
 const { ConfigReport } = require('../models/configReport');
 const { Etapa } = require("../models/etapa");
@@ -9,7 +9,7 @@ const { PremioPromocion } = require("../models/premioPromocion");
 const { Participacion } = require('../models/Participacion');
 const { Promocion } = require('../models/promocion.js');
 
-const {generarReportereReferidos, generarReporteClientesParticipando,generarReporteOferCraft,generarReportePromociones,generarReportereGeneralReferidos} = require('./generarReportes.js');
+const { generarReportereReferidos, generarReporteClientesParticipando, generarReporteOferCraft, generarReportePromociones, generarReportereGeneralReferidos } = require('./generarReportes.js');
 // const { generarReporteOferCraft } = require('../controllers/reporteOfercraft.controller.js')
 
 
@@ -17,8 +17,8 @@ const {generarReportereReferidos, generarReporteClientesParticipando,generarRepo
 // '*/15 * * * * *'
 
 // '0 * * * *'
-
-const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
+// '*/2 * * * *'
+const taskSendEmail = cron.schedule('*/2 * * * *', async() => {
     console.log('Ejecutando una tarea cada minuto');
 
     try {
@@ -61,46 +61,44 @@ const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
         // });
 
 
-        configs.forEach(async (config) => {
+        configs.forEach(async(config) => {
             const campania = config.campanium;
             const promocion = config.promocion;
 
             if (campania) {
                 console.log('ID de la configuración:', config.id);
-                                console.log('ID de la campaña:', campania.id);
-                                console.log('Nombre de la campaña:', campania.nombre);
-                                console.log('Descripción de la campaña:', campania.descripcion);
-                                console.log('fechaInicio de la campaña:', campania.fechaInicio);
-                                console.log('ID del reporte de configuración:', config.configreporte.id);
-                                console.log('Frecuencia del reporte de configuración:', config.configreporte.frecuencia);
-                                console.log('Día de la semana del reporte de configuración:', config.configreporte.diaSemana);
-                                console.log('Día del mes del reporte de configuración:', config.configreporte.diaMes);
-                                console.log('Tipo de reporte del reporte de configuración:', config.configreporte.tiporeporte);
-                                console.log('Email de reporte del reporte de configuración:', config.configreporte.emails);
-                                // console.log('Promoción asociada:', promocion.id);
-                                console.log('---------------------------');
-                
+                console.log('ID de la campaña:', campania.id);
+                console.log('Nombre de la campaña:', campania.nombre);
+                console.log('Descripción de la campaña:', campania.descripcion);
+                console.log('fechaInicio de la campaña:', campania.fechaInicio);
+                console.log('ID del reporte de configuración:', config.configreporte.id);
+                console.log('Frecuencia del reporte de configuración:', config.configreporte.frecuencia);
+                console.log('Día de la semana del reporte de configuración:', config.configreporte.diaSemana);
+                console.log('Día del mes del reporte de configuración:', config.configreporte.diaMes);
+                console.log('Tipo de reporte del reporte de configuración:', config.configreporte.tiporeporte);
+                console.log('Email de reporte del reporte de configuración:', config.configreporte.emails);
+                // console.log('Promoción asociada:', promocion.id);
+                console.log('---------------------------');
+
                 const fechaInicio = new Date(campania.fechaInicio);
                 let fechaFin = new Date();
-               
+
 
                 if (config.configreporte.frecuencia === 'dia') {
                     fechaFin = new Date();
-                }
-                else if (config.configreporte.frecuencia === 'semana') {
-                    
+                } else if (config.configreporte.frecuencia === 'semana') {
+
                     fechaFin.setDate(fechaFin.getDate() + 6);
-                }
-                else if (config.configreporte.frecuencia === 'mes') {
-                   
+                } else if (config.configreporte.frecuencia === 'mes') {
+
                     fechaFin.setMonth(fechaFin.getMonth() + 1);
                     fechaFin.setDate(0);
                 }
 
                 fecha1 = fechaInicio,
-                fecha2 = fechaFin,
+                    fecha2 = fechaFin,
 
-                console.log('Fecha de inicio:', fecha1);
+                    console.log('Fecha de inicio:', fecha1);
                 console.log('Fecha de fin:', fecha2);
 
                 let correos = config.configreporte.emails;
@@ -113,7 +111,7 @@ const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
                     campanas = [campanas];
                 }
 
-                
+
 
                 if (config.configreporte.frecuencia === 'dia') {
                     console.log("La frecuencia de la campaña es 'dia'. Enviando correo electrónico...");
@@ -122,22 +120,22 @@ const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
                         console.log("Generando reporte de OfferCraft...");
                         reportes.push({
                             filename: 'ReporteOferCraft.xlsx',
-                            content: await generarReporteOferCraft(idCampanas,fecha1,fecha2)
+                            content: await generarReporteOferCraft(idCampanas, fecha1, fecha2)
                         });
 
                     } else if (config.configreporte.tiporeporte === 'Referidos') {
                         console.log("Generando reporte de Referidos...");
                         reportes.push({
                             filename: 'ReporteReferidos.xlsx',
-                            content: await generarReportereReferidos(campanas,fecha1, fecha2)
+                            content: await generarReportereReferidos(campanas, fecha1, fecha2)
                         });
                     } else if (config.configreporte.tiporeporte === 'Pomociones') {
                         console.log("Generando reporte de Pomociones...");
                         reportes.push({
                             filename: 'ReportePromociones.xlsx',
-                            content: await generarReportePromociones(promocion,fecha1,fecha2)
+                            content: await generarReportePromociones(promocion, fecha1, fecha2)
                         });
-                    }else if (config.configreporte.tiporeporte === 'General') {
+                    } else if (config.configreporte.tiporeporte === 'General') {
                         console.log("Generando reporte de GeneralReferidos...");
                         reportes.push({
                             filename: 'ReporteGeneral.xlsx',
@@ -158,22 +156,22 @@ const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
                         console.log("Generando reporte de OfferCraft...");
                         reportes.push({
                             filename: 'ReporteOferCraft.xlsx',
-                            content: await generarReporteOferCraft(idCampanas,fecha1,fecha2)
+                            content: await generarReporteOferCraft(idCampanas, fecha1, fecha2)
                         });
 
                     } else if (config.configreporte.tiporeporte === 'Referidos') {
                         console.log("Generando reporte de Referidos...");
                         reportes.push({
                             filename: 'ReporteReferidos.xlsx',
-                            content: await generarReportereReferidos(campanas,fecha1, fecha2)
+                            content: await generarReportereReferidos(campanas, fecha1, fecha2)
                         });
                     } else if (config.configreporte.tiporeporte === 'Pomociones') {
                         console.log("Generando reporte de Pomociones...");
                         reportes.push({
                             filename: 'ReportePromociones.xlsx',
-                            content: await generarReportePromociones(promocion,fecha1,fecha2)
+                            content: await generarReportePromociones(promocion, fecha1, fecha2)
                         });
-                    }else if (config.configreporte.tiporeporte === 'General') {
+                    } else if (config.configreporte.tiporeporte === 'General') {
                         console.log("Generando reporte de GeneralReferidos...");
                         reportes.push({
                             filename: 'ReporteGeneral.xlsx',
@@ -194,22 +192,22 @@ const taskSendEmail = cron.schedule( '*/15 * * * * *', async () => {
                         console.log("Generando reporte de OfferCraft...");
                         reportes.push({
                             filename: 'ReporteOferCraft.xlsx',
-                            content: await generarReporteOferCraft(idCampanas,fecha1,fecha2)
+                            content: await generarReporteOferCraft(idCampanas, fecha1, fecha2)
                         });
 
                     } else if (config.configreporte.tiporeporte === 'Referidos') {
                         console.log("Generando reporte de Referidos...");
                         reportes.push({
                             filename: 'ReporteReferidos.xlsx',
-                            content: await generarReportereReferidos(campanas,fecha1, fecha2)
+                            content: await generarReportereReferidos(campanas, fecha1, fecha2)
                         });
                     } else if (config.configreporte.tiporeporte === 'Pomociones') {
                         console.log("Generando reporte de Pomociones...");
                         reportes.push({
                             filename: 'ReportePromociones.xlsx',
-                            content: await generarReportePromociones(promocion,fecha1,fecha2)
+                            content: await generarReportePromociones(promocion, fecha1, fecha2)
                         });
-                    }else if (config.configreporte.tiporeporte === 'General') {
+                    } else if (config.configreporte.tiporeporte === 'General') {
                         console.log("Generando reporte de GeneralReferidos...");
                         reportes.push({
                             filename: 'ReporteGeneral.xlsx',
