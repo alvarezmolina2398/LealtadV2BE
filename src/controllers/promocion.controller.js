@@ -24,9 +24,211 @@ const GetPromocion = async (req, res) => {
 
 
 //controllador para agregar nuevas Columnaes
-const AddPromocion = async (req, res) => {
+// const AddPromocion = async (req, res) => {
 
+//     try {
+//         const {
+//             nemonico,
+//             nombre,
+//             descripcion,
+//             mesajeExito,
+//             mesajeFail,
+//             imgSuccess,
+//             imgFail,
+//             fechaInicio,
+//             fechaFin,
+//             PremioXcampania,
+//             estado,
+//             codigos,
+//             premios
+//         } = req.body;
+
+//         const estadotext = estado === 3 ? 'en Borrador' : '';
+//         const newPromo = await Promocion.create({
+//             nemonico,
+//             nombre,
+//             descripcion,
+//             mesajeExito,
+//             mesajeFail,
+//             imgSuccess,
+//             imgFail,
+//             fechaInicio,
+//             fechaFin,
+//             estado,
+//             PremioXcampania
+//         });
+
+//         const { id } = newPromo.dataValues;
+
+
+//         //if (PremioXcampania != 1) {
+//             premios.forEach(element => {
+//                 const { cantidad } = element;
+//                 const cantCodigos = codigos.length;
+
+//                 for (let index = 0; index < cantidad;) {
+//                     let random = Math.floor(Math.random() * cantCodigos);
+
+//                     if (codigos[random].esPremio === 0) {
+
+//                         codigos[random] = { ...codigos[random], esPremio: 1}
+
+//                         index++;
+//                     };
+
+//                 }
+
+//             });
+
+//             const nuevoArrarPremios = premios.map((item) => ({ ...item, idPromocion: id }));
+//            const premiosInsertados = await PremioPromocion.bulkCreate(nuevoArrarPremios);
+
+//       //  }
+
+
+        
+
+//        // cost nuevoArray = codigos.map((item) => ({ ...item, idPromocion: id }));
+//         let nuevoArray = [];
+
+//         let premiosCreados = premiosInsertados.map((item) => ({idPremio: item.id, cantidad: item.cantidad, entregados: 0}));
+//         let indexact = 0;
+        
+//         for(const item of codigos) {
+//             var newData = {...item, idPromocion: id}
+
+//             if(item.esPremio === 1){
+                
+//                 newData.idPremioPromocion = premiosCreados[indexact].idPremio;
+//                 premiosCreados[indexact].entregados = premiosCreados[indexact].entregados+1;
+
+//                 if(premiosCreados[indexact].cantidad ==premiosCreados[indexact].entregados){
+//                     indexact++;
+//                 }
+                
+//             }
+
+
+//             nuevoArray.push(newData)
+            
+//         } 
+
+//         console.log(nuevoArrarPremios)
+
+
+
+//         await DetallePromocion.bulkCreate(nuevoArray);
+
+//         res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' }); 
+
+//     } catch (error) {
+//         console.error(error)
+//         res.status(403)
+//         res.send({ errors: 'Ha sucedido un  error al intentar Crear la Promocion.' });
+//     }
+
+// }
+
+
+// const AddPromocion = async (req, res) => {
+//     try {
+//         const {
+//             nemonico,
+//             nombre,
+//             descripcion,
+//             mesajeExito,
+//             mesajeFail,
+//             imgSuccess,
+//             imgFail,
+//             fechaInicio,
+//             fechaFin,
+//             PremioXcampania,
+//             estado,
+//             codigos,
+//             premios
+//         } = req.body;
+
+//         const estadotext = estado === 3 ? 'en Borrador' : '';
+//         const newPromo = await Promocion.create({
+//             nemonico,
+//             nombre,
+//             descripcion,
+//             mesajeExito,
+//             mesajeFail,
+//             imgSuccess,
+//             imgFail,
+//             fechaInicio,
+//             fechaFin,
+//             estado,
+//             PremioXcampania
+//         });
+
+//         const { id } = newPromo.dataValues;
+
+//         premios.forEach(element => {
+//             const { cantidad } = element;
+//             const cantCodigos = codigos.length;
+
+//             for (let index = 0; index < cantidad;) {
+//                 let random = Math.floor(Math.random() * cantCodigos);
+
+//                 if (codigos[random].esPremio === 0) {
+//                     codigos[random] = { ...codigos[random], esPremio: 1 };
+//                     index++;
+//                 }
+//             }
+//         });
+
+//         const nuevoArrarPremios = premios.map((item) => ({ 
+//             ...item, 
+//             idPromocion: id, 
+//             valor: item.valor || 0 // Proporciona un valor por defecto para 'valor'
+//         }));
+        
+//         const premiosInsertados = await PremioPromocion.bulkCreate(nuevoArrarPremios);
+
+//         let nuevoArray = [];
+
+//         let premiosCreados = premiosInsertados.map((item) => ({
+//             idPremio: item.id, 
+//             cantidad: item.cantidad, 
+//             entregados: 0
+//         }));
+
+//         let indexact = 0;
+
+//         for (const item of codigos) {
+//             var newData = { 
+//                 ...item, 
+//                 idPromocion: id, 
+//                 cupon: item.cupon || '' // Proporciona un valor por defecto para 'cupon'
+//             };
+
+//             if (item.esPremio === 1) {
+//                 newData.idPremioPromocion = premiosCreados[indexact].idPremio;
+//                 premiosCreados[indexact].entregados = premiosCreados[indexact].entregados + 1;
+
+//                 if (premiosCreados[indexact].cantidad === premiosCreados[indexact].entregados) {
+//                     indexact++;
+//                 }
+//             }
+
+//             nuevoArray.push(newData);
+//         }
+
+//         await DetallePromocion.bulkCreate(nuevoArray);
+
+//         res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(403).send({ errors: 'Ha sucedido un error al intentar Crear la Promocion.' });
+//     }
+// }
+
+const AddPromocion = async (req, res) => {
     try {
+        console.log('Request Body:', req.body);
         const {
             nemonico,
             nombre,
@@ -44,6 +246,8 @@ const AddPromocion = async (req, res) => {
         } = req.body;
 
         const estadotext = estado === 3 ? 'en Borrador' : '';
+
+        // Creación de la promoción
         const newPromo = await Promocion.create({
             nemonico,
             nombre,
@@ -57,77 +261,83 @@ const AddPromocion = async (req, res) => {
             estado,
             PremioXcampania
         });
+        console.log('Nueva promoción creada:', newPromo);
 
         const { id } = newPromo.dataValues;
+        console.log('ID de la nueva promoción:', id);
 
+        // Asignación de premios a los códigos
+        premios.forEach(element => {
+            const { cantidad } = element;
+            const cantCodigos = codigos.length;
 
-        //if (PremioXcampania != 1) {
-            premios.forEach(element => {
-                const { cantidad } = element;
-                const cantCodigos = codigos.length;
+            for (let index = 0; index < cantidad;) {
+                let random = Math.floor(Math.random() * cantCodigos);
 
-                for (let index = 0; index < cantidad;) {
-                    let random = Math.floor(Math.random() * cantCodigos);
-
-                    if (codigos[random].esPremio === 0) {
-
-                        codigos[random] = { ...codigos[random], esPremio: 1}
-
-                        index++;
-                    };
-
+                if (codigos[random].esPremio === 0) {
+                    codigos[random] = { ...codigos[random], esPremio: 1 };
+                    index++;
                 }
+            }
+        });
+        console.log('Códigos actualizados:', codigos);
 
-            });
+        const nuevoArrarPremios = premios.map((item) => ({
+            ...item,
+            idPromocion: id,
+            valor: item.valor || 0, // Proporciona un valor por defecto para 'valor'
+            nombre: item.nombre || 'Desconocido' // Proporciona un valor por defecto para 'nombre'
+        }));
+        console.log('Array de premios a insertar:', nuevoArrarPremios);
 
-            const nuevoArrarPremios = premios.map((item) => ({ ...item, idPromocion: id }));
-           const premiosInsertados = await PremioPromocion.bulkCreate(nuevoArrarPremios);
+        // Inserción de premios en la base de datos
+        const premiosInsertados = await PremioPromocion.bulkCreate(nuevoArrarPremios);
+        console.log('Premios insertados:', premiosInsertados);
 
-      //  }
-
-
-        
-
-       // cost nuevoArray = codigos.map((item) => ({ ...item, idPromocion: id }));
         let nuevoArray = [];
 
-        let premiosCreados = premiosInsertados.map((item) => ({idPremio: item.id, cantidad: item.cantidad, entregados: 0}));
+        let premiosCreados = premiosInsertados.map((item) => ({
+            idPremio: item.id,
+            cantidad: item.cantidad,
+            entregados: 0
+        }));
+
         let indexact = 0;
-        
-        for(const item of codigos) {
-            var newData = {...item, idPromocion: id}
 
-            if(item.esPremio === 1){
-                
+        for (const item of codigos) {
+            var newData = {
+                ...item,
+                idPromocion: id,
+                cupon: item.cupon || '' // Proporciona un valor por defecto para 'cupon'
+            };
+
+            if (item.esPremio === 1) {
                 newData.idPremioPromocion = premiosCreados[indexact].idPremio;
-                premiosCreados[indexact].entregados = premiosCreados[indexact].entregados+1;
+                premiosCreados[indexact].entregados = premiosCreados[indexact].entregados + 1;
 
-                if(premiosCreados[indexact].cantidad ==premiosCreados[indexact].entregados){
+                if (premiosCreados[indexact].cantidad === premiosCreados[indexact].entregados) {
                     indexact++;
                 }
-                
             }
 
-
-            nuevoArray.push(newData)
-            
-        } 
-
-        console.log(nuevoArrarPremios)
-
-
+            nuevoArray.push(newData);
+        }
+        console.log('Array de detalles a insertar:', nuevoArray);
 
         await DetallePromocion.bulkCreate(nuevoArray);
+        console.log('Detalles de la promoción insertados');
 
-        res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' }); 
+        res.json({ code: 'ok', message: 'Promocion creada ' + estadotext + ' con exito' });
 
     } catch (error) {
-        console.error(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar Crear la Promocion.' });
+        console.error('Error en AddPromocion:', error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar Crear la Promocion.' });
     }
+};
 
-}
+
+
+
 
 
 //controllador para actualizar Columnaes
@@ -210,24 +420,22 @@ const GetPromocionById = async (req, res) => {
     try {
         const { id } = req.params;
         const project = await Promocion.findByPk(id, {
-
             include: [
                 { model: DetallePromocion },
                 { 
                     model: PremioPromocion,
                     include: [Premio]
                 }
-            
             ]
         });
         console.log(project)
         res.json(project)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar consultar las Promociones.' });
+        res.send({ errors: 'Ha sucedido un error al intentar consultar las Promociones.' });
     }
-
 }
+
 
     //eliminado logico de Promociones
     const DeletePromocion = async (req, res) => {

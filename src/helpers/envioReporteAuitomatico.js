@@ -172,7 +172,7 @@ const {generarReportereReferidos, generarReporteClientesParticipando,generarRepo
 
 // '0 * * * *'
 
-const taskSendEmail = cron.schedule('*/15 * * * * *', async () => {
+const taskSendEmail = cron.schedule('0 * * * *', async () => {
     console.log('Ejecutando una tarea cada minuto');
 
     try {
