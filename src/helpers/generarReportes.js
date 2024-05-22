@@ -1,6 +1,6 @@
 const { QueryTypes } = require('sequelize');
 const XLSX = require('xlsx');
-const XLSXStyle = require('xlsx-style');
+// const XLSXStyle = require('xlsx-style');
 const { reporteClientesParticipando } = require('../controllers/reports.controller.js')
 const { Campania } = require('../models/campanias');
 const { Configuraciones } = require('../models/configuraciones');
