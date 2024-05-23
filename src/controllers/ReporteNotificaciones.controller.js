@@ -14,7 +14,7 @@ const getReporteNoficacionesOffer = async (req, res) => {
     FROM 
         participacions p
     INNER JOIN 
-        premios p2 ON p2.id = p.idPremio 
+        premios p2 ON p2.id = p.id
     INNER JOIN 
         campania c ON c.id = p.idCampania 
     INNER JOIN 
