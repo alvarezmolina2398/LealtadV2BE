@@ -10,8 +10,8 @@ const path = 'Promocion';
 //rutas del proyecto
 router.get(`/${path}`,authUser, GetPromocion);
 router.get(`/${path}/:id`,authUser,GetPromocionById);
-router.post(`/${path}`,authUser,AddPromocion);
-router.put(`/${path}/:id`,authUser,UpdatePromocion);
+router.post(`/${path}`,AddPromocion);
+router.put(`/${path}`,UpdatePromocion);
 router.put(`/${path}/Pau/:id`,authUser,PausarPromocion);
 router.put(`/${path}/Act/:id`,authUser,ActivarPromocion);
 //router.post(`/${path}/Testear`,TestearCodigo);

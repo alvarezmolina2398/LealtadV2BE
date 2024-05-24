@@ -30,11 +30,11 @@ const Promocion = sequelize.define('promocions', {
         allowNull: false,
     },
     imgSuccess: {
-        type: DataTypes.TEXT('long'),
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     imgFail: {
-        type: DataTypes.TEXT('long'),
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     fechaInicio: {
@@ -56,8 +56,6 @@ const Promocion = sequelize.define('promocions', {
     }
 }, { timestamps: false });
 
-
-
 Promocion.hasMany(DetallePromocion, {
     foreignKey: 'idPromocion',
     sourceKey: 'id'
@@ -66,9 +64,7 @@ Promocion.hasMany(DetallePromocion, {
 DetallePromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
-
 
 Promocion.hasMany(PremioPromocion, {
     foreignKey: 'idPromocion',
@@ -78,13 +74,15 @@ Promocion.hasMany(PremioPromocion, {
 PremioPromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
 
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
+// });
 
 // (async () => {
 //     await sequelize.sync({ force: true });
 //     // Code here
 // })();
 
-module.exports = { Promocion, sequelize }
+module.exports = { Promocion, sequelize };

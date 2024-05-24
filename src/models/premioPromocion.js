@@ -18,9 +18,20 @@ const PremioPromocion = sequelize.define('premiopromocions', {
         type: DataTypes.INTEGER,
         allowNull: false
     }, 
+
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
+    },
+
+    cupon: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    }, 
+
+    porcentaje: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 },{timestamps: false});
 
