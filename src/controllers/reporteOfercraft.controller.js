@@ -33,7 +33,6 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
             },
             include: [{
                 model: Participacion,
-                as: 'participaciones',
                 attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
                 include: [{
                     model: Campania,
@@ -60,7 +59,6 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                 },
                 include: [{
                     model: Participacion,
-                    as: 'participaciones',
                     attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
                     include: [{
                         model: Campania,
