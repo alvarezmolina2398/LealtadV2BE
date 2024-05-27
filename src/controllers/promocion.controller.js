@@ -24,7 +24,6 @@ const GetPromocion = async (req, res) => {
 }
 
 
-
 const AddPromocion = async (req, res) => {
     try {
         console.log('Datos recibidos:', req.body); // Log para verificar los datos
@@ -48,6 +47,12 @@ const AddPromocion = async (req, res) => {
         // Validar que los datos requeridos estén presentes
         if (!nemonico || !nombre || !fechaInicio || !fechaFin || !PremioXcampania || !estado || !codigos || !premios) {
             return res.status(400).send({ errors: 'Faltan datos requeridos en la solicitud.' });
+        }
+
+        // Verificar si el nemonico ya existe
+        const existingPromo = await Promocion.findOne({ where: { nemonico } });
+        if (existingPromo) {
+            return res.status(400).send({ errors: 'El nemonico ya existe en la base de datos.' });
         }
 
         const estadotext = estado === 3 ? 'en Borrador' : '';
@@ -74,7 +79,7 @@ const AddPromocion = async (req, res) => {
 
             for (let index = 0; index < cantidad;) {
                 let random = Math.floor(Math.random() * cantCodigos);
-
+                console.log("bubleeeeeeeeeeeee.........",random);
                 if (codigos[random].esPremio === 0) {
                     codigos[random] = { ...codigos[random], esPremio: 1 };
                     index++;
@@ -138,6 +143,27 @@ const AddPromocion = async (req, res) => {
         res.status(403).send({ errors: 'Ha sucedido un error al intentar Crear la Promocion.', detail: error.message });
     }
 };
+
+
+
+const checkNemonico = async (req, res) => {
+    try {
+      const { nemonico } = req.body;
+      const promocion = await Promocion.findOne({ where: { nemonico } });
+  
+      if (promocion) {
+        return res.json({ exists: true });
+      } else {
+        return res.json({ exists: false });
+      }
+    } catch (error) {
+      console.error('Error al verificar nemonico:', error);
+      res.status(500).send({ errors: 'Error al verificar nemonico.' });
+    }
+  };
+  
+
+
 
 
 //controllador para actualizar Columnaes
@@ -301,38 +327,6 @@ const UpdatePromocion = async (req, res) => {
         res.status(403).send({ errors: 'Ha sucedido un error al intentar actualizar la Promocion.', detail: error.message });
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const GetPromocionById = async (req, res) => {
@@ -511,4 +505,4 @@ const TestearCodigo = async (req, res) => {
 
 }
 
-module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, DeletePromocion, GetPromocionById, TestearCodigo,GetCuponByDetallePromocionId }
+module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, DeletePromocion, GetPromocionById, TestearCodigo,GetCuponByDetallePromocionId,checkNemonico }
