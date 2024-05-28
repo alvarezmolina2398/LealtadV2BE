@@ -25,6 +25,7 @@ const sequelize = new Sequelize(
         // host: "34.132.97.231",
 
         host: 'localhost',
+        port: "3006",
         dialect: "mysql",
     }
 );
