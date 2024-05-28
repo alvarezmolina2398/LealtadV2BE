@@ -12,9 +12,9 @@ const permisoUsuario = sequelize.define('permisousuarios', {
     }
 }, {timestamps: false});
 
-//(async () => {
-  //await sequelize.sync({ force: true });
+// (async () => {
+//   await permisoUsuario.sync({ alter: true });
 //     // Code here
-//})();
+// })();
 
 module.exports = {permisoUsuario}

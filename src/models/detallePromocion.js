@@ -37,7 +37,7 @@ CangePromocion.belongsTo(DetallePromocion, {
 
 
 // (async () => {
-//  await sequelize.sync({ force: false });
+//  await DetallePromocion.sync({ alter: false });
 //     // Code here
 //  })();
 

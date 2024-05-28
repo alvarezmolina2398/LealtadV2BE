@@ -7,11 +7,21 @@ const { Sequelize } = require("sequelize");
 //     dialect: "mysql",
 // });
 
-const sequelize = new Sequelize("lealtadv2", "root", "B@rilhas2003", {
+const sequelize = new Sequelize("lealtadv216", "root", "B@rilhas2003", {
   //host: '192.168.1.100',
   host: "localhost",
   dialect: "mysql",
 });
+
+// const sequelize = new Sequelize(
+//   "db0csmijjuvbuo",
+//   "uhxm0qdfefvou",
+//   "DesaSolUn",
+//   {
+//       host: "34.174.109.166",
+//       dialect: "mysql",
+//   }
+// );
 
 const genesis = new Sequelize(
   "genesis",

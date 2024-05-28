@@ -96,13 +96,19 @@ Premiacion.belongsTo(Premio, {
 
 // 
 
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
+// });
+
+
 // Participacion.sync({ alter: true }).then(() => {
 //     console.log('tabla Participacion creada');
 // });
 
 
+
 //  (async () => {
-//     await sequelize.sync({ force: true });
+//     await Premio.sync({ alter: true });
 //     // Code here
 //  })();
 

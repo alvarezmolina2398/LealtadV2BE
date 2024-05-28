@@ -100,7 +100,12 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
-    }
+    },
+    emails: {
+        type: DataTypes.STRING(1000),
+        allowNull: true,
+        defaultValue: 0
+    },
 
 },{timestamps: false});
 
@@ -162,18 +167,27 @@ Configuraciones.belongsTo(Campania, {
 });
 
 
-
-
-
-
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
+// Campania.hasMany(Configuraciones, {
+//     foreignKey: 'idCampania',
+//     sourceKey: 'id'
+// });
+
+// Configuraciones.belongsTo(Campania, {
+//     foreignKey: 'idCampania',
+//     targetId: 'id',
+// });
+
+
+// Campania.sync({ alter: true }).then(() => {
+//     console.log('tabla campania creada');
+// });
+
 // (async () => {
-//     await sequelize.sync({ alter: true });
-//     // Code here
+//     await Campania.sync({ alter: true });
+//     //Code here
 // })();
-
-
 
 
 // Etapa.sync({ alter: true }).then(() => {
