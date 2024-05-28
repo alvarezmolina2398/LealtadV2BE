@@ -16,14 +16,19 @@ const Participacion = sequelize.define('participacions', {
         primaryKey: true,
         autoIncrement: true,
     },
+    idProyecto: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    idUsuarioParticipante: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
     fecha: {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
-    // fecha: {
-    //     type: DataTypes.DATEONLY,
-    //     allowNull: false
-    // },
     customerId: {
         type: DataTypes.STRING(100),
         allowNull: false
@@ -53,14 +58,27 @@ const Participacion = sequelize.define('participacions', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    // idPremio: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
+    jugado: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     idTransaccion: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    // idCampania: {
+    //     type: DataTypes.INTEGER,
+    //     allowNull: false
+    // },
+    tipoTransaccion: {
+        type: DataTypes.CHAR(1),
+        allowNull: false
+    },
+    estado : {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+    },
+
 
 }, { timestamps: false })
 
@@ -85,9 +103,9 @@ Participacion.belongsTo(codigoReferido, {
     targetKey: 'customerId',
     as: 'codigoReferidoAssociation'
 }); 
-Participacion.belongsTo(referidosIngresos, { 
-    foreignKey: 'idRefIngresos' 
-});
+// Participacion.belongsTo(referidosIngresos, { 
+//     foreignKey: 'idRefIngresos' 
+// });
 
 Participacion.hasMany(participacionReferidos, {
      as: 'p2', 
