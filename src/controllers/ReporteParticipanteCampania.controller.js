@@ -19,7 +19,7 @@ const getUsuariosParticipantesFechasCampanasSel = async (req, res) => {
         p.descripcion as descripcionpremio,
         cr.codigo AS codigo,
         u.nombre AS nombre_usuario,
-        u.telefono AS telefono_usuario
+        CASE WHEN  LENGTH(u.telefono) > 11 THEN 'null' ELSE CONCAT('(502) ', u.telefono) END AS telefono_usuario
       FROM 
       campania c
       LEFT JOIN 
