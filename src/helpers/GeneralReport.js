@@ -4,6 +4,9 @@ const { pronet, genesis } = require('../database/database');
 
 const  getParticipacionesFechasGeneral = async (fecha1, fecha2) => {
     try {
+        const fechaInicioFormatted = fecha1.toISOString().split('T')[0];
+    const fechaFinFormatted = fecha2.toISOString().split('T')[0];
+
         const results = await genesis.query(`
             SELECT uic.userno, CONCAT(uic.fname, ' ', uic.lname) AS nombreReferidor, codRef.codigo, uir.userno AS noReferido,
             CONCAT(uir.fname, ' ', uir.lname) AS nombreReferido, DATE_FORMAT(ri.fecha, '%d/%m/%Y %H:%i') AS fecha
@@ -13,7 +16,7 @@ const  getParticipacionesFechasGeneral = async (fecha1, fecha2) => {
             INNER JOIN pronet.tblUserInformation uic ON uic.userid = csc.fk_userid
             INNER JOIN pronet.tbl_customer csr ON csr.customer_id = ri.usuario
             INNER JOIN pronet.tblUserInformation uir ON uir.userid = csr.fk_userid
-            WHERE ri.fecha BETWEEN '${fecha1} 00:00:00' AND '${fecha2} 23:59:59'
+            WHERE ri.fecha BETWEEN '${fechaInicioFormatted} 00:00:00' AND '${fechaFinFormatted} 23:59:59'
             LIMIT 10;
         `);
 
