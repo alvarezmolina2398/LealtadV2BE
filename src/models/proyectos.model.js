@@ -61,7 +61,6 @@ Columna.belongsTo(Proyectos,{
     foreignKey: 'idProyectos',
     targetId: 'id',
 });
-
 Proyectos.hasMany(Departamento_Proyectos,{
     foreignKey: 'idProyecto',
     sourceKey: 'id'
@@ -83,5 +82,10 @@ Departamento_Proyectos.belongsTo(Proyectos, {
 //     console.log('tabla TransaccionPremio creada');
 // });
 
+// Campania.sync({ alter: true }).then(() => {
+//     console.log('tabla Campania creada');
+// });
 
-module.exports = { Proyectos }
+
+
+module.exports={Proyectos}

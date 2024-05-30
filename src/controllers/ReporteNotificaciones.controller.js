@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const Sequelize = require("sequelize");
 const { genesis, pronet, sequelize } = require("../database/database");
 
 const getReporteNoficacionesOffer = async (req, res) => {
@@ -24,19 +24,21 @@ const getReporteNoficacionesOffer = async (req, res) => {
             replacements: { fechaInicio, fechaFin },
             type: Sequelize.QueryTypes.SELECT
         });
-
+    
         const customerinfo = await genesis.query(`
         SELECT 
         tc.telno telefono,
         CONCAT(tui.fname, ' ', tui.mname, ' ', tui.lname, ' ', tui.slname) nombre,
-        ec.nombreCampana campana, 
-        DATE_FORMAT(pc.fechaParticipacion, '%d/%m/%Y %H:%i') fecha, 'Pendiente' premio 
+        pc.descTransaccion,pc.valorPremio,
+        pc.idTransaccion as numeroTransaccion,
+        ec.nombreCampana campana,ec.idCampana,p.idPremio,p.descripcion,p.link,p.claveSecreta  ,p.estado,ec.fechaInicio, ec.fechaFinal,
+        DATE_FORMAT(pc.fechaParticipacion, '%d/%m/%Y %H:%i') fecha, 'Pendiente' premio
        FROM genesis.participante_campana pc
-       JOIN genesis.premios p ON p.idPremio = pc.idPremio 
-       JOIN pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante 
-       JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid 
-       JOIN genesis.enc_campana ec ON ec.idCampana = pc.idCampana 
-       WHERE p.idTransaccion = 0 AND pc.fechaParticipacion  BETWEEN :fechaInicio AND :fechaFin;
+       JOIN genesis.premios p ON p.idPremio = pc.idPremio
+       JOIN pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante
+       JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid
+       JOIN genesis.enc_campana ec ON ec.idCampana = pc.idCampana
+       WHERE p.idTransaccion = 0 AND pc.fechaParticipacion  BETWEEN '2023-05-15' AND '2024-05-15';
         `, {
             replacements: { fechaInicio, fechaFin },
             type: Sequelize.QueryTypes.SELECT
@@ -48,5 +50,13 @@ const getReporteNoficacionesOffer = async (req, res) => {
         res.status(500).json({ error: 'Error fetching data' });
     }
 };
+const SendNotification = async  (req, res)=>{
+   
+   
 
-module.exports = { getReporteNoficacionesOffer };
+
+
+}
+
+
+module.exports = { getReporteNoficacionesOffer, SendNotification};
