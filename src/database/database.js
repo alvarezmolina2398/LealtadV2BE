@@ -1,19 +1,15 @@
 const { Sequelize } = require("sequelize");
 
+
 const sequelize = new Sequelize(
-    "lealtadV2",
+    "db0csmijjuvbuo",
+    "uhxm0qdfefvou",
     "DesaSolUn",
-    "SolUn123",
-    //   "root",
-    // "admin",
     {
-        host: "35.232.144.153",
-
-        // host: 'localhost',
+        host: "34.174.109.166",
         dialect: "mysql",
-    }
+}
 );
-
 const pronet = new Sequelize("pronet", "devusr", "efHBxdcV", {
     host: "172.16.50.27",
     port: "3306",
