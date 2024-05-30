@@ -79,7 +79,7 @@ const AddPromocion = async (req, res) => {
 
             for (let index = 0; index < cantidad;) {
                 let random = Math.floor(Math.random() * cantCodigos);
-                console.log("bubleeeeeeeeeeeee.........",random);
+               
                 if (codigos[random].esPremio === 0) {
                     codigos[random] = { ...codigos[random], esPremio: 1 };
                     index++;
@@ -87,12 +87,14 @@ const AddPromocion = async (req, res) => {
             }
         });
 
+  
+
         const nuevoArrarPremios = premios.map((item) => ({
             ...item,
             idPromocion: id,
             valor: item.valor || 0, // Proporciona un valor por defecto para 'valor'
             nombre: item.nombre || 'Desconocido', // Proporciona un valor por defecto para 'nombre'
-            cupon: item.cupon || '', // Proporciona un valor por defecto para 'cupon'
+            cupon: item.cupon.cupon || '', // Proporciona un valor por defecto para 'cupon'
             porcentaje: item.porcentaje || 0 // Proporciona un valor por defecto para 'porcentaje'
         }));
 

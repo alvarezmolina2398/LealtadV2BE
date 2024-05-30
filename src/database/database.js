@@ -17,19 +17,29 @@
 const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
-    "lealtadV2",
-    // "DesaSolUn",
-    // "SolUn123",
-      "root",
-    "admin",
+    "db0csmijjuvbuo",
+    "uhxm0qdfefvou",
+    "DesaSolUn",
     {
+        host: "34.174.109.166",
+        dialect: "mysql",
+}
+);
+
+// const sequelize = new Sequelize(
+//     "lealtadV2",
+//     // "DesaSolUn",
+//     // "SolUn123",
+//       "root",
+//     "admin",
+//     {
   
 
-        host: 'localhost',
-        port: "3006",
-        dialect: "mysql",
-    }
-);
+//         host: 'localhost',
+//         port: "3006",
+//         dialect: "mysql",
+//     }
+// );
 
 
 const pronet = new Sequelize("pronet", "devusr", "efHBxdcV", {
