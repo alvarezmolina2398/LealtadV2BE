@@ -64,26 +64,28 @@ const getCustomerById = async (customerid) => {
   try {
     // const { customerid, fechaInicio, fechaFin } = req.body;
     const customerInfo = await pronet.query(`
-      SELECT 
-        tur.mname,
-        CONCAT(tur.fname, ' ', tur.lname) nombreref, 
-        tur.userno telref, 
-        tur.userid 
-      FROM 
-        genesis.participante_campana pc 
-      LEFT JOIN 
-        pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante 
-      LEFT JOIN 
-        genesis.referidos_ingresos rin ON rin.idreferidos_ingresos = pc.idTransaccion 
-      LEFT JOIN 
-        pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario 
-      LEFT JOIN 
-        pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
-      WHERE 
-        pc.fechaParticipacion BETWEEN '${fechaInicioFormatted}' AND '${fechaFinFormatted}'
-        AND pc.idCampania in (${customerid})
-        ORDER BY 
-    tur.userid DESC LIMIT 5;
+    SELECT 
+    cu.customer_id,
+    cu.customer_reference,
+    cu.telno,
+    ui.lname,
+    ui.fname,
+    cu.fk_userid,
+    ri.idcodigos_referidos,
+    ri.idUsuario
+FROM 
+    pronet.tbl_customer cu
+JOIN 
+    pronet.tblUserInformation ui ON cu.telno = ui.userno
+    LEFT JOIN    
+    genesis.codigos_referidos ri on cu.fk_userid = ri.idcodigos_referidos
+    LEFT JOIN 
+    genesis.referidos_ingresos ru on ri.idcodigos_referidos = ru.idcodigos_referidos
+    LEFT JOIN 
+    pronet.tblUserInformation ra on ru.idcodigos_referidos = ra.userid
+WHERE 
+    cu.customer_id = (${customerid}) 
+    
         
     `, {
       type: pronet.QueryTypes.SELECT

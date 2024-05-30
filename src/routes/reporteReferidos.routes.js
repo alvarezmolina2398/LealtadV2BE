@@ -8,7 +8,7 @@ const path = 'reporteReferidos';
 //rutas del proyecto
 router.post(`/${path}/referidos`,getParticipaciones);
 
-router.post(`/${path}/customer`,getCustomerById);
+// router.post(`/${path}/customer`,getCustomerById);
 // router.get(`/${path}/participaciones`,getParticipacionesFechas);
 
 //exportacion de rutas

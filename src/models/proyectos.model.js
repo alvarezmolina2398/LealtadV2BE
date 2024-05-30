@@ -78,10 +78,14 @@
 
    // })();
 
-
-   // Departamento_Proyectos.sync({ alter: true }).then(() => {
+    // Departamento_Proyectos.sync({ alter: true }).then(() => {
    //     console.log('tabla TransaccionPremio creada');
    // });
+
+
+//    Campania.sync({ alter: true }).then(() => {
+//        console.log('tabla Campania creada');
+//    });
 
 
    module.exports = { Proyectos }
