@@ -38,8 +38,8 @@ permisoUsuario.belongsTo(Pagina, {
     targetId: 'id',
 });
 
-/*(async () => {
-    await sequelize.sync({ force: true });
- })();*/
+// (async () => {
+//     await Pagina.sync({ alter: true });
+//  })();
 
 module.exports = {Pagina}

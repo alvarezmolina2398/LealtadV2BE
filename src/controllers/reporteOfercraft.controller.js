@@ -157,4 +157,4 @@ const getCustomerInfoById = async(customerId) => {
 
 
 
-module.exports = { getUsuariosNotificacionesOfferCraftSel };
+module.exports = { getUsuariosNotificacionesOfferCraftSel, getCustomerInfoById };

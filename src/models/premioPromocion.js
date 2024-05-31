@@ -49,7 +49,7 @@ DetallePromocion.belongsTo(PremioPromocion,{
 
 
 // (async () => {
-//     await sequelize.sync({ force: false });
+//     await PremioPromocion.sync({ alter: false });
 // //     // Code here
 // })();
 

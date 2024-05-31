@@ -22,9 +22,9 @@ const CangePromocion = sequelize.define('cangepromocions', {
     }
 }, {timestamps: false});
 
-//(async () => {
-   //  await sequelize.sync({ force: false });
-      //Code here
-//})();
+// (async () => {
+//     await CangePromocion.sync({ alter: false });
+//     //   Code here
+// })();
 
 module.exports = {CangePromocion, sequelize}

@@ -1,31 +1,33 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
-const Profecion = sequelize.define('profesiones', {
+
+const CampaniasNumeros = sequelize.define('campanianumeros', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    descripcion: {
-        type: DataTypes.STRING(150),
-        allowNull: false,
-
-        
-    }, proyecto: {
+    idCampania: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    estado : {
+    numero : {
+        type: DataTypes.STRING(20),
+        allowNull: false
+    },
+    estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1
     }
 },{timestamps: false});
 
 
-
 // (async () => {
-//     await Profecion.sync({ alter: false });
+//     await CampaniasNumeros.sync({ alter: true });
+//     // Code here
 //  })();
 
-module.exports = {Profecion}
+
+
+module.exports = {CampaniasNumeros}

@@ -100,6 +100,10 @@ const Campania = sequelize.define('campania', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    emails: {
+        type: DataTypes.STRING(1000),
+        allowNull: true,
     }
 
 },{timestamps: false});
@@ -136,14 +140,21 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    foreignKey: 'idCampania',
-    targetId: 'id',
+    as: 'participaciones',
+    foreignKey: {
+        name: 'idCampania',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
 });
 
-Participacion.belongsTo(Campania, {
+Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
+    allowNull: false
 });
+
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
@@ -168,17 +179,29 @@ Configuraciones.belongsTo(Campania, {
 
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
 
-// (async () => {
-//     await sequelize.sync({ alter: true });
-//     // Code here
-// })();
+// Campania.hasMany(Configuraciones, {
+//     foreignKey: 'idCampania',
+//     sourceKey: 'id'
+// });
+
+// Configuraciones.belongsTo(Campania, {
+//     foreignKey: 'idCampania',
+//     targetId: 'id',
+// });
 
 
+// Campania.sync({ alter: true }).then(() => {
+//     console.log('tabla campania creada');
+// });
 
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// });
 
 // Etapa.sync({ alter: true }).then(() => {
-//     console.log('Tabla Etapa creada o actualizada correctamente');
+//     console.log('tabla Campania creada');
 // });
+
 
 
 module.exports={Campania}

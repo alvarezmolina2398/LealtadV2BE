@@ -100,8 +100,13 @@ Configuraciones.belongsTo(Promocion, {
 
 
 // (async () => {
-//     await sequelize.sync({ force: true });
+//     await Promocion.sync({ alter: true });
 //     // Code here
-// })();
+// // })();
+
+
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('tabla Campania creada');
+// });
 
 module.exports = { Promocion, sequelize }

@@ -7,10 +7,11 @@ const { TransaccionPremio } = require("../models/transaccionPremio");
 const { Transaccion } = require("../models/transaccion");
 const { Participacion } = require("../models/Participacion");
 const { Premiacion } = require("../models/premiacion");
-const { asignarCategoria } = require("../models/asignarCategoria");
+const { Promocion } = require("../models/promocion");
 const { Campania } = require("../models/campanias");
 const { PremioCampania } = require("../models/premioCampania");
 const { Etapa } = require("../models/etapa");
+
 
 
 const postDatosCupon = async (req, res) => {
@@ -18,10 +19,10 @@ const postDatosCupon = async (req, res) => {
     const { promocion, fechaInicial, fechaFinal } = req.body;
 
     const fechafin = new Date(fechaFinal);
-    const fechaIni = new Date(fechaInicial);
+    const fechaInicio = new Date(fechaInicial);
     
 
-    console.log("estoy buscando inicial", fechaIni);
+    console.log("estoy buscando inicial", fechaInicio);
     console.log("fecha final", fechafin)
     
     const trxAll = await CangePromocion.findAll({
@@ -37,12 +38,6 @@ const postDatosCupon = async (req, res) => {
                 model: Etapa,
                 include: {
                   model: Campania,
-                  // include: {
-                  //   model: Participacion,
-                  //   // include: {
-                  //   //   model: Transaccion
-                  //   // }
-                  // }
                 }
               },
              },
@@ -53,13 +48,11 @@ const postDatosCupon = async (req, res) => {
         },
       },
       where: {
-        fecha: {
-          [Op.gte]: fechaIni,
-        },
-        fecha: {
-          [Op.lte]: fechafin,
-        },
-      },
+        [Op.and]: [
+          { fecha: { [Op.gte]: fechaInicio } },
+          { fecha: { [Op.lte]: fechaFinal } }
+        ]
+      }
     });
     res.json(trxAll)
 

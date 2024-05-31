@@ -14,6 +14,10 @@ const Categoria = sequelize.define('categoria', {
         type: DataTypes.STRING(150),
         allowNull: false
     },
+    idTransaccion: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -37,7 +41,7 @@ asignarCategoria.belongsTo(Categoria,{
 
 
 // (async () => {
-//     await sequelize.sync({ force: true });
+//     await Categoria.sync({ alter: true });
 //     // Code here
 //  })();
 

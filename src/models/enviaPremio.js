@@ -24,8 +24,8 @@ const EnviaPremio = sequelize.define('enviapremios', {
 
 EnviaPremio.belongsTo(Campania, { foreignKey: 'campania', as: 'campaign' });
 
-/*(async () => {
-    await sequelize.sync({ force: false });
- })();*/
+// (async () => {
+//     await EnviaPremio.sync({ alter: true });
+//  })();
 
 module.exports = {EnviaPremio}

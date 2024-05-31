@@ -40,7 +40,8 @@ const AddCampania = async(req, res) =>{
             idProyecto,
             etapas,
             bloqueados,
-            participacion
+            participacion,
+            emails,
         } = req.body;
     
         const newCampains = await Campania.create({
@@ -66,6 +67,7 @@ const AddCampania = async(req, res) =>{
             esArchivada,
             restriccionUser,
             idProyecto,
+            emails
         },{transaction});
         const { id } = newCampains.dataValues;
 
@@ -112,7 +114,7 @@ const AddCampania = async(req, res) =>{
         console.error('Error al crear la campaña:', error);
         res.status(500).json({ error: 'Ha sucedido un error al intentar crear la campaña', details: error.message });
     }
-    
+      
 } 
 
 const GetCampania = async (req, res) => {
@@ -170,11 +172,12 @@ const UpdateCampania = async (req, res) => {
             idProyecto,
             etapas,
             bloqueados,
-            participacion
+            participacion,
+            emails
         } = req.body;
 
         // Verificar si la campaña existe
-        const campania = await Campania.findByPk(id);
+        const campania = await Campania.findByPk(id, { transaction });
         if (!campania) {
             throw new Error('La campaña no existe');
         }
@@ -202,10 +205,11 @@ const UpdateCampania = async (req, res) => {
             observaciones,
             esArchivada,
             restriccionUser,
-            idProyecto
+            idProyecto,
+            emails
         }, { transaction });
 
-     // Actualizar o crear etapas
+        // Actualizar o crear etapas
         if (Array.isArray(etapas)) {
             for (const etapa of etapas) {
                 const [etapaInstancia, etapaCreada] = await Etapa.findOrCreate({
@@ -289,168 +293,13 @@ const UpdateCampania = async (req, res) => {
 
         res.json({ code: 'ok', message: 'Campaña actualizada con éxito', data: campaniaActualizada });
     } catch (error) {
-        await transaction.rollback();
+        if (transaction.finished !== 'commit') {
+            await transaction.rollback();
+        }
         console.error('Error al actualizar la campaña:', error);
         res.status(500).json({ error: 'Ha sucedido un error al intentar actualizar la campaña', details: error.message });
     }
 };
-
-
-/*
-//accion para insertar una nueva trnasaccion
-const AddCampania = async (req, res) => {
-    const {
-        fechaRegistro,
-        fechaInicio,
-        fechaFin,
-        nombre,
-        descripcion,
-        edadInicial,
-        edadFinal,
-        sexo,
-        tipoUsuario,
-        tituloNotificacion,
-        descripcionNotificacion,
-        imgPush,
-        imgAkisi,
-        etapas,
-        Participacion,
-        Bloqueados,
-        maximoParticipaciones,
-        horaReporte,
-        diaReporte,
-        emails,
-    } = req.body;
-
-    try {
-        const newCampains = await Campania.create({
-            fechaRegistro: fechaRegistro || null,
-            // fechaRegistro,
-            fechaCreacion: new Date(),
-            fechaInicio,
-            fechaFin,
-            nombre,
-            descripcion,
-            edadInicial,
-            edadFinal,
-            sexo,
-            tipoUsuario,
-            tituloNotificacion,
-            descripcionNotificacion,
-            imgPush,
-            imgAkisi,
-            horaReporte,
-            diaReporte,
-            emails,
-            estado: 1,
-            maximoParticipaciones
-        });
-        const { id } = newCampains.dataValues;
-
-        etapas.forEach(element => {
-            element.idCampania = id;
-            AddEtapas(element);
-        });
-
-        Participacion.forEach(element => {
-            element.idCampania = id;
-            addParticipantes(element);
-        });
-
-        Bloqueados.forEach(element => {
-            element.idCampania = id;
-            addParticipantesBloqueados(element);
-        });
-
-        res.json({ code: 'ok', message: 'Campania creada  con exito' });
-
-    } catch (error) {
-        console.error("e" + error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
-    }
-
-}
-
-
-const AddEtapas = async(etapa) => {
-    const { nombre, descripcion, orden, idCampania, tipoParticipacion, parametros, premios, presupuestos, intervalo, periodo, valorAcumulado } = etapa;
-    const periodoValue = periodo ? parseInt(periodo) : null;
-    const intervaloValue = intervalo ? parseInt(intervalo) : null;
-    const valorValue = periodo ? parseInt(valorAcumulado) : null;
-    const newEtatpa = await Etapa.create({
-        nombre,
-        descripcion,
-        orden,
-        idCampania,
-        tipoParticipacion,
-        intervalo,
-        periodo,
-        intervalo: intervaloValue,
-        periodo: periodoValue,
-        valorAcumulado: valorValue,
-        // valorAcumulado,
-        estado: 1
-    });
-
-    const { id } = newEtatpa.dataValues;
-
-    await AddPremios(premios, id)
-    await AddParametros(parametros, id)
-    await AddPresupuesto(presupuestos, id)
-}
-
-const addParticipantes = async(Participacion) => {
-
-    console.log(Participacion)
-    const { numero, idCampania, estado } = Participacion;
-
-    await Participantes.create({
-        numero,
-        idCampania,
-        estado
-    })
-}
-
-const addParticipantesBloqueados = async(participacionBloqueados) => {
-
-    //console.log(participacionBloqueados)
-    const { numero, idCampania, estado } = participacionBloqueados;
-
-    await Bloqueados.create({
-        numero,
-        idCampania,
-        estado
-    });
-
-}
-
-
-const AddParametros = async(parametros, idEtapa) => {
-
-    // console.log(parametros)
-    parametros.map((element, index) => {
-        parametros[index].idEtapa = idEtapa
-    });
-    await Parametro.bulkCreate(parametros);
-}
-
-const AddPremios = async(premios, idEtapa) => {
-    premios.map((element, index) => {
-        premios[index].idEtapa = idEtapa
-    });
-    await PremioCampania.bulkCreate(premios);
-}
-
-
-const AddPresupuesto = async(presupuestos, idEtapa) => {
-
-    // console.log(presupuestos)
-    presupuestos.map((element, index) => {
-        presupuestos[index].idEtapa = idEtapa
-    });
-    await Presupuesto.bulkCreate(presupuestos);
-}*/
 
 
 const GetcampanasActivasById = async (req, res) => {
@@ -481,7 +330,6 @@ const GetcampanasActivasById = async (req, res) => {
     }
 }
 
-
 //metodo para pausar campanias (La uso)
 const PausarCampaña = async (req, res) => {
 
@@ -508,6 +356,7 @@ const PausarCampaña = async (req, res) => {
     }
 }
 
+//metodo para activas campanias (La uso)
 //metodo para activas campanias (La uso)
 const ActivarCampaña = async (req, res) => {
 
@@ -562,66 +411,6 @@ const DeleteCampania = async (req, res) => {
 
 }
 
-
-
-/*
-//update verificar para la edicion 
-const UpdateCampania = async (req, res) => {
-
-    try {
-
-        const {
-            fechaRegistro,
-            fechaInicio,
-            fechaFin,
-            nombre,
-            descripcion,
-            edadInicial,
-            edadFinal,
-            sexo,
-            tipoUsuario,
-            tituloNotificacion,
-            descripcionNotificacion,
-            imgPush,
-            imgAkisi,
-            maximoParticipaciones,
-            horaReporte,
-            diaReporte,
-            emails,
-        } = req.body;
-
-        const { id } = req.params;
-
-        await Campania.update({
-            fechaRegistro,
-            fechaInicio,
-            fechaFin,
-            nombre,
-            descripcion,
-            edadInicial,
-            edadFinal,
-            sexo,
-            tipoUsuario,
-            tituloNotificacion,
-            descripcionNotificacion,
-            imgPush,
-            imgAkisi,
-            maximoParticipaciones
-        }, {
-
-            where: {
-                id: id
-            }
-        });
-
-        res.json({ code: 'ok', message: 'Campaña Actualizada con exito.' });
-
-    } catch (error) {
-        console.log(error)
-        res.status(403);
-        res.send({ errors: 'Ha ocurrido un error al intentar actualizar la etapa.' });
-    }
-}*/
 
 const GetcampanasActivas = async (req, res) => {
     try {
@@ -695,9 +484,6 @@ const TestearTransaccion = async(req, res) => {
             const dataEtapaActual = etapas.find(item => item.orden === etapaActual);
             const { parametros, presupuestos, premioCampania: premios } = dataEtapaActual;
 
-
-
-
             const validacionPresupuesto = {
                 validacion: 1,
                 presupuesto: parseFloat(presupuestos[0].valor),
@@ -729,9 +515,6 @@ const TestearTransaccion = async(req, res) => {
                 enviaPremio = false;
             }
 
-
-
-
             //validacion fecha registro
             let registroValidacion = { icono: 'calendar', nombre: 'Fecha Registro', 'inicial': format(datosPersonales.fechaRegistro), 'valorActual': format(new Date(element.fechaRegistro)) };
 
@@ -741,7 +524,6 @@ const TestearTransaccion = async(req, res) => {
                 registroValidacion.valido = 0;
                 enviaPremio = false;
             }
-
 
             //validacion del sexo del usuario
             let generos = ['Todos', 'Masculino', 'Femenino']
@@ -753,7 +535,6 @@ const TestearTransaccion = async(req, res) => {
                 sexoValidacion.valido = 0;
                 enviaPremio = false;
             }
-
 
             //validacion Tipo Usuarop
             let tiposUsuarios = ["TODOS", "Adquiriente", "Final"]
@@ -769,7 +550,6 @@ const TestearTransaccion = async(req, res) => {
 
 
             let tranasccionesX = parametros.filter(x => x.tipoTransaccion === 't');
-
 
             let transaccionesCampanias = parametros.filter(x => x.tipoTransaccion === 'c');
 
@@ -789,10 +569,6 @@ const TestearTransaccion = async(req, res) => {
             for (const param of transaccionesCampanias) {
 
             }
-
-
-
-
 
 
             otrasValidaciones = [...otrasValidaciones, edadValidacion, registroValidacion, sexoValidacion, tipoUsuarioValidacion];
@@ -989,28 +765,6 @@ const ParticipacionRecurente = async(transaccionesCampanias, transaccion, idCamp
     }
 
 
-    // if (transaccion.valor > ValorMaximo) {
-    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'Ha excedido el valor Maximo Permitido' }
-    // }
-
-    // if (transaccion.valor < ValorMinimo) {
-    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'No ha logrado alcanzar el valor minimo Establecido' }
-    // }
-
-
-
-    // const participacionesActuales = await cantidadParticipacionCampaniaEtapa(idTransaccion, tipoTransaccion, etapaActual, idCampania);
-
-    // if (participacionesActuales >= limiteParticipacion) {
-    //     return { premiado: false, guardaParticipacion: false, result: false, message: 'ha superado el maximo de participaciones' }
-    // }
-
-
-    // if ((participacionesActuales + 1) < limiteParticipacion) {
-    //     return { premiado: false, guardaParticipacion: true, result: false, message: 'Faltan participaciones para otorgar premio ('+ parseInt(participacionesActuales + 1) +'/'+limiteParticipacion+')' }
-    // }
-
-
     return { premiado: true, guardaParticipacion: true, result: true }
 
 }
@@ -1052,37 +806,6 @@ const ParticipacionValorAcumulado = async(transaccionesCampanias, transaccion, i
 
 const GetParticipacionsXdias = async(dias, startDate, endDate) => {
     try {
-
-
-        // const participaciones = await Participacion.findAll({
-        //     attributes: [
-        //         [Sequelize.literal(`DATE_FORMAT(fecha, '%Y-%m-%d')`), 'fecha'],
-        //         [Sequelize.fn('COUNT', Sequelize.col('id')), 'cantidad']
-        //     ],
-        //     where: {
-        //         fecha: {
-        //             [Op.between]: [startDate, endDate] // Seleccionar registros dentro del rango de fechas
-        //         }
-        //     },
-        //     group: [Sequelize.literal(`FLOOR(DATEDIFF(DATE_FORMAT(fecha, '%Y-%m-%d'), '${startDate}') / ${dias})`)]
-
-        // });
-
-
-
-        // let index = 0;
-        // let actuales = [];
-        // for (const item of participaciones) {
-        //     const { fecha, cantidad } = item.dataValues;
-
-        //     console.log(fecha, cantidad)
-        //     index++;
-        // }
-
-
-        // return 0;
-
-
         const registros = await Participacion.findAll({
             where: {
                 fecha: {
@@ -1134,9 +857,6 @@ const GetParticipacionsXdias = async(dias, startDate, endDate) => {
 
 const GetValorAcumulado = async(idCampania, etapa, ValorAnterior, customerId) => {
     try {
-
-
-
 
         if (ValorAnterior == 1) {
             const cantidad = await Participacion.sum('valor', {
@@ -1216,11 +936,6 @@ const GetTransaccionesXCategoria = async(idCategoria) => {
         return [];
     }
 }
-
-
-
-
-
 
 module.exports = {
     AddCampania,

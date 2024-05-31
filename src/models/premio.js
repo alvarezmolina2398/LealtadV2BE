@@ -108,7 +108,7 @@ Premiacion.belongsTo(Premio, {
 
 
 //  (async () => {
-//     await sequelize.sync({ force: true });
+//     await Premio.sync({ alter: true });
 //     // Code here
 //  })();
 

@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize');
 const {sequelize} = require('../database/database');
+
 const {Municipio} = require('./municipio');
 const {Departamento_Proyectos} = require('./departamento_proyectos');
 
@@ -9,12 +10,10 @@ const Departamento = sequelize.define('departamento', {
         primaryKey: true,
         autoIncrement: true,
     },
-
     nombre: {
         type: DataTypes.STRING(150),
         allowNull: false
     }, 
-    
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -25,7 +24,6 @@ const Departamento = sequelize.define('departamento', {
     }
 }, {timestamps: false}); 
 
-
 Departamento.hasMany(Municipio,{
     foreignKey: 'idDepartamento',
     sourceKey: 'id'
@@ -34,7 +32,6 @@ Departamento.hasMany(Municipio,{
 Municipio.belongsTo(Departamento, {
     foreignKey: 'idDepartamento',
     targetId: 'id',
-    
 });
 
 Departamento.hasMany(Departamento_Proyectos,{

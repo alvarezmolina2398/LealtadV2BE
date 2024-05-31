@@ -52,4 +52,17 @@ permisoUsuario.belongsTo(Rol, {
     targetId: 'id',
 });
 
+// (async () => {
+//     await Campania.sync({ alter: true });
+//  })();
+
+// (async ()=> {
+//     await Rol.sync({alter:true})
+//  })()
+
+
+// Usuario.sync({ alter: true }).then(() => {
+//     console.log('tabla Campania creada');
+// });
+
 module.exports = {Rol}

@@ -43,7 +43,7 @@ Transaccion.belongsTo(Columna, {
 
 
 // (async () => {
-//    await sequelize.sync({ force: true });
+//    await Columna.sync({ true: true });
 //   //  Code here
 //   })();
 
