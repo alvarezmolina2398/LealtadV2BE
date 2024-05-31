@@ -94,7 +94,11 @@ Premiacion.belongsTo(Premio, {
 
 });
 
-// 
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
+// });
+
+
 
 // PremioPromocion.sync({ alter: true }).then(() => {
 //     console.log('tabla PremioPromocion creada');

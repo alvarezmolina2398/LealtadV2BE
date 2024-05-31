@@ -58,8 +58,6 @@ const Promocion = sequelize.define('promocions', {
     }
 }, { timestamps: false });
 
-
-
 Promocion.hasMany(DetallePromocion, {
     foreignKey: 'idPromocion',
     sourceKey: 'id'
@@ -68,9 +66,7 @@ Promocion.hasMany(DetallePromocion, {
 DetallePromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
-
 
 Promocion.hasMany(PremioPromocion, {
     foreignKey: 'idPromocion',
@@ -80,7 +76,6 @@ Promocion.hasMany(PremioPromocion, {
 PremioPromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
 
 Promocion.hasMany(Configuraciones, {
@@ -104,4 +99,4 @@ Configuraciones.belongsTo(Promocion, {
 //     // Code here
 // })();
 
-module.exports = { Promocion, sequelize }
+module.exports = { Promocion, sequelize };

@@ -18,6 +18,7 @@ const PremioPromocion = sequelize.define('premiopromocions', {
         type: DataTypes.INTEGER,
         allowNull: false
     }, 
+
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
@@ -44,6 +45,10 @@ DetallePromocion.belongsTo(PremioPromocion,{
     foreignKey: 'idPremioPromocion',
     targetId: 'id',
 });
+
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
+// });
 
 
 
