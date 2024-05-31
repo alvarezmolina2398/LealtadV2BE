@@ -13,7 +13,7 @@ const GetUsuarios = async (req, res) => {
             where: {
                 estado: 1
             },
-            attributes: ["username", "nombre", "telefono", "emailNotificacion", "idRol"],
+            attributes: ["username", "nombre", "telefono", "emailNotificacion", "idRol", "tipoUsuario"],
         })
 
         res.json(usr)

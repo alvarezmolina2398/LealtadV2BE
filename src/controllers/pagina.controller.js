@@ -12,13 +12,13 @@ const GetPaginas = async (req, res) => {
         })
         res.json(trx)
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de páginas.' });
+            res.status(403)
+            res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de páginas.' });
+        }
     }
-}
 
-//controllador para agregar nuevas paginas
-const AddPagina = async (req, res) => {
+    //controllador para agregar nuevas paginas
+    const AddPagina = async (req, res) => {
     try {
         const { descripcion, idMenu, path, icono } = req.body;
         await Pagina.create({
