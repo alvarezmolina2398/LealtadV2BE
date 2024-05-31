@@ -1,73 +1,114 @@
-const { Proyectos } = require('../models/proyectos.model.js')
+const { Proyectos } = require('../models/proyectos.model.js');
+const { Departamento_Proyectos } = require('../models/departamento_proyectos');
+const { Departamento } = require('../models/departamento');
+const { Municipio } = require('../models/municipio');
 
 const GetProjects = async (req, res) => {
     try {
-        const trx = await Proyectos.findAll({
+        const proyectos = await Proyectos.findAll({
             where: {
                 estado: 1
-            } 
-        })
-        res.json(trx)
+            }
+        });
+        res.json(proyectos);
     } catch (error) {
-        res.status(403)
-        console.log(error)
-        res.send({ errors: 'Ha sucedido un error al obtener los proyectos.' });
+        console.log(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al obtener los proyectos.' });
     }
-
-}
-
+};
 const AddProject = async (req, res) => {
-
     try {
         console.log('Data recibida en AddProject:', req.body);
-        console.log(req.body);
-        const { descripcion, ruta } = req.body;
-        await Proyectos.create({
+        const { descripcion, ruta, localidades } = req.body;
+        
+        // Crear el proyecto
+        const proyecto = await Proyectos.create({
             descripcion,
             ruta
-        })
+        });
+
+        // Obtener el ID del proyecto recién creado
+        const proyectoId = proyecto.id;
+
+        // Crear nuevas entradas en la tabla departamento_proyectos para los departamentos asociados al proyecto
+        for (const localidad of localidades) {
+            await Departamento_Proyectos.create({
+                idDepartamento: localidad.departamentoId,
+                idProyecto: proyectoId,
+                idMunicipio: localidad.municipioId
+            });
+        }
+
         res.json({ code: 'ok', message: 'Proyecto creado con éxito.' });
-        console.log('Data recibida en AddProject:', req.body);
-
+        console.log('Proyecto creado con éxito:', proyecto);
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar agregar un nuevo proyecto.' });
+        console.log(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar agregar un nuevo proyecto.' });
     }
+};
 
-}
+
+
+
+
+
 
 const UpdateProject = async (req, res) => {
-
     try {
-        const { descripcion, ruta } = req.body;
-        const { id } = req.params
+        console.log('Data recibida en UpdateProject:', req.body);
+        const { id, descripcion, ruta, localidades } = req.body;
+        
+        // Verificar que el ID del proyecto esté presente en la solicitud
+        if (!id) {
+            return res.status(400).json({ errors: 'El ID del proyecto es requerido.' });
+        }
 
-        console.log('ID:', id);
-        console.log('Descripción:', descripcion);
-        console.log('Ruta:', ruta);
+        // Encontrar el proyecto existente
+        const proyecto = await Proyectos.findByPk(id);
+        
+        if (!proyecto) {
+            return res.status(404).json({ errors: 'Proyecto no encontrado.' });
+        }
 
-        await Proyectos.update({
-            descripcion,
-            ruta
-        }, {
+        // Actualizar el proyecto
+        proyecto.descripcion = descripcion;
+        proyecto.ruta = ruta;
+        await proyecto.save();
+
+        // Eliminar las entradas antiguas en la tabla departamento_proyectos
+        await Departamento_Proyectos.destroy({
             where: {
-                id: id
+                idProyecto: id
             }
         });
 
+        // Crear nuevas entradas en la tabla departamento_proyectos para los departamentos asociados al proyecto
+        for (const localidad of localidades) {
+            await Departamento_Proyectos.create({
+                idDepartamento: localidad.departamentoId,
+                idProyecto: id,
+                idMunicipio: localidad.municipioId
+            });
+        }
 
-        res.json({ code: 'ok', message: 'Proyecto actualizado con éxito' });
-
+        res.json({ code: 'ok', message: 'Proyecto actualizado con éxito.' });
+        console.log('Proyecto actualizado con éxito:', proyecto);
     } catch (error) {
-        res.status(403).send({ errors: 'Ha sucedido un  error al intentar actualizar el proyecto.' });
+        console.log(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar actualizar el proyecto.' });
     }
+};
 
-}
+
+
+
+
+
+
 
 const DeleteProject = async (req, res) => {
-
     try {
-        const { id } = req.params
+        const { id } = req.params;
         console.log("ID del proyecto a eliminar:", id);
         await Proyectos.update({
             estado: 0
@@ -77,27 +118,34 @@ const DeleteProject = async (req, res) => {
             }
         });
 
-
         res.json({ code: 'ok', message: 'Proyecto inhabilitado con éxito.' });
-
     } catch (error) {
-        res.status(403).send({ errors: 'Ha sucedido un  error al intentar realizar el proyecto.' });
+        console.log(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar el proyecto.' });
     }
-
-}
-
+};
 
 const GetProjectByID = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Proyectos.findByPk(id);
-        res.json(project)
+        const project = await Proyectos.findByPk(id, {
+            include: {
+                model: Departamento_Proyectos,
+                include: [
+                    {
+                        model: Departamento
+                    },
+                    {
+                        model: Municipio
+                    }
+                ]
+            }
+        });
+        res.json(project);
     } catch (error) {
-        console.log(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar el proyecto.' });
+        console.log(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar el proyecto.' });
     }
+};
 
-}
-
-module.exports = { GetProjects, AddProject, UpdateProject, DeleteProject, GetProjectByID }
+module.exports = { GetProjects, AddProject, UpdateProject, DeleteProject, GetProjectByID };

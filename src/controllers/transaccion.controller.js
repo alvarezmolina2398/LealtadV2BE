@@ -114,6 +114,23 @@ const GetTransaccionById = async (req, res) => {
 
 
 
+const GetTransaccionscount = async (req, res) => {
+    try {
+        const trxCount = await Transaccion.count({
+            where: {
+                estado: 1
+            }
+        });
+        res.json({ cantidad: trxCount });
+    } catch (error) {
+        res.status(403);
+        res.send({ errors: 'Ha sucedido un error al intentar realizar la Transaccion.' });
+    }
+};
 
 
-module.exports = { GetTransaccions, AddTransaccion, UpdateTransaccion, DeleteTransaccion, GetTransaccionById }
+
+
+
+
+module.exports = { GetTransaccions, AddTransaccion, UpdateTransaccion, DeleteTransaccion, GetTransaccionById,GetTransaccionscount }

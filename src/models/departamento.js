@@ -46,15 +46,13 @@ Departamento_Proyectos.belongsTo(Departamento, {
     foreignKey: 'idDepartamento',
     targetKey: 'id',
 });
+
 //  (async () => {
 //      await Departamento.sync({ alter: true });
    
 //  })();
 
-// (async () => {
-//     await Departamento.sync({ alter: true });
-//     // Code here
-// })();
+
 
 // Departamento_Proyectos.sync({ alter: true }).then(() => {
 //     console.log('tabla TransaccionPremio creada');

@@ -2,6 +2,8 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { DetallePromocion } = require("../models/detallePromocion");
 const { PremioPromocion } = require('./premioPromocion');
+const { Configuraciones } = require('./configuraciones');
+
 
 const Promocion = sequelize.define('promocions', {
     id: {
@@ -80,6 +82,21 @@ PremioPromocion.belongsTo(Promocion, {
     targetId: 'id',
 
 });
+
+Promocion.hasMany(Configuraciones, {
+    foreignKey: 'idPromocion',
+    sourceKey: 'id'
+});
+
+Configuraciones.belongsTo(Promocion, {
+    foreignKey: 'idPromocion',
+    targetId: 'id',
+});
+
+
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// });
 
 
 // (async () => {
