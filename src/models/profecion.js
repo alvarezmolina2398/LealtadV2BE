@@ -24,8 +24,8 @@ const Profecion = sequelize.define('profesiones', {
 
 
 
-/*(async () => {
-    await sequelize.sync({ force: false });
- })();*/
+// (async () => {
+//     await Profecion.sync({ alter: false });
+//  })();
 
 module.exports = {Profecion}

@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
-
 const Presupuesto = sequelize.define('presupuesto', {
     id: {
         type: DataTypes.INTEGER,
@@ -10,7 +9,7 @@ const Presupuesto = sequelize.define('presupuesto', {
 
     },
     idDepartamento: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(500),
         allowNull: false
     },
     idMunicipio: {
@@ -32,19 +31,13 @@ const Presupuesto = sequelize.define('presupuesto', {
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
-    },
-    idEtapa: {
-        type: DataTypes.INTEGER,
-        allowNull: false
     }
 },{timestamps: false});
-
 
 // (async () => {
 //     await Presupuesto.sync({ alter: true });
 //     // Code here
 //  })();
-
-
+// 
 
 module.exports = {Presupuesto}

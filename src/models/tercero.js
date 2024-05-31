@@ -25,8 +25,8 @@ const Tercero = sequelize.define('tercero', {
     }
 }, {timestamps: false});
 
-/*(async () => {
-    await sequelize.sync({force: false})
-})();*/
+// (async () => {
+//     await Tercero.sync({alter: true})
+// })();
 
 module.exports = {Tercero}

@@ -9,12 +9,14 @@ const { ConfigReferido } = require('../models/configReferidos');
 const { Usuario } = require('../models/usuario');
 const { Op } = require('sequelize');
 
-const getParticipaciones = async (campanasStr, fecha1, fecha2) => {
+const getParticipaciones = async (campanas, fecha1, fecha2) => {
   try {
     // const { fechaInicio, fechaFin, campanas} = req.body;
+    const fechaInicioFormatted = fecha1.toISOString().split('T')[0];
+    const fechaFinFormatted = fecha2.toISOString().split('T')[0];
     let campanias = "";
 
-    campanasStr.forEach((c, index) => {
+    campanas.forEach((c, index) => {
       campanias += index > 0 ? `, '${c}'`: `'${c}'`;
     });
 
@@ -46,20 +48,21 @@ const getParticipaciones = async (campanasStr, fecha1, fecha2) => {
         Usuarios u ON u.nombre = u.username 
       LEFT JOIN 
         participacionreferidos p2 ON p2.referido = cr.codigo
-      WHERE p.fecha BETWEEN '${fecha1}' AND '${fecha2}'
+      WHERE p.fecha BETWEEN '${fechaInicioFormatted}' AND '${fechaFinFormatted}'
       AND c.nombre in (${campanias});		
     `, { type: sequelize.QueryTypes.SELECT });
 
+    // res.status(200).json(participaciones);
     return participaciones;
   } catch (error) {
     console.error('Error al obtener las participaciones:', error);
-    throw new Error('Error al obtener las participaciones');
+    res.status(500).json({ error: 'Error al obtener las participaciones' });
   }
 };
 
-const getCustomerById = async (req, res) => {
+const getCustomerById = async (customerid) => {
   try {
-    const { customerid, fechaInicio, fechaFin } = req.body;
+    // const { customerid, fechaInicio, fechaFin } = req.body;
     const customerInfo = await pronet.query(`
       SELECT 
         tur.mname,
@@ -77,7 +80,7 @@ const getCustomerById = async (req, res) => {
       LEFT JOIN 
         pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
       WHERE 
-        pc.fechaParticipacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
+        pc.fechaParticipacion BETWEEN '${fechaInicioFormatted}' AND '${fechaFinFormatted}'
         AND pc.idCampania in (${customerid})
         ORDER BY 
     tur.userid DESC LIMIT 5;
@@ -86,11 +89,13 @@ const getCustomerById = async (req, res) => {
       type: pronet.QueryTypes.SELECT
     });
 
-    res.status(200).json(customerInfo);
+    // res.status(200).json(customerInfo);
+return customerInfo;
+
   } catch (error) {
-    console.error('Error al obtener la información del cliente:', error);
-    res.status(500).json({ error: 'Error al obtener la información del cliente' });
-  }
+    console.error('Error al obtener participaciones en la base de datos "genesis":', error);
+    throw new Error('Error al obtener participaciones');
+}
 };
 
 module.exports = { getParticipaciones, getCustomerById };

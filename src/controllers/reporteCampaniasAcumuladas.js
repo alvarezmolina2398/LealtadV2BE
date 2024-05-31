@@ -315,7 +315,7 @@ async function isEligibleForCampaign(participant, campaign, userInfo, customerIn
     const { edadInicial, edadFinal, sexo, id: idCampania } = campaign;
     console.log("userInfo para depuración:", userInfo);
 
-    // // Verificar si el número está restringido para la campaña
+    // Verificar si el número está restringido para la campaña
     // console.log(`Número de teléfono recibido: ${userInfo.telno}, tipo: ${typeof userInfo.telno}`);
     // if (!userInfo.telno || userInfo.telno.trim() === "") {
     //     console.log("Número de teléfono no proporcionado o vacío.", userInfo);

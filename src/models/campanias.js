@@ -104,8 +104,7 @@ const Campania = sequelize.define('campania', {
     emails: {
         type: DataTypes.STRING(1000),
         allowNull: true,
-        defaultValue: 0
-    },
+    }
 
 },{timestamps: false});
 
@@ -141,14 +140,21 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    foreignKey: 'idCampania',
-    targetId: 'id',
+    as: 'participaciones',
+    foreignKey: {
+        name: 'idCampania',
+        allowNull: false,
+    },
+    sourceKey: 'id',
+    allowNull: false
 });
 
-Participacion.belongsTo(Campania, {
+Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
+    allowNull: false
 });
+
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
@@ -165,6 +171,10 @@ Configuraciones.belongsTo(Campania, {
     foreignKey: 'idCampania',
     targetId: 'id',
 });
+
+
+
+
 
 
 // Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
@@ -184,15 +194,14 @@ Configuraciones.belongsTo(Campania, {
 //     console.log('tabla campania creada');
 // });
 
-// (async () => {
-//     await Campania.sync({ alter: true });
-//     //Code here
-// })();
-
+// Configuraciones.sync({ alter: true }).then(() => {
+//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// });
 
 // Etapa.sync({ alter: true }).then(() => {
-//     console.log('Tabla Etapa creada o actualizada correctamente');
+//     console.log('tabla Campania creada');
 // });
+
 
 
 module.exports={Campania}

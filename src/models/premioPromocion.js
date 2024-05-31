@@ -21,6 +21,15 @@ const PremioPromocion = sequelize.define('premiopromocions', {
     estado : {
         type: DataTypes.INTEGER,
         defaultValue: 1
+    },
+    cupon: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }, 
+
+    porcentaje: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 },{timestamps: false});
 
@@ -40,7 +49,7 @@ DetallePromocion.belongsTo(PremioPromocion,{
 
 
 // (async () => {
-//     await sequelize.sync({ force: false });
+//     await PremioPromocion.sync({ alter: false });
 // //     // Code here
 // })();
 
