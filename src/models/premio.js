@@ -3,10 +3,12 @@ const { sequelize } = require('../database/database');
 const { Premiacion } = require('./premiacion');
 const { PremioCampania } = require('./premioCampania');
 const { PremioPromocion } = require('./premioPromocion');
+const { Participacion } = require('./Participacion');
 
 
 
-const Premio = sequelize.define('premio', {
+
+const Premio = sequelize.define('premios', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -26,26 +28,26 @@ const Premio = sequelize.define('premio', {
     },
     link: {
         type: DataTypes.STRING(500),
-        allowNull:true
+        allowNull: true
     },
     claveSecreta: {
         type: DataTypes.STRING(500),
-        allowNull:true
+        allowNull: true
     },
-    estado : {
+    estado: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
-        allowNull:false
+        allowNull: false
     },
     idTransaccion: {
         type: DataTypes.INTEGER,
         allowNull: true
     }
 
-},{timestamps: false});
+}, { timestamps: false });
 
 
-Premio.hasMany(PremioCampania,{
+Premio.hasMany(PremioCampania, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
 });
@@ -53,11 +55,23 @@ Premio.hasMany(PremioCampania,{
 PremioCampania.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
 
-Premio.hasMany(PremioPromocion,{
+Premio.hasMany(Participacion, {
+    foreignKey: 'idPremio',
+    sourceKey: 'id'
+});
+Participacion.belongsTo(Premio, {
+    foreignKey: 'idPremio',
+    targetId: 'id',
+
+});
+
+
+
+Premio.hasMany(PremioPromocion, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
 });
@@ -65,19 +79,31 @@ Premio.hasMany(PremioPromocion,{
 PremioPromocion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
 
-Premio.hasMany(Premiacion,{
+Premio.hasMany(Premiacion, {
     foreignKey: 'idPremio',
     sourceKey: 'id'
+
 });
 
 Premiacion.belongsTo(Premio, {
     foreignKey: 'idPremio',
     targetId: 'id',
-    
+
 });
+
+// 
+
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
+// });
+
+
+// Participacion.sync({ alter: true }).then(() => {
+//     console.log('tabla Participacion creada');
+// });
 
 
 
@@ -86,4 +112,4 @@ Premiacion.belongsTo(Premio, {
 //     // Code here
 //  })();
 
-module.exports = {Premio, sequelize}
+module.exports = { Premio, sequelize }

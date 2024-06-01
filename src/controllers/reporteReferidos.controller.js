@@ -1,84 +1,96 @@
 const { Sequelize } = require("sequelize");
-const { genesis, pronet, sequelize } = require("../database/database");
+const { genesis, pronet, sequelize } = require("../database/database"); 
+const { Campania } = require('../models/campanias');
+const { participacionReferidos } = require('../models/participacionReferidos');
+const { Participacion } = require('../models/Participacion');
+const { codigoReferido } = require('../models/codigoReferidos');
+// const { referidosIngresos } = require('../models/ReferidosIngresos'); // Aquí se agregó la importación faltante
+const { ConfigReferido } = require('../models/configReferidos');
+const { Usuario } = require('../models/usuario');
+const { Op } = require('sequelize');
 
-const GetParticipacionReferidos = async (req, res) => {
-  const { fechaInicio, fechaFin, id } = req.body;
+const getParticipaciones = async (req, res) => {
   try {
-   
+    const { fechaInicio, fechaFin, campanas} = req.body;
+    let campanias = "";
 
-    console.log("fecha inicial", fechaInicio);
-    console.log("fecha final ", fechaFin);
-    // Usar la instancia 'genesis' para la consulta
-    // const resultados = await genesis.query(
-    //   `SELECT eca.nombreCampana, eca.descripcionNotificacion,
-    //   CONCAT(tui.fname, ' ', tui.lname) nombre, tui.userno,
-    //   DATE_FORMAT(pca.fechaParticipacion, '%d/%m/%Y %H:%i') fecha, pca.idTransaccion, pca.descTransaccion, 
-    //   FORMAT(pca.valorPremio,2) valorPremio,
-    //   CONCAT(tur.fname, ' ', tur.lname) nombreref, tur.userno telref
-    //   FROM genesis.participante_campana pca 
-    //   INNER JOIN enc_campana eca ON eca.idCampana = pca.idCampana 
-    //   LEFT JOIN pronet.tbl_customer tc ON tc.customer_id = pca.idUsuarioParticipante 
-    //   LEFT JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid 
-    //   LEFT JOIN genesis.referidos_ingresos rin ON rin.idreferidos_ingresos = pca.idTransaccion 
-      
-    //   LEFT JOIN pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario 
-    //   LEFT JOIN pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
-    //   WHERE (SELECT COUNT(*) FROM genesis.det_campana_participacion dcp 
-    //   WHERE dcp.idCampana = eca.idCampana AND dcp.idTransaccion IN (68,69)) >0 
-    //   BETWEEN :fechaInicio  AND :fechaFin`,
-      
-    //   {
-    //     replacements: { fechaInicio: fechaInicio, fechaFin: fechaFin },
-    //     type: Sequelize.QueryTypes.SELECT,
-    //   }
-    // );
-    const resultadosPronet = await genesis.query(` SELECT eca.nombreCampana, eca.descripcionNotificacion,
-    CONCAT(tui.fname, ' ', tui.lname) nombre, tui.userno,
-    DATE_FORMAT(pca.fechaParticipacion, '%d/%m/%Y %H:%i') fecha, pca.idTransaccion, pca.descTransaccion, 
-    FORMAT(pca.valorPremio,2) valorPremio,
-    cre.codigo AS codigos_referidos,
-    cor.opcion,
-    CONCAT(tur.fname, ' ', tur.lname) nombreref, tur.userno telref
-    FROM genesis.participante_campana pca 
-    INNER JOIN enc_campana eca ON eca.idCampana = pca.idCampana 
-    LEFT JOIN pronet.tbl_customer tc ON tc.customer_id = pca.idUsuarioParticipante 
-    LEFT JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid 
-    LEFT JOIN genesis.referidos_ingresos rin ON rin.idreferidos_ingresos = pca.idTransaccion 
-    LEFT JOIN genesis.codigos_referidos cre ON cre.idcodigos_referidos = rin.idcodigos_referidos 
-    LEFT JOIN genesis.confi_referidos cor on cor.idconfi_referidos = cre.idconfi_referidos
-    LEFT JOIN pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario 
-    LEFT JOIN pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
-    WHERE (SELECT COUNT(*) FROM genesis.det_campana_participacion dcp 
-    WHERE dcp.idCampana = eca.idCampana AND dcp.idTransaccion IN (68,69)) >0 
-    BETWEEN '${fechaInicio}'  AND '${fechaFin}'`);
-// Extraer el código de la primera consulta
-console.log("\n\n\resultadosPronet",resultadosPronet);
-const codigo = resultadosPronet[0].codigos_referidos;
+    campanas.forEach((c, index) => {
+      campanias += index > 0 ? `, '${c}'`: `'${c}'`;
+    });
 
-console.log("\n\n\ncodigo",codigo);
+    const participaciones = await sequelize.query(`
+      SELECT 
+        c.id AS campania_id,
+        c.nombre AS nombre_campania,
+        c.descripcionNotificacion,
+        p.fecha,
+        p.descripcionTrx,
+        p.valor,
+        p.customerId,
+        p.idTransaccion,
+        cr.codigo AS codigo_referido,
+        p2.refiriente,
+        p2.referido,
+        crf.opcion AS opcion_referido,
+        u.nombre AS nombre_usuario,
+        u.telefono AS telefono_usuario
+      FROM 
+        Campania c
+      LEFT JOIN 
+        Participacions p ON c.id = p.idCampania 
+      LEFT JOIN 
+        CodigosReferidos cr ON cr.customerId = p.customerId 
+      LEFT JOIN 
+        ConfigReferidos crf ON cr.codigo = crf.id
+      LEFT JOIN 
+        Usuarios u ON u.nombre = u.username 
+      LEFT JOIN 
+        participacionreferidos p2 ON p2.referido = cr.codigo
+      WHERE p.fecha BETWEEN '${fechaInicio}' AND '${fechaFin}'
+      AND c.nombre in (${campanias});		
+    `, { type: sequelize.QueryTypes.SELECT });
 
-// Consulta a la segunda base de datos (lealtadv2)
-const resultadosLealtadV2 = await sequelize.query(`
-select  c.nombre,c.descripcionNotificacion
-
-from campania c 
-left join codigoreferidos c3 on c3.id = c.id 
-left join configreferidos c2 on c2.id = c3.id;  `);
-    
-
-console.log(resultadosLealtadV2);
-const resultadosCombinados = [...resultadosPronet, ...resultadosLealtadV2];
-
-
-    // res.status(200).json(resultadosLealtadV2);
-    // res.status(200).json(resultadosPronet);
-    res.status(200).json(resultadosCombinados);
-    // res.status(200).json(resultadosLealtadV2);
-    // console.log("lealtadV2",lealtadV2);
+    res.status(200).json(participaciones);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Ha ocurrido un error al obtener los datos." });
+    console.error('Error al obtener las participaciones:', error);
+    res.status(500).json({ error: 'Error al obtener las participaciones' });
   }
 };
 
-module.exports = { GetParticipacionReferidos };
+const getCustomerById = async (req, res) => {
+  try {
+    const { customerid, fechaInicio, fechaFin } = req.body;
+    const customerInfo = await pronet.query(`
+      SELECT 
+        tur.mname,
+        CONCAT(tur.fname, ' ', tur.lname) nombreref, 
+        tur.userno telref, 
+        tur.userid 
+      FROM 
+        genesis.participante_campana pc 
+      LEFT JOIN 
+        pronet.tbl_customer tc ON tc.customer_id = pc.idUsuarioParticipante 
+      LEFT JOIN 
+        genesis.referidos_ingresos rin ON rin.idreferidos_ingresos = pc.idTransaccion 
+      LEFT JOIN 
+        pronet.tbl_customer tcr ON tcr.customer_id = rin.usuario 
+      LEFT JOIN 
+        pronet.tblUserInformation tur ON tur.userid = tcr.fk_userid
+      WHERE 
+        pc.fechaParticipacion BETWEEN '${fechaInicio}' AND '${fechaFin}'
+        AND pc.idCampania in (${customerid})
+        ORDER BY 
+    tur.userid DESC LIMIT 5;
+        
+    `, {
+      type: pronet.QueryTypes.SELECT
+    });
+
+    res.status(200).json(customerInfo);
+  } catch (error) {
+    console.error('Error al obtener la información del cliente:', error);
+    res.status(500).json({ error: 'Error al obtener la información del cliente' });
+  }
+};
+
+module.exports = { getParticipaciones, getCustomerById };

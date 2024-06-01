@@ -1,17 +1,18 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
-const {  Bloqueados } = require('./bloqueados');
+const { Bloqueados } = require('./bloqueados');
 const { Etapa } = require('./etapa');
 const { Participacion } = require('./Participacion');
 const { Participantes } = require('./participantes');
 const { Parametro } = require('./parametro');
+// const {Usuario} = require('./usuario');
+const { Configuraciones } = require('./configuraciones');
 
 const Campania = sequelize.define('campania', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-
     },
     nombre: {
         type: DataTypes.STRING(150),
@@ -35,18 +36,6 @@ const Campania = sequelize.define('campania', {
     },
     fechaFin: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    diaReporte: { // Nuevo campo: Entero para el día
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    horaReporte: { // Nuevo campo: Tipo Time que guarda únicamente la hora
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    emails: { // Nuevo campo: String de correos electrónicos separados por coma
-        type: DataTypes.STRING(1000),
         allowNull: false
     },
     edadInicial: {
@@ -89,23 +78,31 @@ const Campania = sequelize.define('campania', {
         type:  DataTypes.INTEGER,
         allowNull: false
     },
-    diaReporte: {
-        type:  DataTypes.INTEGER,
+    campaniaTerceros:{
+        type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: 1
+        defaultValue: 0
     },
-    horaReporte: {
-        type:  DataTypes.TIME,
+    terminosCondiciones:{
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    observaciones:{
+        type: DataTypes.STRING(1000),
+        allowNull: true
+    },
+    esArchivada:{
+        type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: '09:00:00'
+        defaultValue: 0
     },
-    emails: {
-        type:  DataTypes.STRING(1000),
-        allowNull: true,
-        defaultValue: 'estiven6647@gmail.com'
-    },
-},{timestamps: false});
+    restriccionUser:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    }
 
+},{timestamps: false});
 
 
 Campania.hasMany(Etapa,{
@@ -139,33 +136,49 @@ Bloqueados.belongsTo(Campania, {
 });
 
 Campania.hasMany(Participacion, {
-    as: 'participaciones',
-    foreignKey: {
-        name: 'idCampania',
-        allowNull: false,
-    },
-    sourceKey: 'id',
-    allowNull: false
-});
-
-Participacion.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
-    allowNull: false
 });
 
+Participacion.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
 Parametro.belongsTo(Campania,{
     foreignKey: 'idCampania',
     targetId: 'id',
     allowNull: false
 });
-//(async () => {
-    //await sequelize.sync({ force: true });
-//     // Code here
-//})();
 
-// Campania.sync({ force: false }).then(() => {
-//     console.log('tabla campania creada');
+
+Campania.hasMany(Configuraciones, {
+    foreignKey: 'idCampania',
+    sourceKey: 'id'
+});
+
+Configuraciones.belongsTo(Campania, {
+    foreignKey: 'idCampania',
+    targetId: 'id',
+});
+
+
+
+
+
+
+// Campania.belongsTo(Usuario, { foreignKey: 'tipoUsuario' });
+
+// (async () => {
+//     await sequelize.sync({ alter: true });
+//     // Code here
+// })();
+
+
+
+
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
 // });
 
-module.exports = {Campania}
+
+module.exports={Campania}

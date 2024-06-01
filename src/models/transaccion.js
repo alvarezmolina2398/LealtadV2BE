@@ -12,17 +12,14 @@ const Transaccion = sequelize.define('transaccion', {
         autoIncrement: true,
 
     },
-    nombre: {
-        type: DataTypes.STRING(150),
-        allowNull: false
-    },
+  
     descripcion: {
         type: DataTypes.STRING(150),
         allowNull: false
     },
     idBotton: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     estado : {
         type: DataTypes.INTEGER,
@@ -32,7 +29,7 @@ const Transaccion = sequelize.define('transaccion', {
     puntos: {
         type: DataTypes.INTEGER,
         defaultValue:0,
-        allowNull:false
+        allowNull:true
     },
     idColumna: {
         type: DataTypes.INTEGER,
@@ -74,9 +71,9 @@ Participacion.belongsTo(Transaccion,{
 });
 
 
-//(async () => {
-    //await sequelize.sync({ force: true });
+// (async () => {
+//     await Transaccion.sync({ alter: true });
 //     // Code here
-//})();
+// })();
 
 module.exports = {Transaccion}

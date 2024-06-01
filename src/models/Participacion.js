@@ -1,8 +1,13 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
+const { codigoReferido} = require('./codigoReferidos');
+const {referidosIngresos} = require('./ReferidosIngresos');
+const {participacionReferidos}= require('./participacionReferidos');
+const {ConfigReferido}= require('./configReferidos');
 
-const { sumaTotal } = require('sequelize');
+
+// const { sumaTotal } = require('sequelize');
 
 const Participacion = sequelize.define('participacions', {
 
@@ -11,6 +16,15 @@ const Participacion = sequelize.define('participacions', {
         primaryKey: true,
         autoIncrement: true,
     },
+    idProyecto: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    idUsuarioParticipante: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
     fecha: {
         type: DataTypes.DATEONLY,
         allowNull: false
@@ -36,27 +50,40 @@ const Participacion = sequelize.define('participacions', {
         allowNull: false
     },
     urlPremio: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(255),
         allowNull: false
     },
-    
+
     etapa: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    idPremio: {
-        type:  DataTypes.INTEGER,
+    jugado: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     idTransaccion: {
-        type:  DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-  
-},{timestamps: false})
+    // idCampania: {
+    //     type: DataTypes.INTEGER,
+    //     allowNull: false
+    // },
+    tipoTransaccion: {
+        type: DataTypes.CHAR(1),
+        allowNull: false
+    },
+    estado : {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+    },
 
 
-Participacion.hasMany(TransaccionPremio,{
+}, { timestamps: false })
+
+
+Participacion.hasMany(TransaccionPremio, {
     foreignKey: 'idParticipacion',
     sourceKey: 'id'
 });
@@ -64,13 +91,40 @@ Participacion.hasMany(TransaccionPremio,{
 
 TransaccionPremio.belongsTo(Participacion, {
     foreignKey: 'idParticipacion',
-    targetId: 'id',
+    targetKey: 'id',
 });
 
+Participacion.hasMany(codigoReferido,{
+    foreignKey: 'customerId',
+    sourceKey: 'customerId' 
+});
+Participacion.belongsTo(codigoReferido, {
+    foreignKey: 'customerId', // Columna en este modelo
+    targetKey: 'customerId',
+    as: 'codigoReferidoAssociation'
+}); 
+// Participacion.belongsTo(referidosIngresos, { 
+//     foreignKey: 'idRefIngresos' 
+// });
+
+Participacion.hasMany(participacionReferidos, {
+     as: 'p2', 
+     foreignKey: 'id' 
+    });
+
+    Participacion.belongsTo(ConfigReferido, { 
+        foreignKey: 'id'
+     });
 
 // (async () => {
-//     await sequelize.sync({ force: false });
-//     //Code here
+//     await Participacion.sync({ alter: true });
+    
 // })();
 
-module.exports = {Participacion}
+// TransaccionPremio.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
+
+
+
+module.exports = { Participacion }

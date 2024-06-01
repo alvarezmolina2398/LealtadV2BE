@@ -30,6 +30,17 @@ const Etapa = sequelize.define('etapa', {
     },
     intervalo : {
         type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+
+    intervaloSemanal : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+
+    intervaloMensual : {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     },
     periodo : {
         type: DataTypes.INTEGER,
@@ -37,6 +48,14 @@ const Etapa = sequelize.define('etapa', {
     },
     valorAcumulado: {
         type: DataTypes.DECIMAL(18,2)
+    },
+    minimoTransaccion:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
+    },
+    totalMinimo:{
+        type: DataTypes.DECIMAL(18,2),
+        allowNull: true
     },
     estado : {
         type: DataTypes.INTEGER,
@@ -66,8 +85,6 @@ Parametro.belongsTo(Etapa, {
     targetId: 'id',
 });
 
-
-
 Etapa.hasMany(PremioCampania,{
     foreignKey: 'idEtapa',
     sourceKey: 'id'
@@ -78,13 +95,10 @@ PremioCampania.belongsTo(Etapa, {
     targetId: 'id',
 });
 
-
-
-
-
-// (async () => {
-//     await sequelize.sync({ force: true });
-//     // Code here
-//  })();
+// Etapa.sync({ alter: true }).then(() => {
+//     console.log('Tabla Etapa creada o actualizada correctamente');
+//  });
 
 module.exports = {Etapa}
+
+
