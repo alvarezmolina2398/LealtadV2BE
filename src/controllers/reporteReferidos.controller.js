@@ -68,25 +68,28 @@ const getCustomerById = async (customerid) => {
   try {
     // const { customerid, fechaInicio, fechaFin } = req.body;
     const customerInfo = await pronet.query(`
-    SELECT 
-    cu.customer_id,
-    cu.customer_reference,
-    cu.telno,
-    ui.lname,
-    ui.fname,
-    cu.fk_userid,
-    ri.idcodigos_referidos,
-    ri.idUsuario
-FROM 
-    pronet.tbl_customer cu
-JOIN 
-    pronet.tblUserInformation ui ON cu.telno = ui.userno
-    LEFT JOIN    
-    genesis.codigos_referidos ri on cu.fk_userid = ri.idcodigos_referidos
-    LEFT JOIN 
-    genesis.referidos_ingresos ru on ri.idcodigos_referidos = ru.idcodigos_referidos
-    LEFT JOIN 
-    pronet.tblUserInformation ra on ru.idcodigos_referidos = ra.userid
+    SELECT ui.userid,
+          ui.userno as noreferido,
+                cu.customer_id,
+                cu.customer_reference,
+                cu.telno,
+                cu.fk_userid,
+                ri.idUsuario,
+                ri.codigo,
+                
+    CONCAT(uir.fname, ' ', uir.lname) AS nombreReferido
+            FROM 
+                pronet.tbl_customer cu
+            JOIN 
+                pronet.tblUserInformation ui ON cu.telno = ui.userno
+                LEFT JOIN    
+                genesis.codigos_referidos ri on cu.fk_userid = ri.idcodigos_referidos
+                LEFT JOIN 
+                genesis.referidos_ingresos ru on ri.idcodigos_referidos = ru.idcodigos_referidos
+                
+                INNER JOIN  pronet.tblUserInformation uic ON uic.userid = cu.fk_userid
+                
+                INNER JOIN pronet.tblUserInformation uir ON uir.userid = cu.fk_userid
 WHERE 
     cu.customer_id = (${customerid}) 
     

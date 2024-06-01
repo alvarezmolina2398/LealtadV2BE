@@ -9,12 +9,11 @@ const { ConfigReferido } = require('../models/configReferidos');
 const { Usuario } = require('../models/usuario');
 const { Op } = require('sequelize');
 
+
 const getParticipaciones = async (campanas, fecha1, fecha2) => {
   try {
-    // const { fechaInicio, fechaFin, campanas} = req.body;
     const fechaInicioFormatted = fecha1.toISOString().split('T')[0];
-    const fechaFinFormatted = fecha2.toISOString().split('T')[0];
-    let campanias = "";
+    const fechaFinFormatted = fecha2.toISOString().split('T')[0];    let campanias = "";
 
     campanas.forEach((c, index) => {
       campanias += index > 0 ? `, '${c}'`: `'${c}'`;
@@ -37,52 +36,64 @@ const getParticipaciones = async (campanas, fecha1, fecha2) => {
         u.nombre AS nombre_usuario,
         u.telefono AS telefono_usuario
       FROM 
-        Campania c
+        campania c
       LEFT JOIN 
-        Participacions p ON c.id = p.idCampania 
+      participacions p ON c.id = p.idCampania 
       LEFT JOIN 
-        CodigosReferidos cr ON cr.customerId = p.customerId 
+      codigosreferidos cr ON cr.customerId = p.customerId 
       LEFT JOIN 
-        ConfigReferidos crf ON cr.codigo = crf.id
+      configreferidos crf ON cr.codigo = crf.id
       LEFT JOIN 
-        Usuarios u ON u.nombre = u.username 
+      usuarios u ON u.nombre = u.username 
       LEFT JOIN 
-        participacionreferidos p2 ON p2.referido = cr.codigo
+      participacionreferidos p2 ON p2.referido = cr.codigo
       WHERE p.fecha BETWEEN '${fechaInicioFormatted}' AND '${fechaFinFormatted}'
       AND c.nombre in (${campanias});		
     `, { type: sequelize.QueryTypes.SELECT });
+    
+    const participacionesConCliente = await Promise.all(participaciones.map(async (participacion) => {
+      const customerInfo = await getCustomerById(participacion.customerId);
+      participacion.customerInfo = customerInfo; // Asignar la información del cliente a la participación
+      return participacion;
+    }));
 
-    // res.status(200).json(participaciones);
-    return participaciones;
+    return participacionesConCliente;
   } catch (error) {
     console.error('Error al obtener las participaciones:', error);
     res.status(500).json({ error: 'Error al obtener las participaciones' });
   }
 };
 
+
+
+
+
 const getCustomerById = async (customerid) => {
   try {
     // const { customerid, fechaInicio, fechaFin } = req.body;
     const customerInfo = await pronet.query(`
-    SELECT 
-    cu.customer_id,
-    cu.customer_reference,
-    cu.telno,
-    ui.lname,
-    ui.fname,
-    cu.fk_userid,
-    ri.idcodigos_referidos,
-    ri.idUsuario
-FROM 
-    pronet.tbl_customer cu
-JOIN 
-    pronet.tblUserInformation ui ON cu.telno = ui.userno
-    LEFT JOIN    
-    genesis.codigos_referidos ri on cu.fk_userid = ri.idcodigos_referidos
-    LEFT JOIN 
-    genesis.referidos_ingresos ru on ri.idcodigos_referidos = ru.idcodigos_referidos
-    LEFT JOIN 
-    pronet.tblUserInformation ra on ru.idcodigos_referidos = ra.userid
+    SELECT ui.userid,
+          ui.userno as noreferido,
+                cu.customer_id,
+                cu.customer_reference,
+                cu.telno,
+                cu.fk_userid,
+                ri.idUsuario,
+                ri.codigo,
+                
+    CONCAT(uir.fname, ' ', uir.lname) AS nombreReferido
+            FROM 
+                pronet.tbl_customer cu
+            JOIN 
+                pronet.tblUserInformation ui ON cu.telno = ui.userno
+                LEFT JOIN    
+                genesis.codigos_referidos ri on cu.fk_userid = ri.idcodigos_referidos
+                LEFT JOIN 
+                genesis.referidos_ingresos ru on ri.idcodigos_referidos = ru.idcodigos_referidos
+                
+                INNER JOIN  pronet.tblUserInformation uic ON uic.userid = cu.fk_userid
+                
+                INNER JOIN pronet.tblUserInformation uir ON uir.userid = cu.fk_userid
 WHERE 
     cu.customer_id = (${customerid}) 
     
@@ -99,5 +110,21 @@ return customerInfo;
     throw new Error('Error al obtener participaciones');
 }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = { getParticipaciones, getCustomerById };
