@@ -11,6 +11,7 @@ const GetColumnas = async (req, res) => {
         estado: 1,
       },
     });
+    
     res.json(trx);
   } catch (error) {
     res.status(403);
