@@ -92,10 +92,10 @@ const AddPromocion = async (req, res) => {
         const nuevoArrarPremios = premios.map((item) => ({
             ...item,
             idPromocion: id,
-            valor: item.valor || 0, // Proporciona un valor por defecto para 'valor'
-            nombre: item.nombre || 'Desconocido', // Proporciona un valor por defecto para 'nombre'
-            cupon: item.cupon.cupon || '', // Proporciona un valor por defecto para 'cupon'
-            porcentaje: item.porcentaje || 0 // Proporciona un valor por defecto para 'porcentaje'
+            valor: item.valor || 0,
+            nombre: item.nombre || 'Desconocido', 
+            cupon: item.cupon.cupon || '', 
+            porcentaje: item.porcentaje || 0
         }));
 
         console.log('Premios a insertar:', nuevoArrarPremios);
@@ -119,7 +119,7 @@ const AddPromocion = async (req, res) => {
             var newData = {
                 ...item,
                 idPromocion: id,
-                cupon: item.cupon || '' // Proporciona un valor por defecto para 'cupon'
+                cupon: item.cupon || '' 
             };
 
             if (item.esPremio === 1) {
@@ -360,7 +360,7 @@ const GetCuponByDetallePromocionId = async (req, res) => {
     try {
         const { id } = req.params;
         const detallePromocion = await DetallePromocion.findByPk(id, {
-            attributes: ['cupon'] // Incluye solo el campo cupon
+            attributes: ['cupon'] 
         });
 
         if (!detallePromocion) {
@@ -405,11 +405,7 @@ const TestearCodigo = async (req, res) => {
         }
     });
 
-    //code 03  cupon no existe
-    //code 04  promocion vencida o eliminada
-    //code 05  Cupon ya Cangeado
-    //code 01 cupon valido
-    //code 02 cupon no valido
+  
 
     if (cantidadCupones === 0) {
         res.json(

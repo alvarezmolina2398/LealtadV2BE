@@ -42,20 +42,6 @@ const sequelize = new Sequelize(
 }
 );
 
-// const sequelize = new Sequelize(
-//     "lealtadV2",
-//     // "DesaSolUn",
-//     // "SolUn123",
-//       "root",
-//     "admin",
-//     {
-  
-
-//         host: 'localhost',
-//         port: "3006",
-//         dialect: "mysql",
-//     }
-// );
 
 
 const pronet = new Sequelize("pronet", "devusr", "efHBxdcV", {
