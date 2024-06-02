@@ -123,6 +123,8 @@ const GetTablaByProyectos = async (req, res) => {
         estado: 1,
       },
     });
+    console.log("ESTAS SON LAS TABLAS DE PROYECTOS");
+    console.log(trx);
     res.json(trx);
   } catch (error) {
     res.status(403);
