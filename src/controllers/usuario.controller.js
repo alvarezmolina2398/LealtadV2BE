@@ -3,7 +3,6 @@ const { Usuario } = require('../models/usuario')
 const bcrypt = require("bcryptjs");
 const env = require("../bin/env");
 
-//controllador paa obtener la lista de los usuarios
 const GetUsuarios = async (req, res) => {
 
     try {
@@ -27,13 +26,10 @@ const GetUsuarios = async (req, res) => {
 
 }
 
-
-//controllador para agregar nuevos usuarios
 const AddUsuario = async (req, res) => {
-
     try {
-
-        let { username, nombre, password, telefono, emailNotificacion,tipoUsuario, idRol } = req.body;
+        let { username, nombre, password, telefono, emailNotificacion, idRol, tipoUsuario } = req.body;
+        tipoUsuario = tipoUsuario || 1; 
         password = await bcrypt.hash(password, env.bcrypt.sr);
 
         await Usuario.create({
@@ -42,19 +38,18 @@ const AddUsuario = async (req, res) => {
             password,
             telefono,
             emailNotificacion,
-            tipoUsuario,
-            idRol
-        })
+            idRol,
+            tipoUsuario 
+        });
 
         res.json({ code: 'ok', message: 'Usuario creado con exito' });
 
     } catch (error) {
-
+        console.log("Error al agregar usuario:", error); 
         res.status(403)
         res.send({ errors: 'Ha sucedido un error al intentar agrear un usuario.'  + error});
 
     }
-
 }
 
 
@@ -63,7 +58,7 @@ const UpdateUsuario = async (req, res) => {
 
     try {
 
-        const { nombre, password, telefono, emailNotificacion,  tipoUsuario, idRol } = req.body;
+        const { nombre, password, telefono, emailNotificacion,   idRol } = req.body;
         const { username } = req.params
         console.log(username)
 
@@ -72,7 +67,7 @@ const UpdateUsuario = async (req, res) => {
             password,
             telefono,
             emailNotificacion,
-            tipoUsuario,
+        
             idRol
         }, {
             where: {
@@ -84,6 +79,7 @@ const UpdateUsuario = async (req, res) => {
         res.json({ code: 'ok', message: 'Usuario actualizado con exito' });
 
     } catch (error) {
+        console.log("Error al agctuausuario:", error); 
 
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar actualizar un usuario.' });
