@@ -25,17 +25,6 @@ const GetPromocion = async(req, res) => {
 
 
 
-const GetPromocioncount = async(req, res) => {
-    try {
-        const promocionCount = await Promocion.count();
-        res.json({ cantidad: promocionCount });
-    } catch (error) {
-        console.log("Este es el error:", error);
-        res.status(403);
-        res.send({ errors: 'Ha sucedido un error al intentar obtener la lista de Promociones.' });
-    }
-};
-
 
 
 //controllador para agregar nuevas Columnaes
@@ -371,4 +360,32 @@ const TestearCodigo = async(req, res) => {
 
 }
 
-module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, DeletePromocion, GetPromocionById, TestearCodigo, GetPromocioncount }
+
+Getpromocionescount = async (req, res) => {
+    try {
+        // Obtener la fecha actual y la fecha hace 7 días
+        const currentDate = new Date();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(currentDate.getDate() - 7);
+
+        // Contar las promociones que tienen fecha de inicio en los últimos 7 días
+        const promoCount = await Promocion.count({
+            where: {
+                fechaInicio: {
+                    [Op.between]: [sevenDaysAgo, currentDate]
+                }
+            }
+        });
+
+        res.json({ cantidad: promoCount });
+    } catch (error) {
+        res.status(403);
+        res.send({ errors: 'Ha sucedido un error al intentar realizar la Transaccion.' });
+    }
+};
+
+
+
+
+
+module.exports = { GetPromocion, AddPromocion, PausarPromocion, ActivarPromocion, UpdatePromocion, DeletePromocion, GetPromocionById, TestearCodigo,Getpromocionescount }

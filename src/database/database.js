@@ -4,7 +4,7 @@ const { Sequelize } = require("sequelize");
 
 
 const sequelize = new Sequelize(
-    "db0csmijjuvbuo",
+    "dbepco7agwmwba",
     "uhxm0qdfefvou",
     "DesaSolUn",
     {

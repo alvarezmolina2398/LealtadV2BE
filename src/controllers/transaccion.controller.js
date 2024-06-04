@@ -1,5 +1,8 @@
 const { Columna } = require('../models/columna')
 const { Transaccion } = require('../models/transaccion')
+const { Participacion } = require('../models/Participacion');
+const { Op } = require('sequelize');
+
 
 
 //controllador paa obtener la lista de transacciones
@@ -114,23 +117,34 @@ const GetTransaccionById = async (req, res) => {
 
 
 
+
+
 const GetTransaccionscount = async (req, res) => {
     try {
-        const trxCount = await Transaccion.count({
+        // Obtener la fecha actual y la fecha hace 7 días
+        const currentDate = new Date();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(currentDate.getDate() - 7);
+
+        // Contar las participaciones que tienen transacciones en los últimos 7 días
+        const trxCount = await Participacion.count({
+            include: [{
+                model: Transaccion,
+                required: true // Esto asegura que solo se cuentan las participaciones que tienen transacciones
+            }],
             where: {
-                estado: 1
+                fecha: {
+                    [Op.between]: [sevenDaysAgo, currentDate]
+                }
             }
         });
+
         res.json({ cantidad: trxCount });
     } catch (error) {
         res.status(403);
         res.send({ errors: 'Ha sucedido un error al intentar realizar la Transaccion.' });
     }
 };
-
-
-
-
 
 
 module.exports = { GetTransaccions, AddTransaccion, UpdateTransaccion, DeleteTransaccion, GetTransaccionById,GetTransaccionscount }

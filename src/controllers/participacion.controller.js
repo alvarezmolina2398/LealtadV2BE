@@ -79,6 +79,11 @@ const getcountCustomerName = async (req,res) =>{
 };
 
 
+
+
+
+
+
 const getSumarValor = async (req,res) => {
     try {
         const sumaValor = await Participacion.sum('valor');
@@ -100,5 +105,6 @@ module.exports = {
     addParticipacion,
     getParticipaciones,
     getcountCustomerName,
-    getSumarValor 
+    getSumarValor,
+    
 }
