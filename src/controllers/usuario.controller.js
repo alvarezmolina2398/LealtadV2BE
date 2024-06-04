@@ -51,23 +51,22 @@ const AddUsuario = async (req, res) => {
 
     }
 }
-
-
-//controllador para actualizar los usuarios
 const UpdateUsuario = async (req, res) => {
-
     try {
+        const { nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        const { username } = req.params;
 
-        const { nombre, password, telefono, emailNotificacion,   idRol } = req.body;
-        const { username } = req.params
-        console.log(username)
+     
+        let hashedPassword = password;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, env.bcrypt.sr);
+        }
 
         await Usuario.update({
             nombre,
-            password,
+            password: hashedPassword, 
             telefono,
             emailNotificacion,
-        
             idRol
         }, {
             where: {
@@ -75,19 +74,14 @@ const UpdateUsuario = async (req, res) => {
             }
         });
 
-
-        res.json({ code: 'ok', message: 'Usuario actualizado con exito' });
+        res.json({ code: 'ok', message: 'Usuario actualizado con éxito' });
 
     } catch (error) {
-        console.log("Error al agctuausuario:", error); 
-
+        console.log("Error al actualizar usuario:", error); 
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar actualizar un usuario.' });
-
+        res.send({ errors: 'Ha sucedido un error al intentar actualizar un usuario.' });
     }
-
 }
-
 
 //controllador para eliminar los usuarios
 const DeleteUsuario = async (req, res) => {
