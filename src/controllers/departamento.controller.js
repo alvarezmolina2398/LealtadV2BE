@@ -1,81 +1,81 @@
-const {Departamento} = require('../models/departamento');
-const {Departamento_Proyectos} = require('../models/departamento_proyectos');
-const {Proyectos} = require ('../models/proyectos.model');
-const {Municipio} = require ('../models/municipio')
+const { Departamento } = require('../models/departamento');
+const { Departamento_Proyectos } = require('../models/departamento_proyectos');
+const { Proyectos } = require('../models/proyectos.model');
+const { Municipio } = require('../models/municipio')
 
 
 const GetDepartamentos = async(req, res) => {
-    try{
+    try {
 
         const depa = await Departamento.findAll({
             where: {
-                estado : 1
+                estado: 1
             }
         });
 
-        res.json(depa);
+        res.json({ departamentos: depa });
 
     } catch (e) {
         console.error(e);
         res.status(403);
-        res.send({errors: 'Ha sucedido un error al intentar realizar la consulta.'})
+        res.send({ errors: 'Ha sucedido un error al intentar realizar la consulta.' })
     }
 }
 
-const AddDepartamentos = async (req, res) => {
+const AddDepartamentos = async(req, res) => {
+        try {
+            const { nombre, IdLocal } = req.body;
+
+
+            const departamento = await Departamento.create({
+                nombre,
+                IdLocal
+            });
+
+
+            res.json({ code: 'ok', message: 'Departamento creado con exito.' });
+
+        } catch (e) {
+            res.status(403);
+            res.send({ errors: 'Ha ocurrido un error al intentar ingresar el departamento.' });
+        }
+    }
+    //Acutaliza categoria
+const UpdateDepartamento = async(req, res) => {
     try {
+
         const { nombre, IdLocal } = req.body;
 
-      
-        const departamento = await Departamento.create({
-            nombre,
-            IdLocal
-        });
-
-         
-        res.json({ code: 'ok', message: 'Departamento creado con exito.' });
-
-    } catch (e) {
-        res.status(403);
-        res.send({ errors: 'Ha ocurrido un error al intentar ingresar el departamento.' });
-    }
-}
-//Acutaliza categoria
-const UpdateDepartamento = async (req, res) => {
-    try{
-
-        const {nombre,IdLocal} = req.body;
-        
-        const {id} = req.params;
+        const { id } = req.params;
 
         await Departamento.update({
-            nombre,
-            IdLocal
-        },
-        
-        {
-            where: {
-                id: id
-            }
-        });
+                nombre,
+                IdLocal
+            },
 
-      
-         
- 
+            {
+                where: {
+                    id: id
+                }
+            });
 
-        res.json({code: 'ok', message: 'Departamento Actualizado con exito.'});
+
+
+
+
+        res.json({ code: 'ok', message: 'Departamento Actualizado con exito.' });
 
     } catch (e) {
         res.status(403);
-        res.send({errors: 'Ha ocurrido un error al intentar actualizar el departamento.'});
+        res.send({ errors: 'Ha ocurrido un error al intentar actualizar el departamento.' });
     }
 }
 
 //eliminado logico de categoria
-const DeleteDepartamento = async (req, res) => {
-    try{
+const DeleteDepartamento = async(req, res) => {
+    try {
 
-        const {id} = req.params;
+        const { id } = req.params;
         console.log(id);
 
         await Departamento.update({
@@ -86,28 +86,28 @@ const DeleteDepartamento = async (req, res) => {
             }
         });
 
-        res.json({code: 'ok', message: 'Departamento inhabilitado con exito.'});
+        res.json({ code: 'ok', message: 'Departamento inhabilitado con exito.' });
 
     } catch (e) {
         res.status(403);
-        res.send({errors: 'Ha ocurrido un error al intentar inhabilitar el departamento.'});
+        res.send({ errors: 'Ha ocurrido un error al intentar inhabilitar el departamento.' });
     }
 }
 
 //obtener departamentos por el id
-const GetDepartamentobyId = async (req, res) => {
-    try{
+const GetDepartamentobyId = async(req, res) => {
+    try {
         console.log(req.params)
-        const {id} = req.params;
+        const { id } = req.params;
         const depa = await Departamento.findByPk(id);
         res.json(depa);
 
-    } catch(e){
+    } catch (e) {
         res.status(403);
-        res.send({errors: 'ha sucedido un error al intentar obtener el departamento.'})
+        res.send({ errors: 'ha sucedido un error al intentar obtener el departamento.' })
     }
 }
-const GetDepartamentosByProyectoId = async (req, res) => {
+const GetDepartamentosByProyectoId = async(req, res) => {
     try {
         const { idProyecto } = req.params;
 
@@ -117,8 +117,7 @@ const GetDepartamentosByProyectoId = async (req, res) => {
 
         const departamentos = await Departamento_Proyectos.findAll({
             where: { idProyecto },
-            include: [
-                {
+            include: [{
                     model: Departamento,
                     where: { estado: 1 }
                 },
@@ -137,4 +136,4 @@ const GetDepartamentosByProyectoId = async (req, res) => {
 };
 
 
-module.exports = {GetDepartamentos,GetDepartamentosByProyectoId, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId}
+module.exports = { GetDepartamentos, GetDepartamentosByProyectoId, AddDepartamentos, UpdateDepartamento, DeleteDepartamento, GetDepartamentobyId }
