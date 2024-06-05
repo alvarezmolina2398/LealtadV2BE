@@ -70,11 +70,11 @@ const transaccionesValidasCampanasFusionLg = async (idCampanias) => {
                 dcp.id, 
                 dcp.idCampania 
             FROM 
-                dbepco7agwmwba.parametros dcp 
+            lealtadv229.parametros dcp 
             INNER JOIN 
-                dbepco7agwmwba.transaccions t ON t.id = dcp.idTransaccion 
+            lealtadv229.transaccions t ON t.id = dcp.idTransaccion 
             INNER JOIN 
-                dbepco7agwmwba.columnas ctdb ON ctdb.id = t.idColumna 
+            lealtadv229.columnas ctdb ON ctdb.id = t.idColumna 
             WHERE 
                 idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
             UNION ALL 
@@ -89,13 +89,13 @@ const transaccionesValidasCampanasFusionLg = async (idCampanias) => {
                 dcp.id, 
                 dcp.idCampania 
             FROM 
-                lealtadv2.parametros dcp 
+            lealtadv229.parametros dcp 
             INNER JOIN 
-                lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion 
+            lealtadv229.categoria AS dc ON dc.id = dcp.idTransaccion 
             INNER JOIN 
-                lealtadv2.transaccions AS t ON t.id = dc.idTransaccion 
+            lealtadv229.transaccions AS t ON t.id = dc.idTransaccion 
             INNER JOIN 
-                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+            lealtadv229.columnas ctdb ON ctdb.id = t.idColumna 
             WHERE 
                 dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1 and dc.estado = 1
         `;
@@ -310,9 +310,9 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre, 
                 dcp.id
-            FROM dbepco7agwmwba.participacions dcp 
-            INNER JOIN dbepco7agwmwba.transaccions t ON t.id = dcp.idTransaccion 
-            INNER JOIN dbepco7agwmwba.columnas cs ON cs.id = t.idColumna  
+            FROM lealtadv229.participacions dcp 
+            INNER JOIN lealtadv229.transaccions t ON t.id = dcp.idTransaccion 
+            INNER JOIN lealtadv229.columnas cs ON cs.id = t.idColumna  
             WHERE idCampania = :idCampania AND tipoTransaccion = 't' AND dcp.estado = 1
             UNION ALL
             SELECT 
@@ -324,10 +324,10 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre,
                 dcp.id
-            FROM dbepco7agwmwba.participacions dcp 
-            INNER JOIN dbepco7agwmwba.categoria AS dc ON dc.id = dcp.idTransaccion
-            INNER JOIN dbepco7agwmwba.transaccions AS t ON t.id = dcp.idTransaccion 
-            INNER JOIN dbepco7agwmwba.columnas cs ON cs.id = t.idColumna 
+            FROM lealtadv229.participacions dcp 
+            INNER JOIN lealtadv229.categoria AS dc ON dc.id = dcp.idTransaccion
+            INNER JOIN lealtadv229.transaccions AS t ON t.id = dcp.idTransaccion 
+            INNER JOIN lealtadv229.columnas cs ON cs.id = t.idColumna 
             WHERE dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1  
             GROUP BY dcp.valorMinimo, dcp.valorMaximo, dcp.idTipoParticipacion, dcp.tipoTransaccion, t.descripcion, cs.nombre, dcp.id
         `;
@@ -524,7 +524,7 @@ const validarLimiteParticipacionesPorUsuario = async (idUsuarioParticipante, idC
         SELECT SUM(participaHoy) AS totalParticipaciones
         FROM (
             SELECT COUNT(*) AS participaHoy 
-            FROM dbepco7agwmwba.participacions
+            FROM lealtadv229.participacions
             WHERE idUsuarioParticipante = :idUsuarioParticipante
             AND idCampania = :idCampania
             AND CAST(fecha AS DATE) = CAST(now() AS DATE)
@@ -554,7 +554,7 @@ const TransaccionesDelUsuarioPendientesXcampana = async (idUsuarioParticipante, 
 
         const query = `
             SELECT *, CAST(fechaParticipacion AS DATE) AS solofecha
-            FROM dbepco7agwmwba.campaniaadicional
+            FROM lealtadv229.campaniaadicional
             WHERE yaAplico = 1
             AND idParticipacion = :idParticipacion
             AND idUsuarioParticipante = :idUsuarioParticipante 
@@ -651,15 +651,15 @@ async function tienePremiosPendientesCampanas(idCampania, idUsuarioParticipante)
             p.link, 
             p.claveSecreta 
         FROM 
-            dbepco7agwmwba.participacions ps 
+        lealtadv229.participacions ps 
         INNER JOIN 
-            dbepco7agwmwba.offercraft_notifications a ON (a.url = ps.urlPremio) 
+        lealtadv229.offercraft_notifications a ON (a.url = ps.urlPremio) 
         INNER JOIN 
-            dbepco7agwmwba.campania d ON (d.id = ps.idCampania) 
+        lealtadv229.campania d ON (d.id = ps.idCampania) 
         INNER JOIN 
-            dbepco7agwmwba.premios p ON (p.id = p.id) 
+        lealtadv229.premios p ON (p.id = p.id) 
         JOIN 
-            dbepco7agwmwba.equivalente_campanas e ON (e.id = a.id) 
+        lealtadv229.equivalente_campanas e ON (e.id = a.id) 
         WHERE 
             d.id = :idCampania AND ps.idUsuarioParticipante = :idUsuarioParticipante
             AND a.fecha_uso > '2021-12-01 01:00:00' AND p.idTransaccion = 10 AND d.estado = 1 
@@ -709,7 +709,7 @@ async function campanasRevisionGeneralIdCampana(id) {
             minimoTransacciones, 
             minimoAcumular 
         FROM 
-            dbepco7agwmwba.campania
+        lealtadv229.campania
         WHERE 
             tipoParticipacion IN (1,3) AND id = :idCampania AND fechaFin >= CAST(NOW() as date) 
         UNION ALL 
@@ -731,7 +731,7 @@ async function campanasRevisionGeneralIdCampana(id) {
             minimoTransacciones, 
             minimoAcumular 
         FROM 
-            dbepco7agwmwba.campania 
+        lealtadv229.campania 
         WHERE 
             tipoParticipacion IN (2,4,5) AND id = :idCampania AND fechaFin >= CAST(NOW() as date);
     `;
@@ -763,7 +763,7 @@ async function CampanasBotonesAppMostrar(idCampania) {
         SELECT t.idBotton 
         FROM campania ec 
         JOIN participacions dcp ON dcp.idCampania = ec.id
-        JOIN dbepco7agwmwba.categoria dct ON dct.id = dcp.idTransaccion AND dcp.tipoTransaccion = 'c' 
+        JOIN lealtadv229.categoria dct ON dct.id = dcp.idTransaccion AND dcp.tipoTransaccion = 'c' 
         JOIN transaccions t ON t.id = dct.idTransaccion 
         WHERE ec.id = :idCampania AND dct.estado = 1 
         GROUP BY t.idBotton;
@@ -836,5 +836,4 @@ module.exports = {
     // GetNumeroById,
     obtenerMistransacciones,
     obtenerTransaccionesValidas
-
 }

@@ -10,14 +10,12 @@ const { Premio } = require('../models/premio');
 const { Op } = require('sequelize');
 
 
-const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
+const getUsuariosNotificacionesOfferCraftSel = async (req, res) => {
     try {
         const { idCampanas, fecha1, fecha2, archivadas } = req.body;
-        let whereConditions = {}; // Inicializamos whereConditions fuera del bloque if
 
-        console.log("campaña archivada ", archivadas)
+        console.log("campaña archivada ", archivadas);
 
-        // Realizamos la consulta a la base de datos
         const envio = await Campania.findAll({
             where: {
                 id: idCampanas,
@@ -35,12 +33,8 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                 model: Participacion,
                 attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
                 include: [{
-                    model: Campania,
-                    attributes: ['nombre', 'fechaCreacion']
-                }],
-                include: [{
-                    model: Premio, // Cambia el modelo a Premio
-                    attributes: ['descripcion'] // Incluye solo la descripción del premio
+                    model: Premio,
+                    attributes: ['descripcion']
                 }]
             }]
         });
@@ -61,28 +55,23 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                     model: Participacion,
                     attributes: ['fecha', 'descripcionTrx', 'urlPremio', 'valor', 'idPremio', 'idTransaccion', 'customerId'],
                     include: [{
-                        model: Campania,
-                        attributes: ['nombre', 'fechaCreacion']
-                    }],
-                    include: [{
-                        model: Premio, // Cambia el modelo a Premio
-                        attributes: ['descripcion'] // Incluye solo la descripción del premio
+                        model: Premio,
+                        attributes: ['descripcion']
                     }]
                 }]
-            })
+            });
 
             if (camapnasArchivadas) {
-                camapnasArchivadas.map((campania) => envio.push(campania))
+                camapnasArchivadas.map((campania) => envio.push(campania));
             }
         }
 
-        console.log(envio)
+        console.log(envio);
 
-        // Formateamos los datos para el envío
         const newArray = [];
         for (const c of envio) {
             const participaciones = [];
-            for (const p of c.participaciones) {
+            for (const p of c.participacions) { // Usamos el nombre de la relación aquí
                 const customerInfo = await getCustomerInfoById(p.customerId);
                 participaciones.push({
                     ...p.toJSON(),
@@ -90,7 +79,7 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
                         "nombre": c.nombre,
                         "fechaCreacion": c.fechaCreacion
                     },
-                    premioDescripcion: p.premio ? p.premio.descripcion : "Sin premio", // Obtén la descripción del premio
+                    premioDescripcion: p.premio ? p.premio.descripcion : "Sin premio",
                     customerInfo
                 });
             }
@@ -126,9 +115,7 @@ const getUsuariosNotificacionesOfferCraftSel = async(req, res) => {
     }
 };
 
-
-
-const getCustomerInfoById = async(customerId) => {
+const getCustomerInfoById = async (customerId) => {
     try {
         const customerInfo = await pronet.query(`
             SELECT 
@@ -147,14 +134,11 @@ const getCustomerInfoById = async(customerId) => {
             type: pronet.QueryTypes.SELECT
         });
 
-        return customerInfo[0]; // Devuelve el primer registro encontrado
+        return customerInfo[0];
     } catch (error) {
         console.error('Error al obtener la información del cliente:', error);
-        throw new Error('Error al obtener la información del cliente');
+        throw new Error('Error al obtener la información del cliente.');
     }
 };
 
-
-
-
-module.exports = { getUsuariosNotificacionesOfferCraftSel, getCustomerInfoById };
+module.exports = { getUsuariosNotificacionesOfferCraftSel };

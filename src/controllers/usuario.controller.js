@@ -3,7 +3,6 @@ const { Usuario } = require('../models/usuario')
 const bcrypt = require("bcryptjs");
 const env = require("../bin/env");
 
-//controllador paa obtener la lista de los usuarios
 const GetUsuarios = async (req, res) => {
 
     try {
@@ -27,13 +26,10 @@ const GetUsuarios = async (req, res) => {
 
 }
 
-
-//controllador para agregar nuevos usuarios
 const AddUsuario = async (req, res) => {
-
     try {
-
-        let { username, nombre, password, telefono, emailNotificacion,tipoUsuario, idRol } = req.body;
+        let { username, nombre, password, telefono, emailNotificacion, idRol, tipoUsuario } = req.body;
+        tipoUsuario = tipoUsuario || 1; 
         password = await bcrypt.hash(password, env.bcrypt.sr);
 
         await Usuario.create({
@@ -42,37 +38,35 @@ const AddUsuario = async (req, res) => {
             password,
             telefono,
             emailNotificacion,
-            tipoUsuario,
-            idRol
-        })
+            idRol,
+            tipoUsuario 
+        });
 
         res.json({ code: 'ok', message: 'Usuario creado con exito' });
 
     } catch (error) {
-
+        console.log("Error al agregar usuario:", error); 
         res.status(403)
         res.send({ errors: 'Ha sucedido un error al intentar agrear un usuario.'  + error});
 
     }
-
 }
-
-
-//controllador para actualizar los usuarios
 const UpdateUsuario = async (req, res) => {
-
     try {
+        const { nombre, password, telefono, emailNotificacion, idRol } = req.body;
+        const { username } = req.params;
 
-        const { nombre, password, telefono, emailNotificacion,  tipoUsuario, idRol } = req.body;
-        const { username } = req.params
-        console.log(username)
+     
+        let hashedPassword = password;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, env.bcrypt.sr);
+        }
 
         await Usuario.update({
             nombre,
-            password,
+            password: hashedPassword, 
             telefono,
             emailNotificacion,
-            tipoUsuario,
             idRol
         }, {
             where: {
@@ -80,18 +74,14 @@ const UpdateUsuario = async (req, res) => {
             }
         });
 
-
-        res.json({ code: 'ok', message: 'Usuario actualizado con exito' });
+        res.json({ code: 'ok', message: 'Usuario actualizado con éxito' });
 
     } catch (error) {
-
+        console.log("Error al actualizar usuario:", error); 
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar actualizar un usuario.' });
-
+        res.send({ errors: 'Ha sucedido un error al intentar actualizar un usuario.' });
     }
-
 }
-
 
 //controllador para eliminar los usuarios
 const DeleteUsuario = async (req, res) => {

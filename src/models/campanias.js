@@ -203,5 +203,4 @@ Configuraciones.belongsTo(Campania, {
 // });
 
 
-
 module.exports={Campania}

@@ -8,7 +8,10 @@ const { AddCampania,
         UpdateCampania, 
         PausarCampaña,
         ActivarCampaña,
-        DeleteCampania
+        DeleteCampania,
+        GetCampaniasSEm,
+        Getcampanascount,
+        getnewCampanias,
         } = require('../controllers/campania.controller');
 //const {validateCreate} = require('../validators/categoria')
 const authUser = require('../middlewares/auth.js');
@@ -18,8 +21,11 @@ const path = 'Campania';
 
 
 //rutas del proyecto
+router.get(`/${path}/new`,authUser, getnewCampanias);
+router.get(`/${path}/count`,authUser, Getcampanascount);
 router.get(`/${path}`,authUser, GetcampanasActivas);
 router.get(`/${path}/all`,authUser, GetCampania);
+router.get(`/${path}/sem`,authUser, GetCampaniasSEm);
 router.get(`/${path}/TestearSimple`,authUser, TestearTransaccion);
 router.post(`/${path}`,authUser, AddCampania);
 router.put(`/${path}/:id`, UpdateCampania);

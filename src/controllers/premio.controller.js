@@ -2,14 +2,14 @@ const { Premio } = require('../models/premio')
 
 
 //controllador paa obtener la lista de transacciones
-const GetPremios = async (req, res) => {
+const GetPremios = async(req, res) => {
     try {
         const trx = await Premio.findAll({
             where: {
                 estado: 1
             }
         })
-        res.json(trx)
+        res.json({ premio: trx })
     } catch (error) {
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar agregar el premio.' });
@@ -19,7 +19,7 @@ const GetPremios = async (req, res) => {
 
 
 //controllador para agregar nuevos Premios
-const AddPremio = async (req, res) => {
+const AddPremio = async(req, res) => {
 
     console.log("si llega el metodo crear ");
     console.log("si llega el metodo crear ");
@@ -33,13 +33,13 @@ const AddPremio = async (req, res) => {
     console.log(req.body);
     try {
 
-        
+
         //const { descripcion, nombre,link, claveSecreta, tipoTransaccion, idTransaccion } = req.body;
 
-        const {tipoTransaccion, usuario} = req.body;
+        const { tipoTransaccion, usuario } = req.body;
 
-        if(tipoTransaccion === "1"){
-            const {tipoTransaccion, idTransaccion } = req.body;
+        if (tipoTransaccion === "1") {
+            const { tipoTransaccion, idTransaccion } = req.body;
             await Premio.create({
                 tipo: tipoTransaccion,
                 idTransaccion,
@@ -49,8 +49,8 @@ const AddPremio = async (req, res) => {
 
             res.json({ code: 'ok', message: 'Premio creado con exito' });
 
-        } else if(tipoTransaccion === "2"){
-            const { descripcion, link, claveSecreta} = req.body;
+        } else if (tipoTransaccion === "2") {
+            const { descripcion, link, claveSecreta } = req.body;
 
             await Premio.create({
                 tipo: tipoTransaccion,
@@ -59,37 +59,37 @@ const AddPremio = async (req, res) => {
                 claveSecreta,
                 usuario
             })
-            
+
             res.json({ code: 'ok', message: 'Premio creado con exito' });
         }
 
-        
-        
+
+
 
     } catch (error) {
         console.log(error)
         res.status(403)
         res.send({ errors: 'Ha sucedido un  error al intentar agregar el premio.' });
 
-        console.log("ERROR GENERADO ES "+ error)
-        console.log("ERROR GENERADO ES "+ error)
-        console.log("ERROR GENERADO ES "+ error)
-        console.log("ERROR GENERADO ES "+ error)
-        console.log("ERROR GENERADO ES "+ error)
-        console.log("ERROR GENERADO ES "+ error)
+        console.log("ERROR GENERADO ES " + error)
+        console.log("ERROR GENERADO ES " + error)
+        console.log("ERROR GENERADO ES " + error)
+        console.log("ERROR GENERADO ES " + error)
+        console.log("ERROR GENERADO ES " + error)
+        console.log("ERROR GENERADO ES " + error)
     }
 
 }
 
 
 //controllador para actualizar los premios
-const UpdatePremio = async (req, res) => {
+const UpdatePremio = async(req, res) => {
 
     try {
-        const{tipoTransaccion, usuario} = req.body;
+        const { tipoTransaccion, usuario } = req.body;
         const { id } = req.params
 
-        if(tipoTransaccion === "1"){
+        if (tipoTransaccion === "1") {
             const { idTransaccion } = req.body;
             await Premio.update({
                 tipo: tipoTransaccion,
@@ -97,15 +97,15 @@ const UpdatePremio = async (req, res) => {
                 usuario
             }, {
                 where: {
-                    id:id
+                    id: id
                 }
             })
 
             res.json({ code: 'ok', message: 'Premio actualizado con exito' });
 
-        } else if(tipoTransaccion === "2"){
+        } else if (tipoTransaccion === "2") {
 
-            const { descripcion, link, claveSecreta} = req.body;
+            const { descripcion, link, claveSecreta } = req.body;
             await Premio.update({
                 descripcion,
                 link,
@@ -113,7 +113,7 @@ const UpdatePremio = async (req, res) => {
                 usuario
             }, {
                 where: {
-                    id:id
+                    id: id
                 }
             })
             res.json({ code: 'ok', message: 'Premio actualizado con exito' });
@@ -128,12 +128,12 @@ const UpdatePremio = async (req, res) => {
 
 
 //controllador para actualizar transacciones
-const DeletePremio = async (req, res) => {
+const DeletePremio = async(req, res) => {
 
     try {
-        const {id} = req.params
+        const { id } = req.params
         await Premio.update({
-            estado : 0
+            estado: 0
         }, {
             where: {
                 id: id
@@ -151,7 +151,7 @@ const DeletePremio = async (req, res) => {
 }
 
 
-const GetPremioById = async (req, res) => {
+const GetPremioById = async(req, res) => {
     try {
         const { id } = req.params;
         const project = await Premio.findByPk(id);

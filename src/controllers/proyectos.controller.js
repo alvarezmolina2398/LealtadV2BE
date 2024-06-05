@@ -76,6 +76,13 @@ const UpdateProject = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
 const DeleteProject = async (req, res) => {
     try {
         const { id } = req.params;
@@ -118,4 +125,22 @@ const GetProjectByID = async (req, res) => {
     }
 };
 
-module.exports = { GetProjects, AddProject, UpdateProject, DeleteProject, GetProjectByID };
+
+
+const Getproyectoscount = async (req, res) => {
+    try {
+        const proyectoscoun = await Proyectos.count({
+            where: {
+                estado: 1
+            }
+        });
+        res.json({ cantidad: proyectoscoun });
+    } catch (error) {
+        console.error("Este es el error:", error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar obtener la lista de referidos.' });
+    }
+};
+
+
+
+module.exports = { GetProjects, AddProject, UpdateProject, DeleteProject, GetProjectByID,Getproyectoscount };
