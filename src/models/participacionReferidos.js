@@ -37,7 +37,7 @@ participacionReferidos.belongsTo(ConfigReferido, {
 });
 
 // (async () => {
-//     await sequelize.sync({ force: true});
+//     await participacionReferidos.sync({ alter: true});
 // })()
 
 

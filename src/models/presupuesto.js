@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 
-
 const Presupuesto = sequelize.define('presupuesto', {
     id: {
         type: DataTypes.INTEGER,
@@ -35,12 +34,10 @@ const Presupuesto = sequelize.define('presupuesto', {
     }
 },{timestamps: false});
 
-
 // (async () => {
-//     await sequelize.sync({ force: true });
+//     await Presupuesto.sync({ alter: true });
 //     // Code here
 //  })();
-
-
+// 
 
 module.exports = {Presupuesto}

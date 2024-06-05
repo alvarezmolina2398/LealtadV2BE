@@ -3,6 +3,7 @@ const { sequelize } = require('../database/database');
 const { Parametro } = require('./parametro');
 const { PremioCampania } = require('./premioCampania');
 const { Presupuesto } = require('./presupuesto');
+const { Campania } = require('./campanias');
 
 
 const Etapa = sequelize.define('etapa', {
@@ -98,6 +99,11 @@ PremioCampania.belongsTo(Etapa, {
 // Etapa.sync({ alter: true }).then(() => {
 //     console.log('Tabla Etapa creada o actualizada correctamente');
 //  });
+
+// Campania.sync({ alter: true }).then(() => {
+//     console.log('tabla Campania creada');
+// });
+
 
 module.exports = {Etapa}
 

@@ -33,7 +33,7 @@ const PremioCampania = sequelize.define('premiocampania', {
 
 
 // (async () => {
-//     await sequelize.sync({ force: true });
+//     await PremioCampania.sync({ alter: true });
 //     // Code here
 //  })();
 

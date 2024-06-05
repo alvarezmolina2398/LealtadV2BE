@@ -13,9 +13,9 @@ const asignarCategoria = sequelize.define('asignarcategoria', {
 
 }, {timestamps: false});
 
-/*(async () => {
-  await sequelize.sync({ force: true });
-//     // Code here
-})();*/
+// (async () => {
+//   await asignarCategoria.sync({ alter: true });
+// //     // Code here
+// })();
 
 module.exports = {asignarCategoria}

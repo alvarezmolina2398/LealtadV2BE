@@ -1,48 +1,40 @@
 const { Categoria } = require('../models/categoria');
 
 
-//controllador paa obtener la lista de Categoriaes
 const GetCategorias = async (req, res) => {
     try {
-        const trx = await Categoria.findAll({
+        const categorias = await Categoria.findAll({
             where: {
-                estado: 1
+                estado: 1 
             }
         });
-        res.json(trx)
+        console.log('Categorias obtenidas:', categorias);
+        res.json(categorias);
     } catch (error) {
-        console.error(error)
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la consulta de Categoria.' });
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al consultar las Categorias.' });
     }
+};
 
-}
-
-
-//controllador para agregar nuevas Categoriaes
+// Controlador para agregar nuevas Categorias
 const AddCategoria = async (req, res) => {
-
     try {
         const { nombre } = req.body;
         await Categoria.create({
             nombre
-        })
+        });
         res.json({ code: 'ok', message: 'Categoria creada con exito' });
-
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Categoria.' });
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la Categoria.' });
     }
+};
 
-}
-
-
-//controllador para actualizar Categoriaes
+// Controlador para actualizar Categorias
 const UpdateCategoria = async (req, res) => {
-
     try {
         const { nombre } = req.body;
-        const { id } = req.params
+        const { id } = req.params;
         await Categoria.update({
             nombre
         }, {
@@ -50,23 +42,17 @@ const UpdateCategoria = async (req, res) => {
                 id: id
             }
         });
-
-
         res.json({ code: 'ok', message: 'Categoria actualizada con exito' });
-
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Categoria.' });
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la Categoria.' });
     }
+};
 
-}
-
-
-//controllador para actualizar Categoriaes
+// Controlador para inhabilitar Categorias
 const DeleteCategoria = async (req, res) => {
-
     try {
-        const { id } = req.params
+        const { id } = req.params;
         await Categoria.update({
             estado: 0
         }, {
@@ -74,28 +60,23 @@ const DeleteCategoria = async (req, res) => {
                 id: id
             }
         });
-
-
         res.json({ code: 'ok', message: 'Categoria inhabilitada con exito' });
-
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Categoria.' });
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la Categoria.' });
     }
+};
 
-}
-
-
+// Controlador para obtener Categoria por ID
 const GetCategoriaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const project = await Categoria.findByPk(id);
-        res.json(project)
+        const categoria = await Categoria.findByPk(id);
+        res.json(categoria);
     } catch (error) {
-        res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la Categoria.' });
+        console.error(error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar realizar la Categoria.' });
     }
+};
 
-}
-
-module.exports = { GetCategorias, AddCategoria, UpdateCategoria, DeleteCategoria, GetCategoriaById }
+module.exports = { GetCategorias, AddCategoria, UpdateCategoria, DeleteCategoria, GetCategoriaById };

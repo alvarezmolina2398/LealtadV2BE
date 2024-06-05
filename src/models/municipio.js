@@ -2,8 +2,6 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const {Departamento_Proyectos} = require('./departamento_proyectos');
 
-
-
 const Municipio = sequelize.define('municipio', {
     id: {
         type: DataTypes.INTEGER,

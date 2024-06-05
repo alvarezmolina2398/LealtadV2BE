@@ -57,15 +57,14 @@
        sourceKey: 'id',
    });
 
-   Columna.belongsTo(Proyectos, {
-       foreignKey: 'idProyectos',
-       targetId: 'id',
-   });
-
-   Proyectos.hasMany(Departamento_Proyectos, {
-       foreignKey: 'idProyecto',
-       sourceKey: 'id'
-   });
+Columna.belongsTo(Proyectos,{
+    foreignKey: 'idProyectos',
+    targetId: 'id',
+});
+Proyectos.hasMany(Departamento_Proyectos,{
+    foreignKey: 'idProyecto',
+    sourceKey: 'id'
+});
 
    Departamento_Proyectos.belongsTo(Proyectos, {
        foreignKey: 'idProyecto',
@@ -78,9 +77,9 @@
 
    // })();
 
-    // Departamento_Proyectos.sync({ alter: true }).then(() => {
-   //     console.log('tabla TransaccionPremio creada');
-   // });
+// Departamento_Proyectos.sync({ alter: true }).then(() => {
+//     console.log('tabla TransaccionPremio creada');
+// });
 
 
 //    Campania.sync({ alter: true }).then(() => {
@@ -88,4 +87,4 @@
 //    });
 
 
-   module.exports = { Proyectos }
+module.exports = { Proyectos }

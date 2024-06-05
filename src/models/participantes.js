@@ -17,13 +17,17 @@ const Participantes = sequelize.define('participantes', {
         type: DataTypes.INTEGER,
         defaultValue: 1,
         allowNull: false
-    }
+    },
+    idCampania: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
 }, { timestamps: false });
 
 
-//(async () => {
-//     await sequelize.sync({ force: true });
+// (async () => {
+//     await Participantes.sync({ alter: true });
 //     // Code here
-//})();
+// })();
 
 module.exports = { Participantes }

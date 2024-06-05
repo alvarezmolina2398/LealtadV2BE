@@ -1,13 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { TransaccionPremio } = require('./transaccionPremio');
-const { codigoReferido} = require('./codigoReferidos');
-const {referidosIngresos} = require('./ReferidosIngresos');
-const {participacionReferidos}= require('./participacionReferidos');
-const {ConfigReferido}= require('./configReferidos');
+const { codigoReferido } = require('./codigoReferidos');
 
-
-// const { sumaTotal } = require('sequelize');
+const { sumaTotal } = require('sequelize');
 
 const Participacion = sequelize.define('participacions', {
 
@@ -66,20 +62,15 @@ const Participacion = sequelize.define('participacions', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    // idCampania: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
-    // tipoTransaccion: {
-    //     type: DataTypes.CHAR(1),
-    //     allowNull: false
-    // },
-    // estado : {
-    //     type: DataTypes.INTEGER,
-    //     defaultValue: 1
-    // },
 
-
+    tipoTransaccion: {
+        type: DataTypes.CHAR(1),
+        allowNull: false
+    },
+    estado : {
+        type: DataTypes.INTEGER,
+        defaultValue: 1
+    },
 }, { timestamps: false })
 
 
@@ -107,24 +98,27 @@ Participacion.belongsTo(codigoReferido, {
 //     foreignKey: 'idRefIngresos' 
 // });
 
-Participacion.hasMany(participacionReferidos, {
-     as: 'p2', 
-     foreignKey: 'id' 
-    });
+// Participacion.hasMany(participacionReferidos, {
+//      as: 'p2', 
+//      foreignKey: 'id' 
+//     });
 
-    Participacion.belongsTo(ConfigReferido, { 
-        foreignKey: 'id'
-     });
+//     Participacion.belongsTo(codigoReferido, { 
+//         foreignKey: 'id'
+//      });
+
 
 // (async () => {
 //     await Participacion.sync({ alter: true });
-    
+//     //Code here
 // })();
 
 // TransaccionPremio.sync({ alter: true }).then(() => {
 //     console.log('tabla TransaccionPremio creada');
 // });
 
-
+// Participacion.sync({ alter: true }).then(() => {
+//     console.log('tabla Participacion creada');
+// });
 
 module.exports = { Participacion }

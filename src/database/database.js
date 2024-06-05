@@ -9,6 +9,7 @@ const sequelize = new Sequelize(
     "DesaSolUn",
     {
         host: "34.174.109.166",
+        host: "34.174.109.166",
         dialect: "mysql",
     }
 );

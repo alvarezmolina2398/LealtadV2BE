@@ -34,5 +34,8 @@ Columna.belongsTo(TablaDB,{
 //  (async ()=> {
 //    await Transaccion.sync({alter:true})
 // })()
+// (async ()=> {
+//     await TablaDB.sync({alter:true})
+//  })()
 
 module.exports = {TablaDB}
