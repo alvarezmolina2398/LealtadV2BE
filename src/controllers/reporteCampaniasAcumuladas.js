@@ -14,7 +14,7 @@ const fechaminimavalida = async (req, res) => {
 
     const query =
         `
-        SELECT MIN(fechaInicio) AS fechaApartir FROM lealtadv2.campania WHERE fechaFin >= CAST(NOW() AS DATE)
+        SELECT MIN(fechaInicio) AS fechaApartir FROM dbepco7agwmwba.campania WHERE fechaFin >= CAST(NOW() AS DATE)
     `
     try {
         const result = await sequelize.query(query, {
@@ -35,7 +35,7 @@ const fechamaximavalida = async (req, res) => {
 
     const query =
         `
-        SELECT MIN(fechaFin) AS fechaApartir FROM lealtadv2.campania WHERE fechaFin >= CAST(NOW() AS DATE)
+        SELECT MIN(fechaFin) AS fechaApartir FROM dbepco7agwmwba.campania WHERE fechaFin >= CAST(NOW() AS DATE)
     `
     try {
         const result = await sequelize.query(query, {
@@ -53,11 +53,11 @@ const fechamaximavalida = async (req, res) => {
 }
 
 const transaccionesDelUsuarioPendientes = async (req, res) => {
-    const { idUsuario, fecha1, fecha2 } = req.params; // Asegúrate de enviar estos datos en los parámetros de la ruta
+    const { idUsuario, fecha1, fecha2 } = req.params; 
 
     const query = `
         SELECT *, CAST(fechaParticipacion AS DATE) AS solofecha 
-        FROM lealtadv2.campaniaadicional 
+        FROM dbepco7agwmwba.campaniaadicional 
         WHERE yaAplico = 0 AND idCampania = 0 AND idUsuarioParticipante = :idUsuario 
         AND fechaParticipacion BETWEEN :fecha1 AND :fecha2;
     `;
@@ -78,7 +78,7 @@ const transaccionesDelUsuarioPendientes = async (req, res) => {
     } catch (error) {
         console.error('Error al obtener las transacciones del usuario:', error);
         res.status(500).json({ error: 'Error al procesar la solicitud' });
-        // throw error;
+
     }
 };
 
@@ -130,51 +130,6 @@ async function usuarioParticipantes_get(fechaI, fechaF) {
     }
 }
 
-// async function usuarioParticipantes_get(fechaI, fechaF) {
-//     // const { fechaI, fechaF } = req.params;
-//     const localQuery = `
-//         SELECT idUsuarioParticipante
-//         FROM lealtadv2.campaniaadicional
-//         WHERE yaAplico = 0 AND fechaParticipacion BETWEEN :fechaI AND :fechaF
-//     `;
-
-//     const remoteQuery = `
-//         SELECT tc.customer_id, tc.telno, CONCAT(tui.fname, ' ', tui.mname, ' ', tui.lname, ' ', tui.slname) AS nombre
-//         FROM pronet.tbl_customer tc
-//         JOIN pronet.tblUserInformation tui ON tui.userid = tc.fk_userid
-//         WHERE tc.customer_id IN (:customerIds)
-//     `;
-
-//     try {
-//         // Primero, obtener IDs de participantes desde la base local
-//         const localResults = await sequelize.query(localQuery, {
-//             replacements: {
-//                 fechaI: `${fechaI} 00:00:00`,
-//                 fechaF: `${fechaF} 23:59:59`
-//             },
-//             type: sequelize.QueryTypes.SELECT
-//         });
-
-//         // Verificar si tenemos resultados antes de continuar
-//         if (localResults.length === 0) {
-//             return res.status(404).send('No se encontraron participantes en el período especificado.');
-//         }
-
-//         const customerIds = localResults.map(item => item.idUsuarioParticipante);
-
-//         // Luego, obtener detalles de esos IDs desde la base remota
-//         const remoteResults = await pronet.query(remoteQuery, {
-//             replacements: { customerIds },
-//             type: pronet.QueryTypes.SELECT
-//         });
-
-//         return remoteResults;
-//     } catch (error) {
-//         console.error('Error in usuarioParticipantes_get:', error);
-//         // return res.status(500).send('Error al procesar la solicitud');
-//         throw error;
-//     }
-// }
 
 async function informacionGeneralUsuario(usuarioId) {
     // const usuarioId = req.params.usuarioId; 
@@ -198,9 +153,9 @@ async function informacionGeneralUsuario(usuarioId) {
         });
 
         if (results && results.length > 0) {
-            return results[0]; // Asegúrate de devolver solo el primer resultado.
+            return results[0]; 
         } else {
-            return null; // Devuelve null si no hay resultados para manejar este caso correctamente.
+            return null; 
         }
 
         // res.json(results);  // Devuelve el resultado como JSON

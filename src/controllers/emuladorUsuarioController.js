@@ -70,11 +70,11 @@ const transaccionesValidasCampanasFusionLg = async (idCampanias) => {
                 dcp.id, 
                 dcp.idCampania 
             FROM 
-                lealtadv2.parametros dcp 
+                dbepco7agwmwba.parametros dcp 
             INNER JOIN 
-                lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
+                dbepco7agwmwba.transaccions t ON t.id = dcp.idTransaccion 
             INNER JOIN 
-                lealtadv2.columnas ctdb ON ctdb.id = t.idColumna 
+                dbepco7agwmwba.columnas ctdb ON ctdb.id = t.idColumna 
             WHERE 
                 idCampania = :idCampania AND tipoTransaccion = 't'  AND dcp.estado = 1 
             UNION ALL 
@@ -133,371 +133,128 @@ const GetcampanasActivasById = async (id) => {
     }
 }
 
+async function obtenerTransaccionesValidas(customerId, idProyecto) {
+    try {
+        return await Participacion.count({
+            where: {
+                customerId: customerId,
+                idProyecto: idProyecto,
+                estado: 1
+            }
+        });
+    } catch (error) {
+        console.error("Error al obtener transacciones válidas:", error);
+        throw error; // Lanza el error para manejarlo más arriba en la cadena
+    }
+}
+
+async function obtenerMistransacciones(customerId, idProyecto) {
+    try {
+        return await Participacion.count({
+            where: {
+                customerId: customerId,
+                idProyecto: idProyecto,
+                estado: 0
+            }
+        });
+    } catch (error) {
+        console.error("Error al obtener transacciones no válidas:", error);
+        throw error; // Lanza el error para manejarlo más arriba en la cadena
+    }
+}
+// Función para obtener el usuario basado en un referens
+async function obtenerUsuarioPorReferens(referens) {
+    const resultado = await pronet.query(
+        `SELECT customer_id, telno, department, municipality FROM pronet.tbl_customer WHERE customer_reference = :referens LIMIT 1;`,
+        { replacements: { referens }, type: Sequelize.QueryTypes.SELECT }
+    );
+    return resultado.length > 0 ? resultado[0] : null;
+}
+
+// Función para obtener las campañas activas
+async function obtenerCampanasActivas() {
+    const campanias = await Campania.findAll({
+        where: { estado: 1 },
+        attributes: ['id', 'nombre', 'descripcion', 'tituloNotificacion', 'descripcionNotificacion', 'imgAkisi', 'imgPush'],
+        order: [['fechaCreacion', 'DESC']]
+    });
+
+    // Asignar imagen predeterminada si es necesario
+    campanias.forEach(campania => {
+        if (!campania.imgAkisi || campania.imgAkisi.trim() === "") {
+            campania.imgAkisi = 'data:image/png;base64,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';
+        }
+        if (!campania.imgPush || campania.imgPush.trim() === "") {
+            campania.imgPush = 'data:image/png;base64,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';
+        }
+    });
+
+    return campanias;
+}
+
+
+// Procesa las campañas activas para un usuario
+async function procesarCampanas(usuario, campanas) {
+    const retorno = [];
+    for (const campania of campanas) {
+        const notificacionData = await tienePremiosPendientesCampanas(campania.id, usuario.customer_id);
+        const transaccionesValidas = await obtenerTransaccionesValidas(usuario.customer_id, campania.id);
+        const transaccionesInvalidas = await obtenerMistransacciones(usuario.customer_id, campania.id);
+        const descripcionCampana = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
+
+
+        retorno.push({
+            idCampana: campania.id,
+            nombre: campania.nombre,
+            descripcion: descripcionCampana,
+            tipoParticipacion: campania.tipoUsuario,
+            notificacion: notificacionData ? 1 : 0,
+            urlNotificacion: notificacionData ? notificacionData.link : '',
+            tituloNotificacion: campania.tituloNotificacion,
+            descripcionNotificacion: campania.descripcionNotificacion,
+            infoAdd: -1,
+            mistransacciones: transaccionesInvalidas,
+            transacciones: transaccionesValidas,
+            imagenIcono: campania.imgAkisi,
+            imagenGrande: campania.imgPush,
+            botones: []
+        });
+    }
+    return retorno;
+}
+
+// Función principal que integra todas las partes
 const generaCampanasUsuarios = async (req, res) => {
     try {
         const { referens } = req.params;
         console.log("Número de referencia:", referens);
 
-        const refer = await pronet.query(
-            `SELECT customer_id FROM pronet.tbl_customer WHERE customer_reference = :referens LIMIT 1;`, {
-            replacements: { referens },
-            type: Sequelize.QueryTypes.SELECT
+        const usuario = await obtenerUsuarioPorReferens(referens);
+        if (!usuario) {
+            return res.status(404).json({ message: "No se encontró ningún usuario con este referens." });
         }
-        );
 
-        console.log("Resultado de la consulta refer:", refer);
+        const campanasActivas = await obtenerCampanasActivas();
+        // const resultado = await procesarCampanas(usuario, campanasActivas);
 
-        if (refer && refer.length > 0) {
-            const usuario = await pronet.query(
-                `SELECT telno, department, municipality FROM pronet.tbl_customer WHERE customer_id = :customer_id`, {
-                replacements: { customer_id: refer[0].customer_id },
-                type: Sequelize.QueryTypes.SELECT
-            }
-            );
+        // Filtrar solo las campañas que tienen regiones válidas para el usuario
+        const campanasValidas = await Promise.all(campanasActivas.map(async (campania) => {
+            const regionesValidas = await regionesValidasCampania(campania.id);
+            if (regionesValidas.length > 0) return campania;
+            return null;
+        }));
 
-            console.log("Resultado de la consulta usuario:", usuario);
+        // Eliminar las entradas nulas y procesar solo las campañas válidas
+        const campanasFiltradas = campanasValidas.filter(campania => campania !== null);
+        const resultado = await procesarCampanas(usuario, campanasFiltradas);
 
-            if (usuario && usuario.length > 0) {
-                // Obtener las campañas activas utilizando el modelo Campania
-                const campanasActivasEnc = await Campania.findAll({
-                    where: {
-                        estado: 1,
-                    },
-                    attributes: ['id', 'nombre', 'descripcion', 'fechaCreacion', 'fechaRegistro', 'fechaInicio', 'fechaFin', 'edadInicial', 'edadFinal', 'sexo', 'tipoUsuario', 'tituloNotificacion', 'descripcionNotificacion', 'imgPush', 'imgAkisi', 'estado', 'maximoParticipaciones', 'mistransacciones', 'transacciones'],
-                    order: [
-                        ['fechaCreacion', 'DESC']
-                    ]
-                });
-
-                console.log("Resultado de la consulta campanasActivasEnc:", campanasActivasEnc);
-
-                // Asignar valores a cada objeto campana
-                for (const valorCampanasActivas of campanasActivasEnc) {
-                    valorCampanasActivas.fechaRegistro = valorCampanasActivas.fechaCreacion;
-                    valorCampanasActivas.edadInicial = valorCampanasActivas.edad_inicio;
-                    valorCampanasActivas.edadFinal = valorCampanasActivas.edad_fin;
-                    valorCampanasActivas.tipoUsuario = valorCampanasActivas.tipo_usuario;
-                    valorCampanasActivas.sexo = valorCampanasActivas.sexo;
-                    valorCampanasActivas.usuariosInternos = valorCampanasActivas.usuarios_internos;
-                    valorCampanasActivas.UsuariosAntiguos = valorCampanasActivas.UsuariosAntiguos;
-                    valorCampanasActivas.UsuariosNuevos = valorCampanasActivas.UsuariosNuevos;
-                    valorCampanasActivas.esParaUsuariosNuevos = valorCampanasActivas.UsuariosNuevos;
-                    valorCampanasActivas.idCampana = valorCampanasActivas.idCampana;
-                    valorCampanasActivas.nombreCampana = valorCampanasActivas.nombreCampana;
-                    valorCampanasActivas.filtradoNumero = valorCampanasActivas.filtradoNumero;
-                    valorCampanasActivas.tipoPremiosCampana = valorCampanasActivas.tipoPremio;
-
-                    if (valorCampanasActivas.imgAkisi = valorCampanasActivas.imgAkisi) {
-                        valorCampanasActivas.imgAkisi = valorCampanasActivas.imgAkisi;
-                    } else {
-                        valorCampanasActivas.imgAkisi = valorCampanasActivas.imgAkisi || 'data:image/png;base64,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';
-                    }
-
-                    if (valorCampanasActivas.imgPush = valorCampanasActivas.imgPush) {
-                        valorCampanasActivas.imgPush = valorCampanasActivas.imgPush;
-                    } else {
-                        valorCampanasActivas.imgPush = valorCampanasActivas.imgPush || 'data:image/png;base64,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';
-                    }
-
-                    const Bloqueado = await Bloqueados.findAll({
-                        where: {
-                            estado: 1,
-                        },
-                        attributes: ['numero', 'idCampania'],
-                    });
-
-                    // console.log("Bloqueados:", Bloqueado);
-                    const Participante = await Participantes.findAll({
-                        where: {
-                            estado: 1,
-                        },
-                        attributes: ['numero', 'idCampania'],
-                    });
-
-                    // console.log("Participantes:", Participante);
-                    const validaBloqueado = (bloqueado, participantes) => {
-                        const participanteCoincidente = participantes.find(participante =>
-                            participante.numero === bloqueado.numero && participante.idCampania === bloqueado.idCampania
-                        );
-
-                        return participanteCoincidente ? 'Restrinjido' : 'permitido';
-                    };
-
-                    const participantesPermitidos = [];
-                    const participantesBloqueados = [];
-
-                    for (const participante of Participante) {
-                        const resultadoBloqueado = validaBloqueado(participante, Bloqueado);
-                        // console.log(`El numero a participar ${participante.numero} es ${resultadoBloqueado}.`);
-
-                        if (resultadoBloqueado === 'Restrinjido') {
-                            participantesBloqueados.push(participante);
-                        } else {
-                            participantesPermitidos.push(participante);
-                        }
-                    }
-
-                    const campaniasFiltradas = await Promise.all(campanasActivasEnc.map(async (campania) => {
-                        try {
-                            const regionesValidas = await regionesValidasCampania(campania.id);
-                            // Aquí aplicas la lógica para determinar si un usuario es válido basado en las regiones\
-                            console.log(`Resultado de regionesValidas para campania ${campania.id}:`, regionesValidas);
-                            return regionesValidas.length > 0 ? campania : null;
-                        } catch (error) {
-                            console.error('Error obteniendo regiones válidas para campania:', campania.id, error);
-                            return null; // Maneja el error como prefieras
-                        }
-
-                    }));
-
-
-                    res.json(campaniasFiltradas.filter(campania => campania !== null));
-
-                    // for (const region of regionesValidas) {
-                    //     if (region.limites > region.listos &&
-                    //         (region.idDepartamento === 0 || (region.idDepartamento === referencia.depto && (region.idMunicipio === 0 || region.idMunicipio === referencia.muni)))) {
-                    //         permitidoRegionParticipante = 1;
-                    //         break;  // Salir del ciclo una vez que se encuentra una región permitida
-                    //     }
-                    // }
-
-                    // const notificacionData = await tienePremiosPendientesCampanas(idCampania, idRevision);
-                    // let notificacion = 0;
-                    // let urlnotificacion = '';
-                    // let dataAgregar = {};
-
-                    // if (notificacionData) {
-                    //     notificacion = 1;
-                    //     urlnotificacion = notificacionData.link;
-                    //     let descripcion = `${tituloNotificacion}\n${descripcionNotificacion}`;
-
-                    //     dataAgregar = {
-                    //         idCampania: idCampania,
-                    //         nombre: nombre,
-                    //         descripcion: descripcionCampana,
-                    //         tipoParticipacion: tipoParticipacion,
-                    //         notificacion: notificacion,
-                    //         urlNotificacion: urlnotificacion,
-                    //         tituloNotificacion: tituloNotificacion,
-                    //         descripcionNotificacion: descripcionNotificacion,
-                    //         infoAdd: -1, // Específico de tu lógica de negocio
-                    //         mistransacciones: 0,
-                    //         transacciones: 0,
-                    //         imagenIcono: imagen, // Asegurar que 'imagen' está definida apropiadamente
-                    //         imagenGrande: imagenPush, // Asegurar que 'imagenPush' está definida apropiadamente
-                    //         botones: [] // Asegurar que esto se define según tus requisitos
-                    //     };
-                    //     retorno.push(dataAgregar);
-                    // } else if (permitidoRegionParticipante === 1) {
-                    //     let revision = '4'; // O cualquier otro valor según la lógica de negocio
-                    //     let contadorParametros = 0;
-                    //     let contadorYaLlevo = 0;
-
-                    //     parametrosParticipacion.forEach((valor) => {
-                    //         contadorParametros += 1;
-                    //     });
-
-                    //     let numeroImagen = Math.floor(Math.random() * 4) + 1;
-                    //     let imagen = iconoAkisi; // Asegurar que 'iconoAkisi' está correctamente definido
-
-                    //     let infoAdd = [];
-                    //     // Aquí agregarías cualquier otra lógica relevante...
-
-                    //     // Luego construyes el objeto dataAgregar como arriba pero con valores que correspondan a este caso
-                    //     // Suponiendo que ya has realizado las comprobaciones necesarias y tienes variables disponibles
-                    //     let dataAgregar = {
-                    //         id: idCampania, // ID de la campaña
-                    //         nombre: "Nombre de la Campaña", // Deberías tener esto de algún lugar en tu flujo
-                    //         descripcion: "Descripción de la campaña aquí", // Descripción basada en tu lógica de negocios
-                    //         tipoParticipacion: "Tipo de Participación", // Detalles del tipo de participación de la campaña
-                    //         notificacion: 0, // No hay notificaciones porque no hay premios pendientes
-                    //         urlNotificacion: "", // URL vacía ya que no hay notificaciones
-                    //         tituloNotificacion: "", // Sin título para notificaciones
-                    //         descripcionNotificacion: "", // Sin descripción para notificaciones
-                    //         infoAdd: -1, // Asumiendo que -1 es un valor estándar para indicar no información adicional
-                    //         mistransacciones: 0, // Suponiendo que no hay transacciones relevantes aún
-                    //         transacciones: 0, // No hay requisitos de transacción cumplidos
-                    //         imagenIcono: "ruta/a/icono.png", // La imagen del icono de la campaña
-                    //         imagenGrande: "ruta/a/imagen_grande.png", // La imagen grande para la campaña
-                    //         botones: [] // Los botones que se deben mostrar, si es aplicable
-                    //     };
-
-                    //     return dataAgregar;
-
-                    // }
-
-
-                    for (const campania of campanasActivasEnc) {
-                        // Obtener las etapas de la campaña
-                        const transaccionesValidas = await transaccionesValidasCampanasFusionL(campania.id);
-
-                        // Iterar sobre las etapas y mostrar los idDepartamento de los presupuestos asociados
-                        for (const etapa of transaccionesValidas.etapas) {
-                            // console.log("Información de la etapa:", etapa);
-                            // console.log("Información de tipoParticipacion:", etapa.tipoParticipacion);
-
-                            // Verifica si los parametros se están cargando correctamente
-                            if (etapa && etapa.parametros && etapa.parametros.length > 0) {
-                                console.log("parametros asociados:", etapa.parametros);
-
-                                // Accede a los parametros asociados a cada etapa
-                                for (const parametro of etapa.parametros) {
-                                    // console.log("ValorMinimo del parametro:", parametro.ValorMinimo);
-                                    // console.log("ValorMaximo del parametro:", parametro.ValorMaximo);
-                                    // console.log("valorAnterior del parametro:", parametro.valorAnterior);
-                                    // console.log("limiteParticipacion del parametro:", parametro.limiteParticipacion);
-                                }
-                            } else {
-                                // console.log("No hay parametros asociados con esta etapa.");
-                            }
-                        }
-
-
-                        for (const campania of campanasActivasEnc) {
-                            // Obtener las etapas de la campaña
-                            const transaccionesValidas = await transaccionesValidasCampanasFusionL(campania.id);
-
-                            // Iterar sobre los Participantes y mostrar su id
-                            if (transaccionesValidas && transaccionesValidas.Participantes) {
-                                for (const Participante of transaccionesValidas.Participantes) {
-                                    // console.log("Información de Participante:", Participante);
-                                    // console.log("Información del id del Participante:", Participante.id);
-                                }
-                            } else {
-                                // console.log("No hay Participantes asociados con esta campaña.");
-                            }
-                        }
-
-
-                        for (const campania of campanasActivasEnc) {
-                            // Obtener las etapas de la campaña
-                            const transaccionesValidas = await transaccionesValidasCampanasFusionL(campania.id);
-
-                            // Iterar sobre las participaciones y mostrar las transacciones asociadas
-                            for (const participacion of transaccionesValidas.participaciones) {
-                                console.log("Información de la participación:", participacion);
-
-                                // Verifica si las transacciones se están cargando correctamente
-                                if (participacion && participacion.Transaccions) {
-                                    console.log("Transacciones asociadas:", participacion.Transaccions);
-
-                                    // Acceder a las transacciones asociadas a cada participación
-                                    for (const transaccion of participacion.Transaccions) {
-                                        console.log("idColumna de la transacción:", transaccion.idColumna);
-                                    }
-                                } else {
-                                    console.log("No hay transacciones asociadas con esta participación.");
-                                }
-                            }
-                        }
-
-                        for (const campania of campanasActivasEnc) {
-                            // Obtener las etapas de la campaña
-                            const transaccionesValidas = await transaccionesValidasCampanasFusionL(campania.id);
-
-                            // Iterar sobre las participaciones y mostrar las transacciones asociadas
-                            for (const participacion of transaccionesValidas.participaciones) {
-                                console.log("Información de la participación:", participacion);
-
-                                // Verifica si las transacciones se están cargando correctamente
-                                if (participacion && participacion.Transaccions) {
-                                    console.log("Transacciones asociadas:", participacion.Transaccions);
-
-                                    // Acceder a las transacciones asociadas a cada participación
-                                    for (const transaccion of participacion.Transaccions) {
-                                        console.log("idColumna de la transacción:", transaccion.idColumna);
-                                    }
-                                } else {
-                                    console.log("No hay transacciones asociadas con esta participación.");
-                                }
-                            }
-                        }
-
-                        // Accede a la columna idColumna de Transaccion
-
-                    }
-                    for (const campania of campanasActivasEnc) {
-
-                        const departamento = await GetcampanasActivasById(campania.id);
-
-                        for (const etapa of departamento.etapas) {
-
-                            for (const presupuesto of etapa.presupuestos) {
-                                console.log("IdDepartamento del presupuesto:", presupuesto.idDepartamento);
-                            }
-                        }
-                    }
-
-                }
-
-                // const idUsuarioParticipante = req.res.idUsuarioParticipante || req.params.idUsuarioParticipante;
-
-                // for (const campania of campanasActivasEnc) {
-                //     console.log(`Procesando campaña: ${campania.id}`);
-                //     try {
-                //         const notificacionData = await tienePremiosPendientesCampanas(campania.id, idUsuarioParticipante);
-                //         console.log(`Datos de notificación para la campaña ${campania.id}:`, notificacionData);
-
-                //         let notificacion = 0;
-                //         // let urlnotificacion = '';
-                //         let descripcionCampania = `${campania.tituloNotificacion}\n${campania.descripcionNotificacion}`;
-
-                //         if (notificacionData) {
-                //             notificacion = 1;
-                //             // urlnotificacion = notificacionData.link;
-                //         }
-
-                //         let contadorYaLlevo = 0;
-                //         let contadorParametros = 0;
-                //         if (minimoTransacciones > 0 && segundoFiltroTransacciones.length === minimoTransacciones) {
-                //             contadorYaLlevo = minimoTransacciones;
-                //             contadorParametros = minimoTransacciones;
-                //         }
-
-                //         const dataAgregar = {
-                //             idCampania: campania.id,
-                //             nombreCampana: campania.nombre,
-                //             descripcion: descripcionCampania,
-                //             tipoParticipacion: campania.tipoParticipacion,
-                //             notificacion: notificacion,
-                //             urlNotificacion: urlnotificacion,
-                //             tituloNotificacion: campania.tituloNotificacion,
-                //             descripcionNotificacion: campania.descripcionNotificacion,
-                //             infoAdd: -1, // Asumiendo que infoAdd se ajusta en otra parte
-                //             mistransacciones: contadorYaLlevo,
-                //             transacciones: contadorParametros,
-                //             imgAkisi: campania.imgAkisi,
-                //             imgPush: campania.imgPush,
-                //             // botones: [] // Asumiendo que botones se manejan en otra parte
-                //         };
-
-                //         retorno.push(dataAgregar);
-                //     } catch (error) {
-                //         // console.error(`Error processing campaign ${campania.id}: ${error.message}`);
-                //         // Considerar si continuar con el siguiente o detener el proceso
-                //     }
-                // }
-
-
-
-
-
-
-                // res.json(campanasActivasEnc);
-                // res.json(campaniasFiltradas.filter(campania => campania !== null));
-                // return res.json(campaniasFiltradas.filter(campania => campania !== null));
-                // res.json(retorno);
-            } else {
-                res.status(404).json({ message: "No se encontró ningún usuario con este referens." });
-            }
-        } else {
-            res.status(404).json({ message: "No se encontró ningún usuario con este referens." });
-        }
+        res.json(resultado);
     } catch (error) {
         console.error("Error en generaCampanasUsuarios:", error);
         res.status(500).json({ message: "Error interno del servidor." });
     }
 };
+
 
 
 const campanasUsuariosEmulador_get = async (req, res) => {
@@ -507,8 +264,8 @@ const campanasUsuariosEmulador_get = async (req, res) => {
 
         const referens = await pronet.query(
             `SELECT customer_reference 
-            FROM pronet.tbl_customer 
-            WHERE telno = :telefono ;`,
+             FROM pronet.tbl_customer 
+             WHERE telno = :telefono;`,
             {
                 replacements: { telefono },
                 type: Sequelize.QueryTypes.SELECT
@@ -525,9 +282,9 @@ const campanasUsuariosEmulador_get = async (req, res) => {
             });
         } else {
             // Si se encuentra el referens, procede con la generación de campañas.
-            const { customer_reference } = referens[0];
-            const respData = await generaCampanasUsuarios({ params: { referens: customer_reference } }, res);
-            return res.status(200).json(respData);
+            const customer_reference = referens[0].customer_reference;
+            req.params.referens = customer_reference;  // Ajustamos los parámetros del request para incluir 'referens'
+            return generaCampanasUsuarios(req, res);  // Llama al método de generación de campañas.
         }
     }
     catch (error) {
@@ -537,6 +294,7 @@ const campanasUsuariosEmulador_get = async (req, res) => {
         }
     }
 };
+
 
 const transaccionesValidasCampanasFusion = async (idCampania) => {
     // const { idCampania } = req.params;
@@ -552,9 +310,9 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre, 
                 dcp.id
-            FROM lealtadv2.participacions dcp 
-            INNER JOIN lealtadv2.transaccions t ON t.id = dcp.idTransaccion 
-            INNER JOIN lealtadv2.columnas cs ON cs.id = t.idColumna  
+            FROM dbepco7agwmwba.participacions dcp 
+            INNER JOIN dbepco7agwmwba.transaccions t ON t.id = dcp.idTransaccion 
+            INNER JOIN dbepco7agwmwba.columnas cs ON cs.id = t.idColumna  
             WHERE idCampania = :idCampania AND tipoTransaccion = 't' AND dcp.estado = 1
             UNION ALL
             SELECT 
@@ -566,10 +324,10 @@ const transaccionesValidasCampanasFusion = async (idCampania) => {
                 t.descripcion, 
                 cs.nombre,
                 dcp.id
-            FROM lealtadv2.participacions dcp 
-            INNER JOIN lealtadv2.categoria AS dc ON dc.id = dcp.idTransaccion
-            INNER JOIN lealtadv2.transaccions AS t ON t.id = dcp.idTransaccion 
-            INNER JOIN lealtadv2.columnas cs ON cs.id = t.idColumna 
+            FROM dbepco7agwmwba.participacions dcp 
+            INNER JOIN dbepco7agwmwba.categoria AS dc ON dc.id = dcp.idTransaccion
+            INNER JOIN dbepco7agwmwba.transaccions AS t ON t.id = dcp.idTransaccion 
+            INNER JOIN dbepco7agwmwba.columnas cs ON cs.id = t.idColumna 
             WHERE dcp.idCampania = :idCampania AND tipoTransaccion = 'c' AND dcp.estado = 1  
             GROUP BY dcp.valorMinimo, dcp.valorMaximo, dcp.idTipoParticipacion, dcp.tipoTransaccion, t.descripcion, cs.nombre, dcp.id
         `;
@@ -766,7 +524,7 @@ const validarLimiteParticipacionesPorUsuario = async (idUsuarioParticipante, idC
         SELECT SUM(participaHoy) AS totalParticipaciones
         FROM (
             SELECT COUNT(*) AS participaHoy 
-            FROM lealtadv2.participacions
+            FROM dbepco7agwmwba.participacions
             WHERE idUsuarioParticipante = :idUsuarioParticipante
             AND idCampania = :idCampania
             AND CAST(fecha AS DATE) = CAST(now() AS DATE)
@@ -796,7 +554,7 @@ const TransaccionesDelUsuarioPendientesXcampana = async (idUsuarioParticipante, 
 
         const query = `
             SELECT *, CAST(fechaParticipacion AS DATE) AS solofecha
-            FROM lealtadv2.campaniaadicional
+            FROM dbepco7agwmwba.campaniaadicional
             WHERE yaAplico = 1
             AND idParticipacion = :idParticipacion
             AND idUsuarioParticipante = :idUsuarioParticipante 
@@ -893,15 +651,15 @@ async function tienePremiosPendientesCampanas(idCampania, idUsuarioParticipante)
             p.link, 
             p.claveSecreta 
         FROM 
-            lealtadv2.participacions ps 
+            dbepco7agwmwba.participacions ps 
         INNER JOIN 
-            lealtadv2.offercraft_notifications a ON (a.url = ps.urlPremio) 
+            dbepco7agwmwba.offercraft_notifications a ON (a.url = ps.urlPremio) 
         INNER JOIN 
-            lealtadv2.campania d ON (d.id = ps.idCampania) 
+            dbepco7agwmwba.campania d ON (d.id = ps.idCampania) 
         INNER JOIN 
-            lealtadv2.premios p ON (p.id = p.id) 
+            dbepco7agwmwba.premios p ON (p.id = p.id) 
         JOIN 
-            lealtadv2.equivalente_campanas e ON (e.id = a.id) 
+            dbepco7agwmwba.equivalente_campanas e ON (e.id = a.id) 
         WHERE 
             d.id = :idCampania AND ps.idUsuarioParticipante = :idUsuarioParticipante
             AND a.fecha_uso > '2021-12-01 01:00:00' AND p.idTransaccion = 10 AND d.estado = 1 
@@ -951,7 +709,7 @@ async function campanasRevisionGeneralIdCampana(id) {
             minimoTransacciones, 
             minimoAcumular 
         FROM 
-            lealtadv2.campania
+            dbepco7agwmwba.campania
         WHERE 
             tipoParticipacion IN (1,3) AND id = :idCampania AND fechaFin >= CAST(NOW() as date) 
         UNION ALL 
@@ -973,7 +731,7 @@ async function campanasRevisionGeneralIdCampana(id) {
             minimoTransacciones, 
             minimoAcumular 
         FROM 
-            lealtadv2.campania 
+            dbepco7agwmwba.campania 
         WHERE 
             tipoParticipacion IN (2,4,5) AND id = :idCampania AND fechaFin >= CAST(NOW() as date);
     `;
@@ -1005,7 +763,7 @@ async function CampanasBotonesAppMostrar(idCampania) {
         SELECT t.idBotton 
         FROM campania ec 
         JOIN participacions dcp ON dcp.idCampania = ec.id
-        JOIN lealtadv2.categoria dct ON dct.id = dcp.idTransaccion AND dcp.tipoTransaccion = 'c' 
+        JOIN dbepco7agwmwba.categoria dct ON dct.id = dcp.idTransaccion AND dcp.tipoTransaccion = 'c' 
         JOIN transaccions t ON t.id = dct.idTransaccion 
         WHERE ec.id = :idCampania AND dct.estado = 1 
         GROUP BY t.idBotton;
@@ -1076,5 +834,7 @@ module.exports = {
     // transaccionesValidasCampanasFusionL,
     // DeleteEnvio,
     // GetNumeroById,
+    obtenerMistransacciones,
+    obtenerTransaccionesValidas
 
 }

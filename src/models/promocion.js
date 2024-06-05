@@ -2,8 +2,6 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/database');
 const { DetallePromocion } = require("../models/detallePromocion");
 const { PremioPromocion } = require('./premioPromocion');
-const { Configuraciones } = require('./configuraciones');
-
 
 const Promocion = sequelize.define('promocions', {
     id: {
@@ -32,12 +30,12 @@ const Promocion = sequelize.define('promocions', {
         allowNull: false,
     },
     imgSuccess: {
-        type: DataTypes.TEXT('long'),
-        allowNull: false,
+        type:  DataTypes.TEXT('long'),
+        allowNull: false
     },
     imgFail: {
-        type: DataTypes.TEXT('long'),
-        allowNull: false,
+        type:  DataTypes.TEXT('long'),
+        allowNull: false
     },
     fechaInicio: {
         type: DataTypes.DATEONLY,
@@ -58,8 +56,6 @@ const Promocion = sequelize.define('promocions', {
     }
 }, { timestamps: false });
 
-
-
 Promocion.hasMany(DetallePromocion, {
     foreignKey: 'idPromocion',
     sourceKey: 'id'
@@ -68,9 +64,7 @@ Promocion.hasMany(DetallePromocion, {
 DetallePromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
-
 
 Promocion.hasMany(PremioPromocion, {
     foreignKey: 'idPromocion',
@@ -80,33 +74,15 @@ Promocion.hasMany(PremioPromocion, {
 PremioPromocion.belongsTo(Promocion, {
     foreignKey: 'idPromocion',
     targetId: 'id',
-
 });
 
-Promocion.hasMany(Configuraciones, {
-    foreignKey: 'idPromocion',
-    sourceKey: 'id'
-});
-
-Configuraciones.belongsTo(Promocion, {
-    foreignKey: 'idPromocion',
-    targetId: 'id',
-});
-
-
-// Configuraciones.sync({ alter: true }).then(() => {
-//     console.log('Tabla Configuraciones creada o actualizada correctamente');
+// PremioPromocion.sync({ alter: true }).then(() => {
+//     console.log('tabla PremioPromocion creada');
 // });
-
 
 // (async () => {
 //     await Promocion.sync({ alter: true });
 //     // Code here
-// // })();
+// })();
 
-
-// Configuraciones.sync({ alter: true }).then(() => {
-//     console.log('tabla Campania creada');
-// });
-
-module.exports = { Promocion, sequelize }
+module.exports = { Promocion, sequelize };

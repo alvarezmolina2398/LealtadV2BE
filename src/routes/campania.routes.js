@@ -22,7 +22,7 @@ router.get(`/${path}`,authUser, GetcampanasActivas);
 router.get(`/${path}/all`,authUser, GetCampania);
 router.get(`/${path}/TestearSimple`,authUser, TestearTransaccion);
 router.post(`/${path}`,authUser, AddCampania);
-router.put(`/${path}/:id`,authUser, UpdateCampania);
+router.put(`/${path}/:id`, UpdateCampania);
 router.put(`/${path}/pausar/:id`,authUser, PausarCampaña);
 router.put(`/${path}/activar/:id`,authUser, ActivarCampaña);
 router.delete(`/${path}/:id`,authUser,DeleteCampania);

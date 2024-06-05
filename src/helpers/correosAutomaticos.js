@@ -19,12 +19,13 @@ function validateEmails(emails) {
         console.log("Correos inválidos detectados:", invalidEmails.join(", "));
         return false;
     }
-    return true;
+    return  true;
 }
 
 
+
 // Tarea programada para revisar y notificar sobre campañas cada 3 minutos
-const tareaVerificarCampanias = cron.schedule('00 00 * * * *', async () => {
+const tareaVerificarCampanias = cron.schedule('0 0 0 * * *', async () => {
     console.log('Ejecutando tarea cada 3 minutos para verificar campañas cercanas a vencer');
     const hoy = new Date();
     const finVentana = new Date(hoy.getTime() + 5 * 24 * 60 * 60 * 1000);
@@ -35,7 +36,7 @@ const tareaVerificarCampanias = cron.schedule('00 00 * * * *', async () => {
     const campanias = await Campania.findAll({
         where: {
             fechaFin: { [Op.between]: [hoy, finVentana] },
-            estado: 1
+            estado: [1, 2, 3]
         },
         attributes: ['id', 'nombre', 'fechaFin', 'emails']
     });

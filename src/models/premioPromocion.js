@@ -49,7 +49,7 @@ DetallePromocion.belongsTo(PremioPromocion,{
 
 
 // (async () => {
-//     await PremioPromocion.sync({ alter: false });
+//     await PremioPromocion.sync({ alter: true });
 // //     // Code here
 // })();
 

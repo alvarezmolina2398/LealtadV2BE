@@ -8,7 +8,7 @@ const {
     // DeleteEnvio,
     // generaCampanasUsuarios,
     campanasUsuariosEmulador_get,
-    // tienePremiosPenditesCampanas,
+    // tienePremiosPendientesCampanas,
     // campaniaNumerosRestringidos,
     // transaccionesValidasCampania,
     // transaccionesValidasCampanasFusion,
@@ -24,6 +24,8 @@ const {
     // campanasRevisionGeneral,
     // regionesValidasCampania,
     // GetNumeroById,
+    obtenerMistransacciones,
+    obtenerTransaccionesValidas,
     
 } = require('../controllers/emuladorUsuarioController.js');
 const authUser = require('../middlewares/auth.js');
@@ -31,6 +33,7 @@ const authUser = require('../middlewares/auth.js');
 
 const path = 'ConsultaNumber';
 
+// Endpoint para obtener transacciones válidas
 
 // router.get(`/${path}`, authUser, GetEnviaPremio); 
 // router.post(`/${path}`, AddEnvio);
@@ -38,7 +41,9 @@ const path = 'ConsultaNumber';
 // router.delete(`/${path}/:id`, DeleteEnvio); 
 // router.get(`/${path}/:referens`, generaCampanasUsuarios);
 router.get(`/${path}/:telefono`, campanasUsuariosEmulador_get);
-// router.get(`/${path}/campania/:idCampania/usuario/:idUsuarioParticipante`, tienePremiosPenditesCampanas);
+// router.get(`/${path}/mistransacciones/:customerId/:idProyecto`, obtenerMistransacciones);
+// router.get(`/${path}/transaccionesValidas/:customerId/:idProyecto`, obtenerTransaccionesValidas);
+// router.get(`/${path}/campania/:idCampania/usuario/:idUsuarioParticipante`, tienePremiosPendientesCampanas);
 // router.get(`/${path}/:idCampania`, CampanasBotonesAppMostrar);
 // router.get(`/${path}/:id`, campanasRevisionGeneralIdCampana);
 // router.get(`/${path}/:idUsuarioParticipante/:idCampania`, validarLimiteParticipacionesPorUsuario);
