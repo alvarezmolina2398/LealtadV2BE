@@ -8,7 +8,7 @@ const authUser = require('../middlewares/auth.js');
 //declarampos nuestra constante para almacenar el path`
 const path = 'Participante';
 //rutas del proyecto
-router.get(`/${path}`,authUser, getParticipantes);
+router.get(`/${path}`, getParticipantes);
 // router.get(`/${path}/count`,authUser, GetTransaccionscount);
 // router.get(`/${path}/:id`,authUser, GetTransaccionById);
 // router.post(`/${path}`,validateCreate,authUser, AddTransaccion);

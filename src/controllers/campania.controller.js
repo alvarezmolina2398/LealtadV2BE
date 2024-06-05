@@ -937,6 +937,101 @@ const GetTransaccionesXCategoria = async(idCategoria) => {
     }
 }
 
+
+
+
+const GetCampaniasSEm = async (req, res) => {
+    try {
+        // Obtener la fecha actual
+        const fechaActual = new Date();
+
+        // Calcular las fechas límite para las diferentes condiciones
+        const treintaDiasAntes = new Date(fechaActual);
+        treintaDiasAntes.setDate(treintaDiasAntes.getDate() + 30);
+
+        const quinceDiasAntes = new Date(fechaActual);
+        quinceDiasAntes.setDate(quinceDiasAntes.getDate() + 15);
+
+        const cincoDiasAntes = new Date(fechaActual);
+        cincoDiasAntes.setDate(cincoDiasAntes.getDate() + 5);
+
+        // Obtener campañas que cumplen con las condiciones
+        const campanias = await Campania.findAll({
+            where: {
+                estado: 1, // Estado activo
+                [Op.or]: [
+                    {
+                        fechaFin: {
+                            [Op.between]: [fechaActual, treintaDiasAntes]
+                        }
+                    },
+                    {
+                        fechaFin: {
+                            [Op.between]: [fechaActual, quinceDiasAntes]
+                        }
+                    },
+                    {
+                        fechaFin: {
+                            [Op.between]: [fechaActual, cincoDiasAntes]
+                        }
+                    }
+                ]
+            },
+        });
+
+        res.json(campanias);
+    } catch (error) {
+        res.status(500).json({ error: 'Ha sucedido un error al intentar ver la campaña', details: error.message });
+    }
+};
+
+
+
+
+const Getcampanascount = async (req, res) => {
+    try {
+        const campaniascount = await Campania.count({
+            where: {
+                estado: 1,
+            }
+        });
+        res.json({ cantidad: campaniascount});
+    } catch (error) {
+        console.error("Este es el error:", error);
+        res.status(403).send({ errors: 'Ha sucedido un error al intentar obtener la lista de referidos.' });
+    }
+};
+
+
+
+
+
+const getnewCampanias = async (req, res) => {
+    try {
+        // Obtener la fecha actual y la fecha hace 7 días
+        const currentDate = new Date();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(currentDate.getDate() - 7);
+
+        // Obtener las campañas que tienen fecha de creación en los últimos 7 días
+        const newCampanias = await Campania.count({
+            where: {
+                fechaCreacion: {
+                    [Op.between]: [sevenDaysAgo, currentDate]
+                }
+            }
+        });
+
+        res.json({ campanias: newCampanias });
+    } catch (error) {
+        res.status(403);
+        res.send({ errors: 'Ha sucedido un error al intentar realizar la Transaccion.' });
+    }
+};
+
+
+
+
 module.exports = {
     AddCampania,
     GetCampania,
@@ -946,5 +1041,11 @@ module.exports = {
     UpdateCampania,
     PausarCampaña,
     ActivarCampaña,
-    DeleteCampania
+    DeleteCampania,GetCampaniasSEm,
+    Getcampanascount,
+    getnewCampanias
 }
+
+
+
+

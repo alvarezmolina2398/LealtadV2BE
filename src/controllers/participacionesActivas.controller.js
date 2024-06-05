@@ -110,4 +110,27 @@ const getCustomerInfoById = async(customerId) => {
     }
 };
 
-module.exports = { getParticipacionesActivas };
+
+
+
+
+const getclientes = async (req, res) => {
+    try {
+      const customerInfo = await pronet.query(`
+        SELECT COUNT(customer_id) AS customer_count
+        FROM pronet.tbl_customer
+        WHERE created_date >= NOW() - INTERVAL 7 DAY;
+      `, {
+        type: pronet.QueryTypes.SELECT
+      });
+  
+      res.status(200).json(customerInfo[0]);
+    } catch (error) {
+      console.error('Error al obtener clientes creados en los últimos 7 días:', error);
+      res.status(500).json({ error: 'Error al obtener clientes' });
+    }
+  };
+  
+
+
+module.exports = { getParticipacionesActivas,getclientes };
