@@ -10,7 +10,8 @@ const Categoria = sequelize.define('categoria', {
     },
     nombre: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     estado: {
         type: DataTypes.INTEGER,
@@ -33,9 +34,9 @@ asignarCategoria.belongsTo(Categoria, {
     allowNull: false
 });
 
-// (async () => {
-//     await Categoria.sync({ alter: true });
-//     // Code here
-// })();
+(async () => {
+    await Categoria.sync({ alter: true });
+    // Code here
+})();
 
 module.exports = { Categoria };
