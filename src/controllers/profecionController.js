@@ -13,7 +13,7 @@ const GetProfecion = async (req, res) => {
         res.json(trx)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de profeciones.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar obtener la lista de profesiones.' });
     }
 }
 
@@ -33,11 +33,11 @@ const AddProfecion= async (req, res) => {
             proyecto
           
         })
-        res.json({ code: 'ok', message: 'profecion creada con exito' });
+        res.json({ code: 'ok', message: 'Profesion creada con exito' });
 
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar realizar la profecion.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar realizar la profesion.' });
     }
 }
 
@@ -60,11 +60,11 @@ const UpdateProfecion = async (req, res) => {
                 id: id
             }
         });
-        res.json({ code: 'ok', message: 'profecion actualizada con exito' });
+        res.json({ code: 'ok', message: 'Profesion actualizada con exito' });
 
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar actualizar la Profecion.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar actualizar la Profesion.' });
     }
 }
 
@@ -80,10 +80,10 @@ const DeleteProfecion = async (req, res) => {
             }
         });
 
-    res.json({ code: 'ok', message: 'Profecion inhabilitada con exito' });
+    res.json({ code: 'ok', message: 'Profesion inhabilitada con exito' });
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la Profecion.' });
+        res.send({ errors: 'Ha sucedido un  error al intentar deshabilitar la Profesion.' });
     }
 }
 
@@ -101,7 +101,7 @@ const GetProfecionById = async (req, res) => {
         res.json(project)
     } catch (error) {
         res.status(403)
-        res.send({ errors: 'Ha sucedido un error al intentar buscar la Profecion.' });
+        res.send({ errors: 'Ha sucedido un error al intentar buscar la Profesion.' });
     }
 }
 
