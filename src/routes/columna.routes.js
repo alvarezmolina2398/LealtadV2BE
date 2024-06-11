@@ -4,7 +4,7 @@ const {AddColumna,UpdateColumna,DeleteColumna,GetColumnaById,GetColumnas, GetTab
 const {validateCreate} = require('../validators/columna')
 const authUser = require('../middlewares/auth.js');
 
-//declarampos nuestra constante para almacenar el path`
+
 const path = 'Columna';
 const path_tabla = 'tabla';
 
@@ -15,6 +15,6 @@ router.put(`/${path}/:id`,validateCreate,authUser,UpdateColumna);
 router.delete(`/${path}/:id`,authUser,DeleteColumna);
 router.get(`/${path}/:id`,authUser,GetColumnaById);
 router.get(`/${path_tabla}/:idProyectos`,GetTablaByProyectos);
-router.get(`/${path}bytablas/:idTablas`,authUser,GetColumnasByTablas);
+router.get(`/${path}/bytablas/:idTablas`,authUser,GetColumnasByTablas);
 
 module.exports = router;
